@@ -1,0 +1,294 @@
+/* .cke_top {
+  background-color: #e1daf4 !important;
+}
+
+.cke_bottom {
+  background-color: #e1daf4 !important;
+}  */
+
+.w-60 {
+  width: 60% !important;
+}
+
+.plus-icon:hover {
+  cursor: pointer;
+}
+
+/* Style the modal */
+.modal {
+  display: none; /* Hide the modal by default */
+  position: fixed; /* Position it on top of other elements */
+  z-index: 1; /* Set a high z-index to make sure it's on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+}
+
+/* Style the modal content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* 80% width */
+}
+
+/* Style the close button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  padding-bottom: 50px;
+  border-radius: 50px;
+  overflow: hidden;
+}
+
+.profile-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-details {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.user-name {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #000000;
+}
+
+.designation {
+  font-size: 12px;
+  color: #888;
+}
+
+.edit-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 14px;
+  color: #888;
+  visibility: hidden;
+  transition: visibility 0.3s;
+}
+
+.card:hover .edit-icon {
+  visibility: visible;
+  cursor: pointer;
+}
+
+.fa-xs {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 14px;
+  color: #888;
+  visibility: hidden;
+  transition: visibility 0.3s;
+}
+
+.card:hover .fa-xs {
+  visibility: visible;
+  cursor: pointer;
+}
+
+/* Add this CSS to your project.css file or inline style tag */
+#memberCardContainer {
+display: flex;
+/* justify-content: center; */
+flex-wrap: wrap;
+/* gap: 20px; */
+}
+
+#memberCardContainer .card {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+width: 130px;
+height: 140px;
+}
+
+@media (max-width: 767px) {
+#memberCardContainer .card {
+  width: calc(50% - 10px);
+  /* margin-right: 100px; */
+}}
+
+.circle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background-color: cornflowerblue;
+  color: black;
+  font-size: 10px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.select2-results__option--highlighted .circle {
+  background-color: rgb(9, 42, 104);
+  color: whitesmoke;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  border: none !important;
+}
+
+#myModal .select2-container {
+z-index: 1061 !important; 
+}
+
+.rounded_circle{
+margin-top: 13px; 
+height: 55px; 
+width: 55px; 
+/* margin-left: 6px;  */
+border-radius: 50%;
+margin-right: 34px;
+}
+
+.card-title {
+  font-size: 12px !important;
+}
+
+.card-text {
+  margin-bottom: 0rem;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: -10px;
+}
+
+.fa-edit{
+  color: #7d4287; 
+  cursor: pointer;
+}
+
+.avatar-blue{
+  margin-left: 34px;
+}
+
+.card-body {
+  padding: 0 21px 0 21px;
+}
+
+.select2-container--default .select2-selection--multiple{
+border: 1px solid #ddd !important;
+border-radius: 4px !important;
+}
+
+.select2-container .select2-selection--multiple {
+min-height: 40px !important;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+font-family: 'Open Sans', sans-serif !important;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+margin-top: 7px !important;
+margin-left: 8px !important;
+padding: 2px !important;
+height: 21px !important;
+font-size: 14px !important;
+}
+
+.select2-container .select2-selection--single {
+height: 36px !important;
+}
+
+.select2-container--default .select2-selection--single {
+background-color: white;
+border: 1px solid #ddd !important;
+border-radius: 4px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+color: #858585 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+line-height: 35px !important;
+}
+
+#project_role_id {
+color: #858585;
+font-size: 14px;
+}
+
+#edit_project_role_id {
+color: #858585;
+font-size: 14px;
+}
+
+/* Edit project membercard gap */
+
+@media (min-width: 768px) {
+  #cardgap {
+    flex: 0 0 12%;
+    width: 13% !important;
+  }
+}
+
+.select2-container--default .select2-selection--multiple:before {
+  content: '';
+  font-family: 'FontAwesome';
+  display: block;
+  position: absolute;
+  border-color: #888 transparent transparent transparent;
+  border-style: solid;
+  border-width: 5px 4px 0 4px;
+  height: 0;
+  right: 6px;
+  margin-left: -4px;
+  margin-top: -2px;top: 50%;
+  width: 0;cursor: pointer
+}
+
+.select2-container--open .select2-selection--multiple:before {
+  content: '';
+  font-family: 'FontAwesome';
+  display: block;
+  position: absolute;
+  border-color: transparent transparent #888 transparent;
+  border-width: 0 4px 5px 4px;
+  height: 0;
+  right: 6px;
+  margin-left: -4px;
+  margin-top: -2px;top: 50%;
+  width: 0;cursor: pointer
+}
