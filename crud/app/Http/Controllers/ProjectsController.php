@@ -40,7 +40,7 @@ class ProjectsController extends Controller
     public function store(Request $request)
     {
 
-        // dd($request);
+        //dd($request->all());
 
         $request->validate([
             'project_name' => 'required',
@@ -56,8 +56,8 @@ class ProjectsController extends Controller
             'vertical_id' => 'required',
             'technology_id' => 'required',
             'client_id' => 'required',
-            'project_members_id' => 'required',
-            'project_role_id' => 'required',
+            // 'project_members_id' => 'required',
+            // 'project_role_id' => 'required',
             'task_type_id' => 'required',
             'task_status_id' => 'required',
         ]);
@@ -78,8 +78,8 @@ class ProjectsController extends Controller
         // $project->technology_id = $request->technology_id;
         $project->technology_id = implode(',', $request->technology_id); 
         $project->client_id = $request->client_id;
-        $project->project_members_id = $request->project_members_id;
-        $project->project_role_id = $request->project_role_id;
+        // $project->project_members_id =array_unique($request->project_members_id);
+        // $project->project_role_id = $request->project_role_id;
         $project->task_type_id = implode(',', $request->task_type_id);
         $project->task_status_id = implode(',', $request->task_status_id);
         // $project->project_members_id = json_encode($request->project_members_id);
@@ -88,12 +88,33 @@ class ProjectsController extends Controller
         $project->save();
 
         // Attach project members and roles to the project
+        // $projectMembersIds = $request->input('project_members_id', []);
+        // $projectRolesIds = $request->input('project_role_id', []);
+
+        // Attach project members and roles to the project
         $projectMembersIds = $request->input('project_members_id', []);
         $projectRolesIds = $request->input('project_role_id', []);
 
+        $uniqueMembers = [];
+
+        //dd($projectMembersIds);
         foreach ($projectMembersIds as $key => $memberId) {
             $role = $projectRolesIds[$key] ?? null;
-            
+
+            // Make sure both member ID and role ID are provided before attaching, and they haven't been attached already
+            if ($memberId && $role && !in_array("$memberId-$role", $uniqueMembers)) {
+                $project->projectMembers()->attach($memberId, ['project_role_id' => $role]);
+
+                // Add this combination to the list of unique members
+                $uniqueMembers[] = "$memberId-$role";
+            }
+        }
+
+
+
+        foreach ($projectMembersIds as $key => $memberId) {
+            $role = $projectRolesIds[$key] ?? null;
+        
             // Make sure both member ID and role ID are provided before attaching
             if ($memberId && $role) {
                 $project->projectMembers()->attach($memberId, ['project_role_id' => $role]);
@@ -122,6 +143,8 @@ class ProjectsController extends Controller
 
     public function destroy(Project $project)
     {
+        // Detach project members and roles before deleting the project
+        $project->projectMembers()->detach();
         $project->delete();
 
         return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
@@ -232,5 +255,80 @@ class ProjectsController extends Controller
         $project->taskStatuses()->sync($taskStatusIds);
 
         return redirect()->route('projects.index')->with('success', 'Project settings updated successfully.');
+    }
+
+    public function calculateProjectCost($projectId)
+    {
+        $project = Project::find($projectId);
+
+        if (!$project) {
+            return redirect()->route('projects.index')->with('error', 'Project not found.');
+        }
+
+        // Get all project members for the project
+        $projectMembers = $project->projectMembers;
+
+        $totalCost = 0;
+
+        foreach ($projectMembers as $member) {
+            // Calculate cost for each member (engagement_percentage * yearly_ctc)
+            $engagementPercentage = $member->pivot->engagement_percentage / 100; // Convert percentage to decimal
+            $yearlyCtc = $member->yearly_ctc;
+
+            $memberCost = $engagementPercentage * $yearlyCtc;
+
+            $totalCost += $memberCost;
+        }
+
+        return view('projects.cost', compact('project', 'totalCost'));
+    }
+
+
+    public function updateCost(Request $request, Project $project)
+    {
+        // Validate the input
+        $request->validate([
+            'engagement_percentages' => 'required|array',
+        ]);
+
+        // Update engagement percentages for project members
+        foreach ($request->input('engagement_percentages') as $memberId => $percentage) {
+            $project->projectMembers()
+                ->updateExistingPivot($memberId, ['engagement_percentage' => $percentage]);
+        }
+
+        // Recalculate the total cost
+        $projectMembers = $project->projectMembers; 
+        $totalCost = $this->calculateTotalCost($project);
+
+        return view('projects.cost', compact('project', 'totalCost', 'projectMembers'))
+            ->with('success', 'Engagement percentages updated successfully.');
+    }
+
+    protected function calculateTotalCost(Project $project)
+    {
+        $projectMembers = $project->projectMembers;
+
+        $totalCost = 0;
+
+        foreach ($projectMembers as $member) {
+            $engagementPercentage = $member->pivot->engagement_percentage / 100;
+            $yearlyCtc = $member->yearly_ctc;
+
+            $memberCost = $engagementPercentage * $yearlyCtc;
+
+            $totalCost += $memberCost;
+        }
+
+        return $totalCost;
+    }
+    
+    public function viewCost(Project $project)
+    {
+        // Calculate total cost and retrieve project members
+        $totalCost = $this->calculateTotalCost($project);
+        $projectMembers = $project->projectMembers;
+    
+        return view('projects.cost', compact('project', 'totalCost', 'projectMembers'));
     }
 }

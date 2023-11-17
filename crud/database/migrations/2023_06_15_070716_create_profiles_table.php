@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('image')->nullable()->default('user.png');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->decimal('yearly_ctc', 10, 2)->default(0.00);
             $table->timestamps();
         });
     }

@@ -50,6 +50,40 @@ $(document).ready(function() {
     ]
   });
 
+  $("#rolePriceTable").DataTable({
+    aaSorting: [],
+    responsive: true,
+    lengthMenu: [5, 10, 25, 50, 100],
+
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+
+  $("#workerPriceTable").DataTable({
+    aaSorting: [],
+    responsive: true,
+    lengthMenu: [5, 10, 25, 50, 100],
+
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+
   $("#verticalTable").DataTable({
     aaSorting: [],
     responsive: true,

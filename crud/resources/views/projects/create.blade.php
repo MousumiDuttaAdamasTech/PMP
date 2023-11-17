@@ -265,53 +265,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="close" data-bs-backdrop="static" data-bs-keyboard="false">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header p-0">
-                                    <h5 class="modal-title" id="editModalLabel">Edit Member</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <label for="editFieldName" class="form-label mb-3">Member Name</label>
-                                        </div>
-
-                                        <div class="col-md-6" style="font-size:14px;">
-                                            <select id="edit_project_members_id" name="project_members_id[]" class="editmember" required style="width:100%;">
-                                                <option value="">Select Member</option>
-                                                @foreach($projectMembers as $projectMember)
-                                                <option value="{{ $projectMember->id }}">{{ $projectMember->profile_name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <label for="editRoleSelect" class="form-label mb-3">Role</label>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <select id="edit_project_role_id" name="project_role_id[]" class="form-control" required>
-                                                <option value="">Select Role</option>
-                                                @foreach ($projectRoles as $projectRole)
-                                                    <option value="{{ $projectRole->id }}">{{ $projectRole->member_role_type }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-
-
-                                        <div class="col-md-12 mt-3 text-end">
-                                            <button type="button" class="btn btn-primary" id="updateMemberBtn">Update</button>
-                                            <button type="button" class="btn btn-primary" id="removeBtn">Remove</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>  -->
 
                 </div>
                 
@@ -348,10 +301,10 @@ $(document).ready(function() {
         return $('<span><span class="circle">' + firstLetter + '</span>' + technology.text.substr(1) + '</span>');
     }
 });
-</script>
 
-<!-- ADD Member $ EDIT Member JS -->
-<script>
+
+// <!-- ADD Member $ EDIT Member JS -->
+
     $(document).ready(function() {
         // Plus sign click event handler: show the add member modal
         $('#plusSign').click(function() {
@@ -359,7 +312,6 @@ $(document).ready(function() {
         });
 
         // Add member button click event handler
-
         $("#addMemberBtn").click(function() {
             var memberName = $("#project_members_id option:selected").text();
             var memberId = $("#project_members_id").val();

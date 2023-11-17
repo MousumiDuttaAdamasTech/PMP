@@ -38,26 +38,25 @@
 </div>
 @endif
 
-<div class="form-container">
-  <form action="{{ route('highest-education-values.update', $highestEducationValue->id) }}" method="POST">
-    @csrf
-    @method('PUT')
+    <div class="form-container">
+        <form action="{{ route('highest-education-values.update', $highestEducationValue->id) }}" method="POST">
+            @csrf
+            @method('PUT')
 
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            <div class="form-group">
-                <label for="highest_education_value">Highest Education Value:</label>
-                <input type="text" name="highest_education_value" id="highest_education_value" class="form-control shadow-sm" value="{{ $highestEducationValue->highest_education_value }}" required>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label for="highest_education_value">Highest Education Value:</label>
+                        <input type="text" name="highest_education_value" id="highest_education_value" class="form-control shadow-sm" value="{{ $highestEducationValue->highest_education_value }}" required>
+                    </div>
+                </div>
+
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{{ route('highest-education-values.index') }}" class="btn btn-danger">Cancel</a>
+                </div>
             </div>
-        </div>
-
-
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a href="{{ route('highest-education-values.index') }}" class="btn btn-danger">Cancel</a>
-    </div>
-
-
         </form>
     </div>
 @endsection

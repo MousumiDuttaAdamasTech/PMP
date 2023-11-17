@@ -72,7 +72,7 @@
                             <a href="{{ route('kanban', ['projectId' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Tasks">
                                 <i class="bi bi-kanban" style="margin-right: 10px; color: blueviolet;"></i>
                             </a>
-                            <a href="#" data-toggle="tooltip" data-placement="top" title="">
+                            <a href="{{ route('projects.cost', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Cost">
                                 <i class="bi bi-exclamation-octagon" style="margin-right: 10px; color:red;"></i>
                             </a>
                             <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">

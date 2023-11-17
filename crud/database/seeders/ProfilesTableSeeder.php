@@ -28,6 +28,7 @@ class ProfilesTableSeeder extends Seeder
             'highest_educational_qualification_id' => 1,
             'image' => 'images/profiles/adamastech_logo.png',
             'user_id' => 1,
+            'yearly_ctc' => 1200000,
         ]);
 
         Profile::create([
@@ -44,6 +45,7 @@ class ProfilesTableSeeder extends Seeder
             'highest_educational_qualification_id' => 2,
             'image' => 'images/profiles/john_profile.png',
             'user_id' => 2,
+            'yearly_ctc' => 200000,
         ]);
 
         Profile::create([
@@ -60,6 +62,7 @@ class ProfilesTableSeeder extends Seeder
             'highest_educational_qualification_id' => 3,
             'image' => 'images/profiles/jane_profile.png',
             'user_id' => 3,
+            'yearly_ctc' => 500000,
         ]);
     }
 }

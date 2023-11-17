@@ -64,6 +64,7 @@ class ProfileController extends Controller
             'vertical_id' => 'required',
             'highest_educational_qualification_id' => 'required',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'yearly_ctc' => 'required|numeric',
             'password' => 'required|min:8', // Add a validation rule for the password
         ]);
     
@@ -89,6 +90,7 @@ class ProfileController extends Controller
         $profile->designation_id = $request->designation_id;
         $profile->vertical_id = $request->vertical_id;
         $profile->highest_educational_qualification_id = $request->highest_educational_qualification_id;
+        $profile->yearly_ctc = $request->yearly_ctc; 
     
         if ($request->hasFile('image')) {
             $image = $request->file('image');

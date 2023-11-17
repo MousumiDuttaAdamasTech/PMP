@@ -22,16 +22,16 @@ class Project extends Model
         'vertical_id',
         'technology_id',
         'client_id',
-        'project_members_id',
-        'project_role_id',
+        // 'project_members_id',
+        // 'project_role_id',
         'task_type_id',
         'task_status_id'
     ];
 
-    protected $casts = [
-        'project_members_id' => 'array',
-        'project_role_id' => 'array',
-    ];
+    // protected $casts = [
+    //     'project_members_id' => 'array',
+    //     'project_role_id' => 'array',
+    // ];
 
     // Relationships
 
@@ -58,7 +58,7 @@ class Project extends Model
     public function projectMembers()
     {
         return $this->belongsToMany(Profile::class, 'project_members', 'project_id', 'project_members_id')
-            ->withPivot('project_role_id')
+            ->withPivot('project_role_id','engagement_percentage')
             ->withTimestamps();
     }
 

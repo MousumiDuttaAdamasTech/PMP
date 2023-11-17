@@ -15,7 +15,7 @@ class Profile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['profile_name', 'email', 'contact_number', 'line_manager_id', 'user_id', 'vertical_id', 'designation_id', 'highest_educational_qualification_id', 'image'];
+    protected $fillable = ['profile_name', 'email', 'contact_number', 'line_manager_id', 'user_id', 'vertical_id', 'designation_id', 'highest_educational_qualification_id', 'image','yearly_ctc',];
 
     public function profileName()
     {

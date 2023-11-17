@@ -17,4 +17,9 @@ class Vertical extends Model
         'vertical_head_emailId',
         'vertical_head_contact',
     ];
+
+    public function revenueBudgets()
+    {
+        return $this->hasMany(RevenueBudget::class, 'vertical_id');
+    }
 }

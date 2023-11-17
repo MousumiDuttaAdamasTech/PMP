@@ -24,6 +24,7 @@ use App\Http\Controllers\TaskTypeController;
 use App\Http\Controllers\TaskStatusController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\UserWorkDetailController;
+use App\Http\Controllers\RolePriceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -69,6 +70,9 @@ Route::middleware([
         Route::get('/{project}/settings', [ProjectsController::class, 'settings'])->name('projects.settings');
         Route::put('/{project}/settings', [ProjectsController::class, 'updateSettings'])->name('projects.updateSettings');    
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
+        Route::put('/{project}/cost', [ProjectsController::class,'updateCost'])->name('projects.updateCost');
+        Route::get('/{project}/cost', [ProjectsController::class,'viewCost'])->name('projects.cost');
+
     });
 
     Route::group(['prefix' => 'vertical'], function () {
@@ -82,6 +86,10 @@ Route::middleware([
     });
 
     Route::resource('highest-education-values', HighestEducationValueController::class);
+
+    Route::resource('role-prices', RolePriceController::class);
+
+    Route::resource('worker-prices', WorkerPriceController::class);
 
     Route::resource('project-members', ProjectMemberController::class);
 
