@@ -110,17 +110,6 @@ class ProjectsController extends Controller
             }
         }
 
-
-
-        foreach ($projectMembersIds as $key => $memberId) {
-            $role = $projectRolesIds[$key] ?? null;
-        
-            // Make sure both member ID and role ID are provided before attaching
-            if ($memberId && $role) {
-                $project->projectMembers()->attach($memberId, ['project_role_id' => $role]);
-            }
-        }
-
         // store tasktypes in project_task_types 
         $taskTypeIds = $request->task_type_id;
         foreach ($taskTypeIds as $taskTypeId) {
@@ -217,8 +206,8 @@ class ProjectsController extends Controller
         // $project->technology_id = $request->technology_id;
         $project->technology_id = implode(',', $request->technology_id); 
         $project->client_id = $request->client_id;
-        $project->project_members_id = $request->project_members_id;
-        $project->project_role_id = $request->project_role_id;
+        //$project->project_members_id = $request->project_members_id;
+        //$project->project_role_id = $request->project_role_id;
         $project->task_type_id = implode(',', $request->task_type_id);
         $project->task_status_id = implode(',', $request->task_status_id);
         $project->save();

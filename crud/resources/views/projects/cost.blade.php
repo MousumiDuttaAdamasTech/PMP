@@ -43,20 +43,20 @@
                             <th>Member</th>
                             <th>Yearly CTC</th>
                             <th>Engagement Percentage (%)</th>
-                            <th>Member Cost</th>
+                            <th>Member Price</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($projectMembers as $member)
                             <tr>
                                 <td>{{ $member->profile_name }}</td>
-                                <td>${{ $member->yearly_ctc, 2 }}</td>
+                                <td>₹{{ number_format($member->yearly_ctc, 2) }}</td>
                                 <td>
                                     <input type="number" name="engagement_percentages[{{ $member->id }}]" 
                                         value="{{ $member->pivot->engagement_percentage }}">
                                 </td>
                                 <td>
-                                    ${{ $member->pivot->engagement_percentage / 100 * $member->yearly_ctc }}
+                                    ₹{{ number_format($member->pivot->engagement_percentage / 100 * $member->yearly_ctc, 2) }}
                                 </td>
                             </tr>
                         @endforeach
@@ -66,7 +66,7 @@
                 <button type="submit" class="btn btn-primary">Update Engagement Percentages</button>
             </form>
             <br>
-            <h3>Total Cost: ${{ number_format($totalCost, 2) }}</p>
+            <h3>Total Cost: ₹{{ number_format($totalCost, 2) }}</p>
         </section>
     </main>
 @endsection
