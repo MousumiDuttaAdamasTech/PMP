@@ -257,6 +257,55 @@
                                             </select>
                                         </div>
 
+                                        <div class="col-md-6">
+                                            <label for="engagement_percentage" class="form-label mb-3">Engagement Percentage</label>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="text" id="engagement_percentage" name="engagement_percentage[]" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="start_date" class="form-label mb-3">Start Date</label>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="date" id="start_date" name="start_date[]" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="duration" class="form-label mb-3">Duration</label>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="text" id="duration" name="duration[]" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="engagement_mode" class="form-label mb-3">Engagement Mode</label>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <select id="engagement_mode" name="engagement_mode[]" class="form-control" required>
+                                                <option value="daily">Daily</option>
+                                                <option value="weekly">Weekly</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="yearly">Yearly</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label for="is_active" class="form-label mb-3">Is Active</label>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <select id="is_active" name="is_active[]" class="form-control" required>
+                                                <option value="1">Yes</option>
+                                                <option value="0">No</option>
+                                            </select>
+                                        </div>
+
+
                                         <div class="col-md-12 mt-3 text-end">
                                             <button type="button" class="btn" id="addMemberBtn" style="background-color: #012970; color: white;" onclick="addMember()">Add Member</button>
                                         </div>
@@ -317,6 +366,11 @@ $(document).ready(function() {
             var memberId = $("#project_members_id").val();
             var role = $("#project_role_id option:selected").text();
             var roleId = $("#project_role_id").val();
+            var engagementPercentage = $("#engagement_percentage").val();
+            var startDate = $("#start_date").val();
+            var duration = $("#duration").val();
+            var isActive = $("#is_active").is(":checked") ? 1 : 0;
+            var engagementMode = $("#engagement_mode option:selected").text();
 
             if (memberName && role) {
                 var cardHtml = `
@@ -331,6 +385,11 @@ $(document).ready(function() {
                             <i class="fa fa-edit edit-icon"></i>
                             <input type="hidden" name="project_members_id[]" value="${memberId}">
                             <input type="hidden" name="project_role_id[]" value="${roleId}">
+                            <input type="hidden" name="engagement_percentage[]" value="${engagementPercentage}">
+                            <input type="hidden" name="start_date[]" value="${startDate}">
+                            <input type="hidden" name="duration[]" value="${duration}">
+                            <input type="hidden" name="is_active[]" value="${isActive}">
+                            <input type="hidden" name="engagement_mode[]" value="${engagementMode}">
                         </div>
                     </div>
                 </div>`;

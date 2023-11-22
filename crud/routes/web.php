@@ -25,6 +25,7 @@ use App\Http\Controllers\TaskStatusController;
 use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\UserWorkDetailController;
 use App\Http\Controllers\RolePriceController;
+use App\Http\Controllers\WorkerPriceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes

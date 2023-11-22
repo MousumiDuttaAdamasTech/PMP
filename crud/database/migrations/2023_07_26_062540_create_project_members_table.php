@@ -16,7 +16,11 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('project_members_id'); 
             $table->unsignedBigInteger('project_role_id');
-            $table->decimal('engagement_percentage', 5, 2)->default(00.00);    
+            $table->decimal('engagement_percentage', 5, 2)->default(00.00); 
+            $table->date('start_date')->nullable();
+            $table->decimal('duration', 5, 2)->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->enum('engagement_mode', ['daily', 'weekly', 'monthly','yearly'])->nullable();   
             $table->foreign('project_id')->references('id')->on('project');
             $table->foreign('project_members_id')->references('id')->on('users');           
             $table->foreign('project_role_id')->references('id')->on('project_role');      

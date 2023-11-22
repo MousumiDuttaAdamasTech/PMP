@@ -11,6 +11,8 @@ use App\Models\ProjectRole;
 use App\Models\Profile;
 use App\Models\taskType;
 use App\Models\TaskStatus;
+use App\Models\RolePrice;
+use App\Models\WorkerPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -56,8 +58,6 @@ class ProjectsController extends Controller
             'vertical_id' => 'required',
             'technology_id' => 'required',
             'client_id' => 'required',
-            // 'project_members_id' => 'required',
-            // 'project_role_id' => 'required',
             'task_type_id' => 'required',
             'task_status_id' => 'required',
         ]);
@@ -75,25 +75,21 @@ class ProjectsController extends Controller
         $project->client_spoc_email = $request->client_spoc_email;
         $project->client_spoc_contact = $request->client_spoc_contact;
         $project->vertical_id = $request->vertical_id;
-        // $project->technology_id = $request->technology_id;
         $project->technology_id = implode(',', $request->technology_id); 
         $project->client_id = $request->client_id;
-        // $project->project_members_id =array_unique($request->project_members_id);
-        // $project->project_role_id = $request->project_role_id;
         $project->task_type_id = implode(',', $request->task_type_id);
         $project->task_status_id = implode(',', $request->task_status_id);
-        // $project->project_members_id = json_encode($request->project_members_id);
-        // $project->project_role_id = json_encode($request->project_role_id);
 
         $project->save();
 
         // Attach project members and roles to the project
-        // $projectMembersIds = $request->input('project_members_id', []);
-        // $projectRolesIds = $request->input('project_role_id', []);
-
-        // Attach project members and roles to the project
         $projectMembersIds = $request->input('project_members_id', []);
         $projectRolesIds = $request->input('project_role_id', []);
+        $engagementPercentages = $request->input('engagement_percentage', []);
+        $startDates = $request->input('start_date', []);
+        $durations = $request->input('duration', []);
+        $isActives = $request->input('is_active', []);
+        $engagementModes = $request->input('engagement_mode', []);
 
         $uniqueMembers = [];
 
@@ -103,7 +99,14 @@ class ProjectsController extends Controller
 
             // Make sure both member ID and role ID are provided before attaching, and they haven't been attached already
             if ($memberId && $role && !in_array("$memberId-$role", $uniqueMembers)) {
-                $project->projectMembers()->attach($memberId, ['project_role_id' => $role]);
+                $project->projectMembers()->attach($memberId, [
+                    'project_role_id' => $role,
+                    'engagement_percentage' => $engagementPercentages[$key] ?? null,
+                    'start_date' => $startDates[$key] ?? null,
+                    'duration' => $durations[$key] ?? null,
+                    'is_active' => $isActives[$key] ?? null,
+                    'engagement_mode' => $engagementModes[$key] ?? null,
+                ]);
 
                 // Add this combination to the list of unique members
                 $uniqueMembers[] = "$memberId-$role";
@@ -278,12 +281,21 @@ class ProjectsController extends Controller
         // Validate the input
         $request->validate([
             'engagement_percentages' => 'required|array',
+            'engagement_modes' => 'required|array',
+            'durations' => 'required|array',
         ]);
 
-        // Update engagement percentages for project members
+        // Update engagement percentages, modes, and durations for project members
         foreach ($request->input('engagement_percentages') as $memberId => $percentage) {
+            $mode = $request->input('engagement_modes')[$memberId];
+            $duration = $request->input('durations')[$memberId];
+
+            // Update the pivot table with new values
             $project->projectMembers()
-                ->updateExistingPivot($memberId, ['engagement_percentage' => $percentage]);
+                ->updateExistingPivot($memberId, compact('percentage', 'mode', 'duration'));
+
+            // Calculate and update member cost in the pivot table
+            $this->updateMemberCost($project, $memberId);
         }
 
         // Recalculate the total cost
@@ -291,7 +303,51 @@ class ProjectsController extends Controller
         $totalCost = $this->calculateTotalCost($project);
 
         return view('projects.cost', compact('project', 'totalCost', 'projectMembers'))
-            ->with('success', 'Engagement percentages updated successfully.');
+            ->with('success', 'Engagement percentages, modes, and durations updated successfully.');
+    }
+
+    // Add a new method to calculate and update member cost
+    protected function updateMemberCost(Project $project, $memberId)
+    {
+        $member = $project->projectMembers->find($memberId);
+        $engagementPercentage = $member->pivot->engagement_percentage / 100;
+        $engagementMode = $member->pivot->engagement_mode;
+        $duration = $member->pivot->duration;
+
+        // Retrieve the weekly, daily, monthly, yearly price of the employee
+        $workerPrice = WorkerPrice::where('worker_id', $member->id)->first();
+        $weeklyEmployeePrice = $workerPrice ? $workerPrice->weekly_price : 0;
+        $dailyEmployeePrice = $workerPrice ? $workerPrice->daily_price : 0;
+        $monthlyEmployeePrice = $workerPrice ? $workerPrice->monthly_price : 0;
+        $yearlyEmployeePrice = $workerPrice ? $workerPrice->yearly_price : 0;
+
+        // Retrieve the weekly, daily, monthly, yearly price of the role
+        $rolePrice = RolePrice::where('role_id', $member->pivot->project_role_id)->first();
+        $weeklyRolePrice = $rolePrice ? $rolePrice->weekly_price : 0;
+        $dailyRolePrice = $rolePrice ? $rolePrice->daily_price : 0;
+        $monthlyRolePrice = $rolePrice ? $rolePrice->monthly_price : 0;
+        $yearlyRolePrice = $rolePrice ? $rolePrice->yearly_price : 0;
+
+        // Calculate member cost based on engagement mode
+        switch ($engagementMode) {
+            case 'weekly':
+                $memberCost = ($engagementPercentage * ($weeklyEmployeePrice + $weeklyRolePrice)) * $duration;
+                break;
+            case 'monthly':
+                $memberCost = ($engagementPercentage * ($monthlyEmployeePrice + $monthlyRolePrice)) * $duration;
+                break;
+            case 'yearly':
+                $memberCost = ($engagementPercentage * ($yearlyEmployeePrice + $yearlyRolePrice)) * $duration;
+                break;
+            case 'daily':
+                $memberCost = ($engagementPercentage * ($dailyEmployeePrice + $dailyRolePrice)) * $duration;
+                break;
+        }
+
+        // Update member cost in the pivot table
+        $project->projectMembers()->updateExistingPivot($memberId, ['member_cost' => $memberCost]);
+
+        return $memberCost;
     }
 
     protected function calculateTotalCost(Project $project)
@@ -302,9 +358,38 @@ class ProjectsController extends Controller
 
         foreach ($projectMembers as $member) {
             $engagementPercentage = $member->pivot->engagement_percentage / 100;
-            $yearlyCtc = $member->yearly_ctc;
+            $engagementMode = $member->pivot->engagement_mode;
+            $duration = $member->pivot->duration;
 
-            $memberCost = $engagementPercentage * $yearlyCtc;
+            // Retrieve the weekly, daily, monthly, yearly price of the employee
+            $workerPrice = WorkerPrice::where('worker_id', $member->id)->first();
+            $weeklyEmployeePrice = $workerPrice ? $workerPrice->weekly_price : 0;
+            $dailyEmployeePrice = $workerPrice ? $workerPrice->daily_price : 0;
+            $monthlyEmployeePrice = $workerPrice ? $workerPrice->monthly_price : 0;
+            $yearlyEmployeePrice = $workerPrice ? $workerPrice->yearly_price : 0;
+
+            // Retrieve the weekly, daily, monthly, yearly price of the role
+            $rolePrice = RolePrice::where('role_id', $member->pivot->project_role_id)->first();
+            $weeklyRolePrice = $rolePrice ? $rolePrice->weekly_price : 0;
+            $dailyRolePrice = $rolePrice ? $rolePrice->daily_price : 0;
+            $monthlyRolePrice = $rolePrice ? $rolePrice->monthly_price : 0;
+            $yearlyRolePrice = $rolePrice ? $rolePrice->yearly_price : 0;
+
+            // Calculate member cost based on engagement mode
+            switch ($engagementMode) {
+                case 'weekly':
+                    $memberCost = ($engagementPercentage * ($weeklyEmployeePrice + $weeklyRolePrice)) * $duration;
+                    break;
+                case 'monthly':
+                    $memberCost = ($engagementPercentage * ($monthlyEmployeePrice + $monthlyRolePrice)) * $duration;
+                    break;
+                case 'yearly':
+                    $memberCost = ($engagementPercentage * ($yearlyEmployeePrice + $yearlyRolePrice)) * $duration;
+                    break;
+                case 'daily':
+                    $memberCost = ($engagementPercentage * ($dailyEmployeePrice + $dailyRolePrice)) * $duration;
+                    break;
+            }
 
             $totalCost += $memberCost;
         }
@@ -313,11 +398,63 @@ class ProjectsController extends Controller
     }
     
     public function viewCost(Project $project)
-    {
-        // Calculate total cost and retrieve project members
-        $totalCost = $this->calculateTotalCost($project);
-        $projectMembers = $project->projectMembers;
-    
-        return view('projects.cost', compact('project', 'totalCost', 'projectMembers'));
+{
+    // Calculate total cost and retrieve project members
+    $totalCost = $this->calculateTotalCost($project);
+    $projectMembers = $project->projectMembers;
+
+    // Calculate member costs and store them in an array
+    $memberCosts = [];
+    foreach ($projectMembers as $member) {
+        $memberCosts[$member->id] = $this->calculateMemberCost($member);
     }
+
+    return view('projects.cost', compact('project', 'totalCost', 'projectMembers', 'memberCosts'));
+}
+
+    protected function calculateMemberCost($member)
+{
+    $engagementPercentage = $member->pivot->engagement_percentage / 100;
+    $engagementMode = $member->pivot->engagement_mode;
+    $duration = $member->pivot->duration;
+
+    // Retrieve the weekly, daily, monthly, yearly price of the employee
+    $workerPrice = WorkerPrice::where('worker_id', $member->id)->first();
+    $weeklyEmployeePrice = $workerPrice ? $workerPrice->weekly_price : 0;
+    $dailyEmployeePrice = $workerPrice ? $workerPrice->daily_price : 0;
+    $monthlyEmployeePrice = $workerPrice ? $workerPrice->monthly_price : 0;
+    $yearlyEmployeePrice = $workerPrice ? $workerPrice->yearly_price : 0;
+
+    // Retrieve the weekly, daily, monthly, yearly price of the role
+    $rolePrice = RolePrice::where('role_id', $member->pivot->project_role_id)->first();
+    $weeklyRolePrice = $rolePrice ? $rolePrice->weekly_price : 0;
+    $dailyRolePrice = $rolePrice ? $rolePrice->daily_price : 0;
+    $monthlyRolePrice = $rolePrice ? $rolePrice->monthly_price : 0;
+    $yearlyRolePrice = $rolePrice ? $rolePrice->yearly_price : 0;
+
+    // Calculate member cost based on engagement mode
+    switch ($engagementMode) {
+        case 'weekly':
+            $memberCost = ($engagementPercentage * ($weeklyEmployeePrice + $weeklyRolePrice)) * $duration;
+            break;
+        case 'monthly':
+            $memberCost = ($engagementPercentage * ($monthlyEmployeePrice + $monthlyRolePrice)) * $duration;
+            break;
+        case 'yearly':
+            $memberCost = ($engagementPercentage * ($yearlyEmployeePrice + $yearlyRolePrice)) * $duration;
+            break;
+        case 'daily':
+            $memberCost = ($engagementPercentage * ($dailyEmployeePrice + $dailyRolePrice)) * $duration;
+            break;
+        default:
+            // Default case, e.g., if engagement mode is not specified
+            $memberCost = 0;
+            break;
+    }
+
+    return $memberCost;
+}
+
+
+
 }

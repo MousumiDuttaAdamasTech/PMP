@@ -32,17 +32,16 @@
     <main class="container">
         <section>
             <div class="titlebar">Project Name: {{ $project->project_name }}</div>
-            
-            <form action="{{ route('projects.updateCost', $project) }}" method="POST">
-                @csrf
-                @method('PUT')
                 
                 <table id="projectTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                     <thead>
                         <tr>
                             <th>Member</th>
-                            <th>Yearly CTC</th>
                             <th>Engagement Percentage (%)</th>
+                            <th>Engagement Mode</th>
+                            <th>Start Date</th>
+                            <th>Duration</th>
+                            <th>Active</th>
                             <th>Member Price</th>
                         </tr>
                     </thead>
@@ -50,21 +49,17 @@
                         @foreach($projectMembers as $member)
                             <tr>
                                 <td>{{ $member->profile_name }}</td>
-                                <td>₹{{ number_format($member->yearly_ctc, 2) }}</td>
-                                <td>
-                                    <input type="number" name="engagement_percentages[{{ $member->id }}]" 
-                                        value="{{ $member->pivot->engagement_percentage }}">
-                                </td>
-                                <td>
-                                    ₹{{ number_format($member->pivot->engagement_percentage / 100 * $member->yearly_ctc, 2) }}
-                                </td>
+                                <td>{{ $member->pivot->engagement_percentage }}</td>
+                                <td>{{ $member->pivot->engagement_mode }}</td>
+                                <td>{{ $member->pivot->start_date }}</td>
+                                <td>{{ $member->pivot->duration }}</td>
+                                <td>{{ $member->pivot->is_active ? 'Yes' : 'No' }}</td>
+                                <td>₹{{ number_format($memberCosts[$member->id], 2) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
-                
-                <button type="submit" class="btn btn-primary">Update Engagement Percentages</button>
-            </form>
+            
             <br>
             <h3>Total Cost: ₹{{ number_format($totalCost, 2) }}</p>
         </section>

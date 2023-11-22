@@ -1,10 +1,10 @@
 @extends('layouts.side_nav') 
 
-@section('pageTitle', 'Role Prices') 
+@section('pageTitle', 'Worker Prices') 
 
 @section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('role-prices.index') }}">Home</a></li>
-<li class="breadcrumb-item" aria-current="page"><a href="{{ route('role-prices.index') }}">Role Prices</a></li>
+<li class="breadcrumb-item"><a href="{{ route('worker-prices.index') }}">Home</a></li>
+<li class="breadcrumb-item" aria-current="page"><a href="{{ route('worker-prices.index') }}">Worker Prices</a></li>
 <li class="breadcrumb-item active" aria-current="page">Add</li>
 @endsection 
 
@@ -37,15 +37,15 @@
 @endif
 
 <div class="form-container">
-    <form action="{{ route('role-prices.store') }}" method="POST">
+    <form action="{{ route('worker-prices.store') }}" method="POST">
         @csrf
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="role_id">Project Role:</label>
-                    <select class="form-control" id="role_id" name="role_id">
-                        @foreach ($roles as $role)
-                            <option value="{{ $role->id }}">{{ $role->member_role_type }}</option>
+                    <label for="role_id">Worker Name:</label>
+                    <select class="form-control" id="worker_id" name="worker_id">
+                        @foreach ($users as $worker)
+                            <option value="{{ $worker->id }}">{{ $worker->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -81,7 +81,7 @@
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Create</button>
-                <a href="{{ route('role-prices.index') }}" class="btn btn-danger">Cancel</a>
+                <a href="{{ route('worker-prices.index') }}" class="btn btn-danger">Cancel</a>
             </div>
         </form>
     </div>

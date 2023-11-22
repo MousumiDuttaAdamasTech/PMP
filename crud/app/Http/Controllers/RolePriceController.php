@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
+use App\Models\ProjectRole;
 use App\Models\RolePrice;
 use Illuminate\Http\Request;
 
@@ -16,7 +16,7 @@ class RolePriceController extends Controller
 
     public function create()
     {
-        $roles = Role::all();
+        $roles = ProjectRole::all();
         return view('role-price.create',compact('roles'));
     }
 

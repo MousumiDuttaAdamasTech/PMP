@@ -198,33 +198,33 @@
                 <span class="card-title">Personal Details</span>
                 <button class="btn btn-primary btn-sm edit-field justify-content-end" id="editProfileButton"><i class="ri-edit-2-fill"></i></button>
               </h5>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label" style="width: 200px;">Full Name</div>
                   <div>{{ $profile->profile_name }}</div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label" style=" width: 200px;">Father's Name</div>
                   <div>{{$profile->father_name}}</div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label" style="width: 200px;">Date Of Birth</div>
                   <div>{{ date('d F Y', strtotime($profile->DOB)) }}</div>
                 </div>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label" style=" width: 200px;">Work Location</div>
                   <div>{{$profile->work_location}}</div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label" style=" width: 200px;">Work Address</div>
                   <div>{{$profile->work_address}}</div>
                 </div>
               <form method="post" action="{{ route('profiles.update2', ['profile' => $profile->id]) }}" enctype="multipart/form-data" id="editProfileForm">
                 @csrf
                 @method('PUT')
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label" style=" width: 200px;">Highest Educational Qualification</div>
                   <div >
                     <div class="form-group">
@@ -241,21 +241,21 @@
                 </div>
                 <br>
                 <h5 class="card-title">Contact Details</h5>
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label">Email</div>
                   <div>
-                  {{$profile->email}}
+                    <span id="email_span" style="padding-right:43px;">{{$profile->email}}</span>
                     <div>
                       <input type="text" class="form-control" name="email" id="email" value="{{ $profile->email }}" required hidden>
                     </div>
                   </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-2">
                   <div class="label">Contact Number</div>
                   <div >
                     <div class="form-group">
-                      <span id="contact_number_span" style="padding-right:55px;">{{$profile->contact_number}}</span>
+                      <span id="contact_number_span" style="padding-right:97px;">{{$profile->contact_number}}</span>
                       <input type="text" class="form-control" name="contact_number" id="contact_number" value="{{ $profile->contact_number }}"{{ $editable ? '' : ' readonly' }} maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" style="display: inline-block;">                    
                     </div>
                   </div>

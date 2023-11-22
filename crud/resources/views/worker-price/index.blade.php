@@ -1,10 +1,10 @@
 @extends('layouts.side_nav')
 
-@section('pageTitle', 'Role Prices')
+@section('pageTitle', 'Worker Prices')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('role-prices.index') }}">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Role Prices</li>
+    <li class="breadcrumb-item"><a href="{{ route('worker-prices.index') }}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Worker Prices</li>
 @endsection
 
 @section('custom_css')
@@ -31,12 +31,12 @@
 <main class="container">
     <section class="body">
         <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
-            <a href="{{ route('role-prices.create') }}" class="btn btn-primary">Add New</a>
+            <a href="{{ route('worker-prices.create') }}" class="btn btn-primary">Add New</a>
         </div>
-        <table id="rolePriceTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
+        <table id="workerPriceTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
             <thead>
                 <tr>
-                    <th>Role</th>
+                    <th>Worker</th>
                     <th>Daily Price</th>
                     <th>Monthly Price</th>
                     <th>Yearly Price</th>
@@ -45,24 +45,24 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach ($rolePrices as $rolePrice)
+            @foreach ($workerPrices as $workerPrice)
                         <tr>
-                            <td>{{ $rolePrice->role->member_role_type }}</td>
-                            <td>{{ $rolePrice->daily_price }}</td>
-                            <td>{{ $rolePrice->monthly_price }}</td>
-                            <td>{{ $rolePrice->yearly_price }}</td>
-                            <td>{{ $rolePrice->weekly_price }}</td>
+                            <td>{{ $workerPrice->worker->name }}</td>
+                            <td>{{ $workerPrice->daily_price }}</td>
+                            <td>{{ $workerPrice->monthly_price }}</td>
+                            <td>{{ $workerPrice->yearly_price }}</td>
+                            <td>{{ $workerPrice->weekly_price }}</td>
                             <td>
-                                <a href="{{ route('role-prices.edit', $rolePrice) }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit text-primary" style="margin-right: 10px"></i></a>
-                                <form action="{{ route('role-prices.destroy', $rolePrice) }}" method="POST" style="display: inline;">
+                                <a href="{{ route('worker-prices.edit', $workerPrice) }}" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit text-primary" style="margin-right: 10px"></i></a>
+                                <form action="{{ route('worker-prices.destroy', $workerPrice) }}" method="POST" style="display: inline;">
                                     @method('delete')
                                     @csrf
                                     <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal">
                                         <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                     </button>
                                     <!-- Delete Modal start -->
-                                    <div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
+                                    <div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" worker="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-confirm modal-dialog-centered" worker="document">
                                             <div class="modal-content">
                                                 <div class="modal-header flex-column">
                                                     <div class="icon-box">

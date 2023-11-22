@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\WorkerPrice;
 use Illuminate\Http\Request;
 
@@ -9,19 +10,21 @@ class WorkerPriceController extends Controller
 {
     public function index()
     {
+        $users = User::all();
         $workerPrices = WorkerPrice::all();
-        return view('worker-price.index', compact('workerPrices'));
+        return view('worker-price.index', compact('workerPrices', 'users'));
     }
 
     public function create()
     {
-        return view('worker-price.create');
+        $users = User::all();
+        return view('worker-price.create',compact('users'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'worker_id' => 'required|exists:workers,id',
+            'worker_id' => 'required|exists:users,id',
             'daily_price' => 'required|numeric',
             'monthly_price' => 'required|numeric',
             'yearly_price' => 'required|numeric',
