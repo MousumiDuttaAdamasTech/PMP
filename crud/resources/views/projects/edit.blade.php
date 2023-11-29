@@ -222,25 +222,34 @@
                     <label for="memberInput" class="form-label" style="height:20px; font-size: 15px;">Member</label>
                     <i class="fa fa-plus-circle" id="plusSign" style="color: #7d4287; cursor: pointer;"></i>
                     <div id="memberCardContainer">
-                        @foreach ($projectMembers as $projectMember)
-                        @foreach ($projectRoles as $projectRole)
-                        <div class="col-md-3">
-                            <div class="card">
-                                <div class="card-body mb-2" style="padding: 0 21px 0 21px;">
-                                    <div class="avatar avatar-blue" style="margin-left: 34px;">
-                                        <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}" alt="Profile Image" width="50">
+                        @foreach ($project->projectMembers as $projectMember)
+                            @php
+                                // Find the pivot data for the current member
+                                $pivotData = $projectMember->pivot;
+
+                                // Find the corresponding role for this member
+                                $role = $project->roles->where('id', $pivotData->project_role_id)->first();
+                                
+                                // Get the role name if found, otherwise an empty string
+                                $roleName = $role ? $role->member_role_type : '';
+                            @endphp
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body mb-2" style="padding: 0 21px 0 21px;">
+                                        <div class="avatar avatar-blue" style="margin-left: 34px;">
+                                            <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}" alt="Profile Image" width="50">
+                                        </div>
+                                        <p id="card-title" class="card-title user-name">{{ $projectMember->profile_name }}</p>
+                                        <p class="card-text role" style="margin-bottom: 0rem; font-size: 11px; font-weight: 400; margin-top: -10px">{{ $roleName }}</p>
+                                        <i class="fa fa-edit edit-icon" style="color: #7d4287; cursor: pointer;"></i>
+                                        <input type="hidden" name="project_members_id[]" value="{{ $projectMember->id }}">
+                                        <input type="hidden" name="project_role_id[]" value="{{ $roleName }}">
                                     </div>
-                                    <p id="card-title" class="card-title user-name">{{ $projectMember->profile_name }}</p>
-                                    <p class="card-text role" style="margin-bottom: 0rem; font-size: 11px; font-weight: 400; margin-top: -10px">{{ $projectRole->member_role_type }}</p>
-                                    <i class="fa fa-edit edit-icon" style="color: #7d4287; cursor: pointer;"></i>
-                                    <input type="hidden" name="project_members_id[]" value="{{ $projectMember->id }}">
-                                    <input type="hidden" name="project_role_id[]" value="{{ $projectRole->id }}">
                                 </div>
                             </div>
-                        </div>
-                        @endforeach
                         @endforeach
                     </div>
+
                 </div>
 
                 <!-- Bootstrap Modal -->

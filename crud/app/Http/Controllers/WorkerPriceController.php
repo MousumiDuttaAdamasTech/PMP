@@ -51,7 +51,7 @@ class WorkerPriceController extends Controller
             'weekly_price' => 'required|numeric',
         ]);
 
-        $workerprice->update($request->all());
+        $workerPrice->update($request->all());
 
         return redirect()->route('worker-prices.index')
             ->with('success', 'Worker price updated successfully.');

@@ -274,6 +274,14 @@
                                         </div>
 
                                         <div class="col-md-6">
+                                            <label for="end_date" class="form-label mb-3">End Date</label>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="date" id="end_date" name="end_date[]" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <label for="duration" class="form-label mb-3">Duration</label>
                                         </div>
 
@@ -333,26 +341,26 @@
 <!-- Select2 JS -->
 
 <script>
-$(document).ready(function() {
-    $('.technology').select2({
-        placeholder: 'Select technologies',
-        dropdownParent: $('#technology-wrapper'),
-        templateResult: formatTechnology,
-        templateSelection: formatTechnology
+    $(document).ready(function() {
+        $('.technology').select2({
+            placeholder: 'Select technologies',
+            dropdownParent: $('#technology-wrapper'),
+            templateResult: formatTechnology,
+            templateSelection: formatTechnology
+        });
+
+        function formatTechnology(technology) {
+            if (!technology.id) {
+                return technology.text;
+            }
+
+            var firstLetter = technology.text.charAt(0).toUpperCase();
+            return $('<span><span class="circle">' + firstLetter + '</span>' + technology.text.substr(1) + '</span>');
+        }
     });
 
-    function formatTechnology(technology) {
-        if (!technology.id) {
-            return technology.text;
-        }
 
-        var firstLetter = technology.text.charAt(0).toUpperCase();
-        return $('<span><span class="circle">' + firstLetter + '</span>' + technology.text.substr(1) + '</span>');
-    }
-});
-
-
-// <!-- ADD Member $ EDIT Member JS -->
+    // <!-- ADD Member $ EDIT Member JS -->
 
     $(document).ready(function() {
         // Plus sign click event handler: show the add member modal
@@ -369,7 +377,7 @@ $(document).ready(function() {
             var engagementPercentage = $("#engagement_percentage").val();
             var startDate = $("#start_date").val();
             var duration = $("#duration").val();
-            var isActive = $("#is_active").is(":checked") ? 1 : 0;
+            var isActive = $("#is_active").val();
             var engagementMode = $("#engagement_mode option:selected").text();
 
             if (memberName && role) {
@@ -514,6 +522,79 @@ $(document).ready(function() {
             document.getElementById('page-number-2').style.display = 'block';
         } 
     }
+
+// Calculate end date based on duration
+function calculateEndDateFromDuration() {
+    var startDate = new Date(document.getElementById('start_date').value);
+    var duration = parseFloat(document.getElementById('duration').value);
+    var engagementMode = document.getElementById('engagement_mode').value;
+
+    if (!isNaN(startDate.getTime()) && !isNaN(duration) && engagementMode) {
+        var endDate = new Date(startDate);
+        if (engagementMode === 'daily') {
+            endDate.setDate(startDate.getDate() + duration);
+        } else if (engagementMode === 'weekly') {
+            endDate.setDate(startDate.getDate() + (duration * 5));
+        } else if (engagementMode === 'monthly') {
+            endDate.setMonth(startDate.getMonth() + duration);
+        } else if (engagementMode === 'yearly') {
+            endDate.setFullYear(startDate.getFullYear() + duration);
+        }
+
+        document.getElementById('end_date').valueAsDate = endDate;
+    }
+}
+
+// Calculate duration based on end date
+function calculateDurationFromEndDate() {
+    var startDate = new Date(document.getElementById('start_date').value);
+    var endDate = new Date(document.getElementById('end_date').value);
+    var engagementMode = document.getElementById('engagement_mode').value;
+
+    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime()) && engagementMode) {
+        var differenceInTime = endDate.getTime() - startDate.getTime();
+        var duration = 0;
+
+        if (engagementMode === 'daily') {
+            duration = differenceInTime / (1000 * 3600 * 24);
+        } else if (engagementMode === 'weekly') {
+            duration = differenceInTime / (1000 * 3600 * 24 * 7);
+        } else if (engagementMode === 'monthly') {
+            duration = monthsDiff(startDate, endDate);
+        } else if (engagementMode === 'yearly') {
+            duration = yearsDiff(startDate, endDate);
+        }
+
+        document.getElementById('duration').value = duration.toFixed(2);
+    }
+}
+
+// Calculate months difference between dates
+function monthsDiff(startDate, endDate) {
+    var months;
+    months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
+    months -= startDate.getMonth() + 1;
+    months += endDate.getMonth() + 1;
+    return months <= 0 ? 0 : months;
+}
+
+// Calculate years difference between dates
+function yearsDiff(startDate, endDate) {
+    var years;
+    years = endDate.getFullYear() - startDate.getFullYear();
+    var startMonth = startDate.getMonth();
+    var endMonth = endDate.getMonth();
+
+    if (endMonth < startMonth || (endMonth === startMonth && endDate.getDate() < startDate.getDate())) {
+        years--;
+    }
+    return years <= 0 ? 0 : years;
+}
+
+// Event listeners for input changes
+document.getElementById('duration').addEventListener('input', calculateEndDateFromDuration);
+document.getElementById('end_date').addEventListener('change', calculateDurationFromEndDate);
+
 
 </script>
 

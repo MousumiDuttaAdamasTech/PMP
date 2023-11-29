@@ -87,6 +87,7 @@ class ProjectsController extends Controller
         $projectRolesIds = $request->input('project_role_id', []);
         $engagementPercentages = $request->input('engagement_percentage', []);
         $startDates = $request->input('start_date', []);
+        $endDates = $request->input('end_date', []);
         $durations = $request->input('duration', []);
         $isActives = $request->input('is_active', []);
         $engagementModes = $request->input('engagement_mode', []);
@@ -103,6 +104,7 @@ class ProjectsController extends Controller
                     'project_role_id' => $role,
                     'engagement_percentage' => $engagementPercentages[$key] ?? null,
                     'start_date' => $startDates[$key] ?? null,
+                    'end_date' => $endDates[$key] ?? null,
                     'duration' => $durations[$key] ?? null,
                     'is_active' => $isActives[$key] ?? null,
                     'engagement_mode' => $engagementModes[$key] ?? null,
@@ -249,33 +251,6 @@ class ProjectsController extends Controller
         return redirect()->route('projects.index')->with('success', 'Project settings updated successfully.');
     }
 
-    public function calculateProjectCost($projectId)
-    {
-        $project = Project::find($projectId);
-
-        if (!$project) {
-            return redirect()->route('projects.index')->with('error', 'Project not found.');
-        }
-
-        // Get all project members for the project
-        $projectMembers = $project->projectMembers;
-
-        $totalCost = 0;
-
-        foreach ($projectMembers as $member) {
-            // Calculate cost for each member (engagement_percentage * yearly_ctc)
-            $engagementPercentage = $member->pivot->engagement_percentage / 100; // Convert percentage to decimal
-            $yearlyCtc = $member->yearly_ctc;
-
-            $memberCost = $engagementPercentage * $yearlyCtc;
-
-            $totalCost += $memberCost;
-        }
-
-        return view('projects.cost', compact('project', 'totalCost'));
-    }
-
-
     public function updateCost(Request $request, Project $project)
     {
         // Validate the input
@@ -331,16 +306,16 @@ class ProjectsController extends Controller
         // Calculate member cost based on engagement mode
         switch ($engagementMode) {
             case 'weekly':
-                $memberCost = ($engagementPercentage * ($weeklyEmployeePrice + $weeklyRolePrice)) * $duration;
+                $memberCost = ($engagementPercentage * ($weeklyEmployeePrice)) * $duration;
                 break;
             case 'monthly':
-                $memberCost = ($engagementPercentage * ($monthlyEmployeePrice + $monthlyRolePrice)) * $duration;
+                $memberCost = ($engagementPercentage * ($monthlyEmployeePrice)) * $duration;
                 break;
             case 'yearly':
-                $memberCost = ($engagementPercentage * ($yearlyEmployeePrice + $yearlyRolePrice)) * $duration;
+                $memberCost = ($engagementPercentage * ($yearlyEmployeePrice)) * $duration;
                 break;
             case 'daily':
-                $memberCost = ($engagementPercentage * ($dailyEmployeePrice + $dailyRolePrice)) * $duration;
+                $memberCost = ($engagementPercentage * ($dailyEmployeePrice)) * $duration;
                 break;
         }
 
@@ -378,16 +353,16 @@ class ProjectsController extends Controller
             // Calculate member cost based on engagement mode
             switch ($engagementMode) {
                 case 'weekly':
-                    $memberCost = ($engagementPercentage * ($weeklyEmployeePrice + $weeklyRolePrice)) * $duration;
+                    $memberCost = ($engagementPercentage * ($weeklyEmployeePrice)) * $duration;
                     break;
                 case 'monthly':
-                    $memberCost = ($engagementPercentage * ($monthlyEmployeePrice + $monthlyRolePrice)) * $duration;
+                    $memberCost = ($engagementPercentage * ($monthlyEmployeePrice)) * $duration;
                     break;
                 case 'yearly':
-                    $memberCost = ($engagementPercentage * ($yearlyEmployeePrice + $yearlyRolePrice)) * $duration;
+                    $memberCost = ($engagementPercentage * ($yearlyEmployeePrice)) * $duration;
                     break;
                 case 'daily':
-                    $memberCost = ($engagementPercentage * ($dailyEmployeePrice + $dailyRolePrice)) * $duration;
+                    $memberCost = ($engagementPercentage * ($dailyEmployeePrice)) * $duration;
                     break;
             }
 
@@ -398,63 +373,61 @@ class ProjectsController extends Controller
     }
     
     public function viewCost(Project $project)
-{
-    // Calculate total cost and retrieve project members
-    $totalCost = $this->calculateTotalCost($project);
-    $projectMembers = $project->projectMembers;
+    {
+        // Calculate total cost and retrieve project members
+        $totalCost = $this->calculateTotalCost($project);
+        $projectMembers = $project->projectMembers;
 
-    // Calculate member costs and store them in an array
-    $memberCosts = [];
-    foreach ($projectMembers as $member) {
-        $memberCosts[$member->id] = $this->calculateMemberCost($member);
+        // Calculate member costs and store them in an array
+        $memberCosts = [];
+        foreach ($projectMembers as $member) {
+            $memberCosts[$member->id] = $this->calculateMemberCost($member);
+        }
+
+        return view('projects.cost', compact('project', 'totalCost', 'projectMembers', 'memberCosts'));
     }
-
-    return view('projects.cost', compact('project', 'totalCost', 'projectMembers', 'memberCosts'));
-}
 
     protected function calculateMemberCost($member)
-{
-    $engagementPercentage = $member->pivot->engagement_percentage / 100;
-    $engagementMode = $member->pivot->engagement_mode;
-    $duration = $member->pivot->duration;
+    {
+        $engagementPercentage = $member->pivot->engagement_percentage / 100;
+        $engagementMode = $member->pivot->engagement_mode;
+        $duration = $member->pivot->duration;
 
-    // Retrieve the weekly, daily, monthly, yearly price of the employee
-    $workerPrice = WorkerPrice::where('worker_id', $member->id)->first();
-    $weeklyEmployeePrice = $workerPrice ? $workerPrice->weekly_price : 0;
-    $dailyEmployeePrice = $workerPrice ? $workerPrice->daily_price : 0;
-    $monthlyEmployeePrice = $workerPrice ? $workerPrice->monthly_price : 0;
-    $yearlyEmployeePrice = $workerPrice ? $workerPrice->yearly_price : 0;
+        // Retrieve the weekly, daily, monthly, yearly price of the employee
+        $workerPrice = WorkerPrice::where('worker_id', $member->id)->first();
+        $weeklyEmployeePrice = $workerPrice ? $workerPrice->weekly_price : 0;
+        $dailyEmployeePrice = $workerPrice ? $workerPrice->daily_price : 0;
+        $monthlyEmployeePrice = $workerPrice ? $workerPrice->monthly_price : 0;
+        $yearlyEmployeePrice = $workerPrice ? $workerPrice->yearly_price : 0;
 
-    // Retrieve the weekly, daily, monthly, yearly price of the role
-    $rolePrice = RolePrice::where('role_id', $member->pivot->project_role_id)->first();
-    $weeklyRolePrice = $rolePrice ? $rolePrice->weekly_price : 0;
-    $dailyRolePrice = $rolePrice ? $rolePrice->daily_price : 0;
-    $monthlyRolePrice = $rolePrice ? $rolePrice->monthly_price : 0;
-    $yearlyRolePrice = $rolePrice ? $rolePrice->yearly_price : 0;
+        // Retrieve the weekly, daily, monthly, yearly price of the role
+        $rolePrice = RolePrice::where('role_id', $member->pivot->project_role_id)->first();
+        $weeklyRolePrice = $rolePrice ? $rolePrice->weekly_price : 0;
+        $dailyRolePrice = $rolePrice ? $rolePrice->daily_price : 0;
+        $monthlyRolePrice = $rolePrice ? $rolePrice->monthly_price : 0;
+        $yearlyRolePrice = $rolePrice ? $rolePrice->yearly_price : 0;
 
-    // Calculate member cost based on engagement mode
-    switch ($engagementMode) {
-        case 'weekly':
-            $memberCost = ($engagementPercentage * ($weeklyEmployeePrice + $weeklyRolePrice)) * $duration;
-            break;
-        case 'monthly':
-            $memberCost = ($engagementPercentage * ($monthlyEmployeePrice + $monthlyRolePrice)) * $duration;
-            break;
-        case 'yearly':
-            $memberCost = ($engagementPercentage * ($yearlyEmployeePrice + $yearlyRolePrice)) * $duration;
-            break;
-        case 'daily':
-            $memberCost = ($engagementPercentage * ($dailyEmployeePrice + $dailyRolePrice)) * $duration;
-            break;
-        default:
-            // Default case, e.g., if engagement mode is not specified
-            $memberCost = 0;
-            break;
+        // Calculate member cost based on engagement mode
+        switch ($engagementMode) {
+            case 'weekly':
+                $memberCost = ($engagementPercentage * ($weeklyEmployeePrice)) * $duration;
+                break;
+            case 'monthly':
+                $memberCost = ($engagementPercentage * ($monthlyEmployeePrice)) * $duration;
+                break;
+            case 'yearly':
+                $memberCost = ($engagementPercentage * ($yearlyEmployeePrice )) * $duration;
+                break;
+            case 'daily':
+                $memberCost = ($engagementPercentage * ($dailyEmployeePrice )) * $duration;
+                break;
+            default:
+                // Default case, e.g., if engagement mode is not specified
+                $memberCost = 0;
+                break;
+        }
+
+        return $memberCost;
     }
-
-    return $memberCost;
-}
-
-
 
 }

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('financial_year_id');
             $table->unsignedBigInteger('vertical_id');
             $table->enum('budget_type', ['weekly', 'monthly', 'quarterly', 'yearly']);
-            $table->dateTime('period_start');
+            $table->dateTime('period_start'); 
             $table->dateTime('period_end');
             $table->string('period_name');
             $table->decimal('value', 10, 2);

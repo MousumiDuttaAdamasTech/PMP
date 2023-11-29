@@ -40,9 +40,11 @@
                             <th>Engagement Percentage (%)</th>
                             <th>Engagement Mode</th>
                             <th>Start Date</th>
+                            <th>End Date</th>
                             <th>Duration</th>
                             <th>Active</th>
                             <th>Member Price</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,13 +54,28 @@
                                 <td>{{ $member->pivot->engagement_percentage }}</td>
                                 <td>{{ $member->pivot->engagement_mode }}</td>
                                 <td>{{ $member->pivot->start_date }}</td>
+                                <td>{{ $member->pivot->end_date }}</td>
                                 <td>{{ $member->pivot->duration }}</td>
                                 <td>{{ $member->pivot->is_active ? 'Yes' : 'No' }}</td>
                                 <td>₹{{ number_format($memberCosts[$member->id], 2) }}</td>
+                                <td>
+                                    <a href="#" class="edit-member" data-member-id="{{ $member->id }}">
+                                        <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
+
+                <!-- Modal for editing member details -->
+                <div class="modal" tabindex="-1" role="dialog" id="editMemberModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <!-- Place your form fields and inputs here for editing member details -->
+                        </div>
+                    </div>
+                </div>
             
             <br>
             <h3>Total Cost: ₹{{ number_format($totalCost, 2) }}</p>

@@ -51,8 +51,19 @@ class Project extends Model
     public function projectMembers()
     {
         return $this->belongsToMany(Profile::class, 'project_members', 'project_id', 'project_members_id')
-            ->withPivot('project_role_id','engagement_percentage','start_date','duration','is_active','engagement_mode')
+            ->withPivot('project_role_id','engagement_percentage','start_date','end_date','duration','is_active','engagement_mode')
             ->withTimestamps();
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(ProjectRole::class, 'project_members', 'project_id', 'project_role_id')
+                    ->withTimestamps();
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(ProjectRole::class, 'project_role_id');
     }
 
     public function task_type()
