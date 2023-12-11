@@ -73,7 +73,7 @@ Route::middleware([
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
         Route::put('/{project}/cost', [ProjectsController::class,'updateCost'])->name('projects.updateCost');
         Route::get('/{project}/cost', [ProjectsController::class,'viewCost'])->name('projects.cost');
-
+        Route::get('/{project}', [ProjectsController::class, 'project_sidebar'])->name('projects.project_sidebar');
     });
 
     Route::group(['prefix' => 'vertical'], function () {

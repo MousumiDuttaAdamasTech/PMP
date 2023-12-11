@@ -430,4 +430,11 @@ class ProjectsController extends Controller
         return $memberCost;
     }
 
+    public function project_sidebar(Project $project)
+    {
+        $technologies = Technology::all();
+        $selectedTechnologies = explode(',', $project->technology_id);
+
+        return view('projects.project_sidebar', compact('project', 'technologies', 'selectedTechnologies'));
+    }
 }
