@@ -8,39 +8,30 @@ class Sprint extends Model
 {
     protected $fillable = [
         'sprint_name',
-        'project_id',
-        'is_global_sprint',
-        'start_date',
-        'end_date',
-        'status',
-        'createdAt',
-        'created_by',
+        'backlog_module',
+        'estimated_hrs',
+        'actual_hrs',
+        'sprint_status',
+        'current_date',
+        'assign_to',
+        'task_status_id',
+        'projects_id',
+        'is_active',
     ];
 
-    protected $dates = [
-        'start_date',
-        'end_date',
-        'createdAt',
-    ];
+    public function projectMember()
+    {
+        return $this->belongsTo(ProjectMember::class, 'assign_to');
+    }
+
+    public function taskStatus()
+    {
+        return $this->belongsTo(TaskStatus::class, 'task_status_id');
+    }
 
     public function project()
     {
-        return $this->belongsTo(Project::class, 'project_id');
+        return $this->belongsTo(Project::class, 'projects_id');
     }
-
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    // public function assignedTo()
-    // {
-    //     return $this->belongsTo(User::class, 'assigned_to');
-    // }
-
-    // public function assignedBy()
-    // {
-    //     return $this->belongsTo(User::class, 'assigned_by');
-    // }
 
 }
