@@ -73,7 +73,12 @@ Route::middleware([
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
         Route::put('/{project}/cost', [ProjectsController::class,'updateCost'])->name('projects.updateCost');
         Route::get('/{project}/cost', [ProjectsController::class,'viewCost'])->name('projects.cost');
-        Route::get('/{project}', [ProjectsController::class, 'project_sidebar'])->name('projects.project_sidebar');
+        Route::get('/{project}', [ProjectsController::class, 'sidebar'])->name('projects.sidebar');
+        Route::get('/{project}/overview', [ProjectsController::class, 'overview'])->name('projects.overview');
+        Route::get('/{project}/team', [ProjectsController::class, 'team'])->name('projects.team');
+        Route::get('/{project}/sprint', [ProjectsController::class, 'sprint'])->name('projects.sprint');
+        Route::get('/{project}/all-tasks', [ProjectsController::class, 'all_tasks'])->name('projects.all-tasks');
+
     });
 
     Route::group(['prefix' => 'vertical'], function () {
@@ -92,7 +97,7 @@ Route::middleware([
 
     Route::resource('worker-prices', WorkerPriceController::class);
 
-    Route::resource('project-members', ProjectMemberController::class);
+    Route::resource('project_members', ProjectMemberController::class);
 
     Route::resource('project-roles', ProjectRoleController::class);
 

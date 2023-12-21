@@ -9,28 +9,34 @@ class ProjectMember extends Model
 {
     use HasFactory;
 
-    protected $table = 'project_member';
+    protected $table = 'project_members';
 
     protected $fillable = [
-        'is_active',
-        'user_id',
         'project_id',
+        'project_members_id',
         'project_role_id',
-        'is_project_admin',
+        'engagement_percentage',
+        'start_date',
+        'end_date',
+        'duration',
+        'is_active',
+        'engagement_mode',
     ];
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 
     public function project()
     {
-        return $this->belongsTo(Project::class);
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
+    // Define the relationship with the User model (assuming 'project_members_id' is the foreign key)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'project_members_id');
+    }
+
+    // Define the relationship with the ProjectRole model
     public function projectRole()
     {
-        return $this->belongsTo(ProjectRole::class);
+        return $this->belongsTo(ProjectRole::class, 'project_role_id');
     }
 }

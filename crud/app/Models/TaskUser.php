@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TaskUser extends Model
 {
-    protected $fillable = ['task_id', 'assigned_to'];
+    protected $fillable = ['task_id', 'assigned_to','allotted_to'];
 
     // Define the relationship between TaskUser and Task
     public function task()
@@ -14,10 +14,14 @@ class TaskUser extends Model
         return $this->belongsTo(Task::class, 'task_id', 'id');
     }
 
-    // Define the relationship between TaskUser and User
-    public function user()
+    public function assignedToUser()
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(ProjectMember::class, 'assigned_to', 'id');
+    }
+
+    public function allottedToUser()
+    {
+        return $this->belongsTo(ProjectMember::class, 'allotted_to', 'id');
     }
 }
 

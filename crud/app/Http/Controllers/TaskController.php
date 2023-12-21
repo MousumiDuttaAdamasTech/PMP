@@ -14,17 +14,22 @@ class TaskController extends Controller
 {
     public function index()
     {
-        $tasks = Task::all();
-        
-        return view('tasks.index', compact('tasks'));
+        // Get the project ID from the request, assuming it's included in the URL as a parameter
+        $projectId = $project->id;
+
+        // Assuming you have a 'project_id' column in your tasks table
+        $tasks = Task::where('project_id', $projectId)->get();
+
+        // Pass the tasks to the view
+        return view('projects.all-tasks', compact('tasks'));
     }
 
         public function create()
     {
         $tasks = Task::all();
-        $profiles= Profile::all();
+        $projectMembers= ProjectMember::all();
         $projects= Project::all();
-        return view('kanban.kanban', compact('tasks','profiles','projects'));
+        return view('kanban.kanban', compact('tasks','projectMembers','projects'));
     }
 
     public function store(Request $request)
@@ -35,10 +40,14 @@ class TaskController extends Controller
             'estimated_time_number' => 'required|numeric',
             'estimated_time_unit' => 'required|in:hour,day,month,year',
             'details' => 'required',
-            'assigned_to' => 'required',
             'project_task_status_id' => 'required',
+            'assigned_to' => 'required',
+            'allotted_to' => 'required',
+            'project_id' => 'required',
            
         ]);
+
+        $projectId = $request->input('project_id');
 
         $task = new Task();
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);
@@ -47,17 +56,19 @@ class TaskController extends Controller
         $task->estimated_time = $request->estimated_time_number . ' ' . $request->estimated_time_unit;
         $task->details = $request->details;
         $task->assigned_to = implode(',', $request->assigned_to);
+        $task->allotted_to = implode(',', $request->allotted_to);
         $task->project_task_status_id = $request->project_task_status_id;
+        $task->project_id = $projectId;
         $task->save();
 
-        $assignedToIds = explode(',', $task->assigned_to);
-        $totalAssignedTasks = TaskUser::whereIn('assigned_to', $assignedToIds)->count();
-
         $assignedTo = $request->assigned_to;
-        foreach ($assignedTo as $userId) {
+        $allottedTo = $request->allotted_to;
+
+        foreach ($allottedTo as $index => $userId) {
             $taskUser = new TaskUser([
                 'task_id' => $task->id,
-                'assigned_to' => $userId,
+                'allotted_to' => $userId,
+                'assigned_to' => $allottedTo[$index], // Set 'assigned_to' based on the corresponding index in the allotted_to array
             ]);
             $taskUser->save();
         }
@@ -73,9 +84,9 @@ class TaskController extends Controller
 public function edit(Task $task)
 {
     $tasks = Task::all();
-    $profiles = Profile::all();
+    $projectMembers = ProjectMember::all();
     $projects = Project::all();
-    return view('tasks.edit', compact('task', 'tasks', 'profiles', 'projects'));
+    return view('tasks.edit', compact('task', 'tasks', 'projectMembers', 'projects'));
 }
 
 
@@ -88,7 +99,7 @@ public function edit(Task $task)
             'estimated_time_unit' => 'required|in:hour,day,month,year',
             'details' => 'required',
             'assigned_to' => 'required',
-            // 'project_task_status_id' => 'required',
+            'allotted_to' => 'required',
         ]);
 
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);
@@ -97,7 +108,7 @@ public function edit(Task $task)
         $task->estimated_time = $request->estimated_time_number . ' ' . $request->estimated_time_unit;
         $task->details = $request->details;
         $task->assigned_to = implode(',', $request->assigned_to);
-        // $task->project_task_status_id = $request->project_task_status_id;
+        $task->allotted_to = implode(',', $request->allotted_to);
 
         $task->save();
 
@@ -112,14 +123,19 @@ public function edit(Task $task)
                 $taskUser->save();
             }
         }
-        // foreach ($assignedTo as $userId) {
-        //     $taskUser = new TaskUser([
-        //         'task_id' => $task->id,
-        //         'assigned_to' => auth()->user()->id,
-        //     ]);
-        //     $taskUser->assigned_to = $userId;
-        //     $taskUser->save();
-        // }
+
+        $allottedTo = $request->allotted_to;
+        foreach ($allottedTo as $userId) {
+            // Check if the relationship already exists before creating a new entry
+            if (!$task->taskUsers->contains('allotted_to', $userId)) {
+                $taskUser = new TaskUser([
+                    'task_id' => $task->id,
+                    'allotted_to' => $userId,
+                ]);
+                $taskUser->save();
+            }
+        }
+        
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 

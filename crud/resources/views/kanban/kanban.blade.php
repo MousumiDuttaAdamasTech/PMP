@@ -176,8 +176,16 @@
                     @endforeach
                 </select>
 
+                <label for="allotted_to" style="font-size: 15px;" class="mt-3 mb-1">Allotted To</label>
+                <select name="allotted_to[]" id="allotted_to" class="add-card-form__main allotted_to" required multiple>
+                    @foreach ($profiles as $profile)
+                        <option value="{{ $profile->id }}" data-avatar="{{ asset($profile->image) }}">{{ $profile->profile_name }}</option>
+                    @endforeach
+                </select>
+
                 <input type="hidden" name="project_task_status_id" id="projectTaskStatusId" value="">
                 <input type="hidden" name="selectedStatus" id="selectedStatus" value=""> 
+                <input type="hidden" name="project_id" value="{{ $project->id }}">
 
                 <div class="mt-3 text-end">
                     <button type="submit" class="form-add-btn" style="margin-right: 10px;">Create</button>

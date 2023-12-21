@@ -214,14 +214,14 @@
 
                     <hr style="border-top: 1px solid #0129704a; width:97%; margin-left: 12px; margin-right: 20px;">
 
-                    <div class="col-md-12 mb-3">
+                    <!-- <div class="col-md-12 mb-3">
                         <label for="memberInput" class="form-label" style="height:20px; font-size: 15px;">Member</label>
                         <i class="fa fa-plus-circle" id="plusSign" style="color: #7d4287; cursor: pointer;"></i>
                         <div class="row" id="memberCardContainer"></div>
-                    </div>
+                    </div> -->
 
                     <!-- Bootstrap Modal -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="close" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="close" data-bs-backdrop="static" data-bs-keyboard="false">
                         <div class="modal-dialog modal-dialog-centered" role="document" style="z-index: 1060;">
                             <div class="modal-content">
                                 <div class="modal-header p-0" style="margin-left:15px;">
@@ -321,7 +321,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
                 
@@ -369,78 +369,78 @@
         });
 
         // Add member button click event handler
-        $("#addMemberBtn").click(function() {
-            var memberName = $("#project_members_id option:selected").text();
-            var memberId = $("#project_members_id").val();
-            var role = $("#project_role_id option:selected").text();
-            var roleId = $("#project_role_id").val();
-            var engagementPercentage = $("#engagement_percentage").val();
-            var startDate = $("#start_date").val();
-            var duration = $("#duration").val();
-            var isActive = $("#is_active").val();
-            var engagementMode = $("#engagement_mode option:selected").text();
+        // $("#addMemberBtn").click(function() {
+        //     var memberName = $("#project_members_id option:selected").text();
+        //     var memberId = $("#project_members_id").val();
+        //     var role = $("#project_role_id option:selected").text();
+        //     var roleId = $("#project_role_id").val();
+        //     var engagementPercentage = $("#engagement_percentage").val();
+        //     var startDate = $("#start_date").val();
+        //     var duration = $("#duration").val();
+        //     var isActive = $("#is_active").val();
+        //     var engagementMode = $("#engagement_mode option:selected").text();
 
-            if (memberName && role) {
-                var cardHtml = `
-                <div class="col-md-3 member-container">
-                    <div class="card mb-0 mt-3">
-                        <div class="card-body mb-2">
-                            <div class="avatar avatar-blue">
-                            <img class="rounded_circle mb-1 mt-3" src="${getProfileImage(memberId)}" alt="Profile Image">
-                            </div>
-                            <p class="card-title user-name">${memberName}</p>
-                            <p class="card-text role">${role}</p>
-                            <i class="fa fa-edit edit-icon"></i>
-                            <input type="hidden" name="project_members_id[]" value="${memberId}">
-                            <input type="hidden" name="project_role_id[]" value="${roleId}">
-                            <input type="hidden" name="engagement_percentage[]" value="${engagementPercentage}">
-                            <input type="hidden" name="start_date[]" value="${startDate}">
-                            <input type="hidden" name="duration[]" value="${duration}">
-                            <input type="hidden" name="is_active[]" value="${isActive}">
-                            <input type="hidden" name="engagement_mode[]" value="${engagementMode}">
-                        </div>
-                    </div>
-                </div>`;
+        //     if (memberName && role) {
+        //         var cardHtml = `
+        //         <div class="col-md-3 member-container">
+        //             <div class="card mb-0 mt-3">
+        //                 <div class="card-body mb-2">
+        //                     <div class="avatar avatar-blue">
+        //                     <img class="rounded_circle mb-1 mt-3" src="${getProfileImage(memberId)}" alt="Profile Image">
+        //                     </div>
+        //                     <p class="card-title user-name">${memberName}</p>
+        //                     <p class="card-text role">${role}</p>
+        //                     <i class="fa fa-edit edit-icon"></i>
+        //                     <input type="hidden" name="project_members_id[]" value="${memberId}">
+        //                     <input type="hidden" name="project_role_id[]" value="${roleId}">
+        //                     <input type="hidden" name="engagement_percentage[]" value="${engagementPercentage}">
+        //                     <input type="hidden" name="start_date[]" value="${startDate}">
+        //                     <input type="hidden" name="duration[]" value="${duration}">
+        //                     <input type="hidden" name="is_active[]" value="${isActive}">
+        //                     <input type="hidden" name="engagement_mode[]" value="${engagementMode}">
+        //                 </div>
+        //             </div>
+        //         </div>`;
 
-                $("#memberCardContainer").append(cardHtml);
-            }
+        //         $("#memberCardContainer").append(cardHtml);
+        //     }
 
-            $("#myModal").modal("hide");
+        //     $("#myModal").modal("hide");
 
-            $('#myModal').on('show.bs.modal', function () {
-                $('#project_members_id').val(null).trigger('change');
-                $('#project_role_id').val(null).trigger('change');
-            });
-        });
+        //     $('#myModal').on('show.bs.modal', function () {
+        //         $('#project_members_id').val(null).trigger('change');
+        //         $('#project_role_id').val(null).trigger('change');
+        //     });
+        // });
         
         // Function to get profile image URL by member ID
-        function getProfileImage(memberId) {
-            @foreach ($projectMembers as $projectMember)
-                if ('{{ $projectMember->id }}' === memberId) {
-                    return '{{ asset($projectMember->image) }}';
-                }
-            @endforeach
-            // If no matching member ID is found, return a default image URL
-            return '{{ asset('images/default-profile-image.png') }}'; // Replace 'images/default-profile-image.png' with the path to your default profile image
-        }
+        // function getProfileImage(memberId) {
+        //     @foreach ($projectMembers as $projectMember)
+        //         if ('{{ $projectMember->id }}' === memberId) {
+        //             return '{{ asset($projectMember->image) }}';
+        //         }
+        //     @endforeach
+        //     // If no matching member ID is found, return a default image URL
+        //     return '{{ asset('images/default-profile-image.png') }}'; // Replace 'images/default-profile-image.png' with the path to your default profile image
+        // }
 
         // Edit Member button click event handler
-        $(document).on('click', '.edit-icon', function() {
-            // Get the current member name and role from the card
-            var card = $(this).closest('.card');
-            var memberName = card.find('.user-name').text();
-            var memberRole = card.find('.role').text();
+        // $(document).on('click', '.edit-icon', function() {
+        //     // Get the current member name and role from the card
+        //     var card = $(this).closest('.card');
+        //     var memberName = card.find('.user-name').text();
+        //     var memberRole = card.find('.role').text();
 
-            // Set the values in the edit modal input fields
-            // $('#editFieldName').val(memberName);
-            $('#editRoleSelect').val(memberRole).trigger('change'); // Trigger change event to update select2 dropdown
+        //     // Set the values in the edit modal input fields
+        //     // $('#editFieldName').val(memberName);
+        //     $('#editRoleSelect').val(memberRole).trigger('change'); // Trigger change event to update select2 dropdown
 
-            // Store a reference to the card being edited
-            $('#editModal').data('card', card);
+        //     // Store a reference to the card being edited
+        //     $('#editModal').data('card', card);
 
-            // Show the edit modal
-            $('#editModal').modal('show');
-        });
+        //     // Show the edit modal
+        //     $('#editModal').modal('show');
+        // });
 
         // Update Member button click event handler
         $('#updateMemberBtn').click(function() {

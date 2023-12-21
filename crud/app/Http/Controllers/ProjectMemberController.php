@@ -12,78 +12,54 @@ class ProjectMemberController extends Controller
 {
     public function index()
     {
+        // Retrieve all project members from the database
         $projectMembers = ProjectMember::all();
-        return view('project_member.index', compact('projectMembers'));
-    }
 
-    public function create()
-    {
-        $users = User::all();
-        $projects = Project::all();
-        $projectRoles = ProjectRole::all();
-
-        return view('project_member.create', compact('users', 'projects', 'projectRoles'));
-    }
-
-    public function store(Request $request)
-    {
-        $request->validate([
-            'is_active' => 'nullable|boolean',
-            'user_id' => 'required',
-            'project_id' => 'required',
-            'project_role_id' => 'required',
-            'is_project_admin' => 'nullable|boolean',
-        ]);
-
-        $requestData = $request->all();
-        $requestData['is_active'] = $requestData['is_active'] ?? 0;
-        $requestData['is_project_admin'] = $requestData['is_project_admin'] ?? 0;
-
-        ProjectMember::create($requestData);
-
-        return redirect()->route('project-members.index')->with('success', 'Project member created successfully.');
-    }
-
-    public function show($id)
-    {
-        $projectMember = ProjectMember::findOrFail($id);
-        return view('project_member.show', compact('projectMember'));
-    }
-
-    public function edit($id)
-    {
-        $projectMember = ProjectMember::findOrFail($id);
-        $users = User::all();
-        $projects = Project::all();
-        $projectRoles = ProjectRole::all();
-
-        return view('project_member.edit', compact('projectMember', 'users', 'projects', 'projectRoles'));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'is_active' => 'nullable|boolean',
-            'user_id' => 'required',
-            'project_id' => 'required',
-            'project_role_id' => 'required',
-            'is_project_admin' => 'nullable|boolean',
-        ]);
-
-        $requestData = $request->all();
-        $requestData['is_active'] = $requestData['is_active'] ?? 0;
-        $requestData['is_project_admin'] = $requestData['is_project_admin'] ?? 0;
-        $projectMember = ProjectMember::findOrFail($id);
-        $projectMember->update($requestData);
-
-        return redirect()->route('project-members.index')->with('success', 'Project member updated successfully.');
+        // Pass the project members to the view
+        return view('project_members.index', compact('projectMembers'));
     }
     
-    public function destroy($id)
+    public function create($projectId)
     {
-        $projectMember = ProjectMember::findOrFail($id);
-        $projectMember->delete();
-
-        return redirect()->route('project-members.index')->with('success', 'Project member deleted successfully.');
+        $project = Project::findOrFail($projectId);
+        $projectMembers = ProjectMember::all();
+        $users = User::all();
+        $projectRoles = ProjectRole::all();
+    
+        return view('projects.team', compact('projects', 'projectMembers', 'projectRoles', 'users'));
     }
+    
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'project_id' => 'required',
+            'project_members_id.*' => 'required|exists:users,id', // Validate each element in the array
+            'project_role_id.*' => 'required|exists:project_role,id', // Validate each element in the array
+            'engagement_percentage.*' => 'required', // Validate each element in the array
+            'start_date.*' => 'nullable',
+            'end_date.*' => 'nullable',
+            'duration.*' => 'nullable',
+            'is_active.*' => 'required',
+            'engagement_mode.*' => 'nullable',
+        ]);
+
+        // Loop through the validated data and create project members
+        foreach ($validatedData['project_members_id'] as $key => $projectId) {
+            ProjectMember::create([
+                'project_id' => $validatedData['project_id'][$key],
+                'project_members_id' => $projectId,
+                'project_role_id' => $validatedData['project_role_id'][$key],
+                'engagement_percentage' => $validatedData['engagement_percentage'][$key],
+                'start_date' => $validatedData['start_date'][$key],
+                'end_date' => $validatedData['end_date'][$key],
+                'duration' => $validatedData['duration'][$key],
+                'is_active' => $validatedData['is_active'][$key],
+                'engagement_mode' => $validatedData['engagement_mode'][$key],
+            ]);
+        }
+
+        return redirect()->route('projects.team', ['project' => $request->project_id])
+            ->with('success', 'Project members added successfully');
+    }
+
 }

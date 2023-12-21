@@ -1,14 +1,10 @@
-@extends('layouts.side_nav') 
-
-@section('pageTitle', 'Project') 
-
-
-@section('breadcrumb')
-<li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
-<li class="breadcrumb-item">{{ $project->project_name }}</li>
-<li class="breadcrumb-item active" aria-current="page">Settings</li>
-@endsection 
-
+@extends('layouts.project_sidebar') 
+@section('custom_breadcrumb')
+    <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
+    <li class="breadcrumb-item">Project</li>
+    <li class="breadcrumb-item" aria-current="page">{{ $project->project_name }}</li>
+    <li class="breadcrumb-item active" aria-current="page">Settings</li>
+@endsection
 @section('project_css')
 <link rel="stylesheet" href="{{ asset('css/project.css') }}"> 
 <link rel="stylesheet" href="{{ asset('css/form.css') }}"> 
@@ -26,7 +22,7 @@
 <script src="{{ asset('js/project.js') }}"></script>
 @endsection
 
-@section('content')
+@section('main_content')
 
 @if ($errors->any())
 <div class="error-messages">
@@ -39,7 +35,7 @@
 </div>
 @endif
 
-<div class="form-container w-60">
+<div class="form-container">
     <div class="container">
         <div class="page-number text-secondary" id="page-number-1" style="text-align: right; float:right">Page 1 of 2</div>
     </div>
@@ -124,7 +120,7 @@
         <div class="page-number" id="page-number-2" style="display: none; text-align: right; float:right">Page 2 of 2</div>
         <div id="section-2" style="display: none;">
             <div class="profile-details">
-                <h5>Addition Details</h5>
+                <h5>Additional Details</h5>
             </div>
 
             <div class="row">
@@ -216,42 +212,6 @@
                     </div>
                 </div>
 
-                <hr style="border-top: 1px solid #0129704a; width:97%; margin-left: 12px; margin-right: 20px;">
-
-                <div class="col-md-12 mb-3">
-                    <label for="memberInput" class="form-label" style="height:20px; font-size: 15px;">Member</label>
-                    <i class="fa fa-plus-circle" id="plusSign" style="color: #7d4287; cursor: pointer;"></i>
-                    <div id="memberCardContainer">
-                        @foreach ($project->projectMembers as $projectMember)
-                            @php
-                                // Find the pivot data for the current member
-                                $pivotData = $projectMember->pivot;
-
-                                // Find the corresponding role for this member
-                                $role = $project->roles->where('id', $pivotData->project_role_id)->first();
-                                
-                                // Get the role name if found, otherwise an empty string
-                                $roleName = $role ? $role->member_role_type : '';
-                            @endphp
-                            <div class="col-md-3">
-                                <div class="card">
-                                    <div class="card-body mb-2" style="padding: 0 21px 0 21px;">
-                                        <div class="avatar avatar-blue" style="margin-left: 34px;">
-                                            <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}" alt="Profile Image" width="50">
-                                        </div>
-                                        <p id="card-title" class="card-title user-name">{{ $projectMember->profile_name }}</p>
-                                        <p class="card-text role" style="margin-bottom: 0rem; font-size: 11px; font-weight: 400; margin-top: -10px">{{ $roleName }}</p>
-                                        <i class="fa fa-edit edit-icon" style="color: #7d4287; cursor: pointer;"></i>
-                                        <input type="hidden" name="project_members_id[]" value="{{ $projectMember->id }}">
-                                        <input type="hidden" name="project_role_id[]" value="{{ $roleName }}">
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                </div>
-
                 <!-- Bootstrap Modal -->
                 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="close" data-bs-backdrop="static" data-bs-keyboard="false">
                     <div class="modal-dialog modal-dialog-centered" role="document" style="z-index: 1060;">
@@ -298,53 +258,6 @@
                         </div>
                     </div>
                 </div>
-                                    
-                <!-- <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header p-0">
-                                <h5 class="modal-title" id="editModalLabel">Edit Member</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6 mt-1">
-                                        <label for="editFieldName" class="form-label mb-4">Member Name</label>
-                                    </div>
-
-                                    <div class="col-md-6" style="font-size:14px;">
-                                        <select id="edit_project_members_id" name="project_members_id" class="select" required style="width:100%;">
-                                            <option value="">Select Member</option>
-                                            @foreach($projectMembers as $projectMember)
-                                            <option value="{{ $projectMember->id }}">{{ $projectMember->profile_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-6 mt-2">
-                                        <label for="editRoleSelect" class="form-label mb-3">Role</label>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <select id="edit_project_role_id" name="project_role_id" class="form-control" required>
-                                            <option value="">Select Role</option>
-                                            @foreach ($projectRoles as $projectRole)
-                                                <option value="{{ $projectRole->id }}">{{ $projectRole->member_role_type }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-
-                                    <div class="col-md-12 mt-3 text-end">
-                                        <button type="button" class="btn btn-primary" id="updateMemberBtn">Update</button>
-                                        <button type="button" class="btn btn-primary" id="removeBtn">Remove</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
             </div>
 
             <div class="form-actions">

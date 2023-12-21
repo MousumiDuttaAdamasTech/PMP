@@ -12,6 +12,9 @@ class Task extends Model
         'estimated_time',
         'details',
         'project_task_status_id',
+        'assigned_to',
+        'allotted_to',
+        'project_id',
     ];
 
     public function taskUsers()
@@ -19,13 +22,25 @@ class Task extends Model
         return $this->hasMany(TaskUser::class, 'task_id');
     }
 
-    // public function assignedToUserIds()
-    // {
-    //     return explode(',', $this->assigned_to);
-    // }
-
     public function projectTaskStatus()
     {
         return $this->belongsTo(ProjectTaskStatus::class);
+    }
+
+    public function assignedToUsers()
+    {
+        $assignedToIds = explode(',', $this->assigned_to);
+        return ProjectMember::whereIn('id', $assignedToIds)->get();
+    }
+
+    public function allottedToUsers()
+    {
+        $allottedToIds = explode(',', $this->allotted_to);
+        return ProjectMember::whereIn('id', $allottedToIds)->get();
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class, 'project_id');
     }
 }

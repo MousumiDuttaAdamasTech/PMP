@@ -13,6 +13,7 @@ use App\Models\taskType;
 use App\Models\TaskStatus;
 use App\Models\RolePrice;
 use App\Models\WorkerPrice;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -36,7 +37,7 @@ class ProjectsController extends Controller
         $task_types = taskType::all();
         $task_statuses = TaskStatus::all();
 
-        return view('projects.create', compact('users', 'verticals', 'clients', 'projectManagers', 'technologies', 'projectMembers', 'projectRoles','task_types','task_statuses'));
+        return view('projects.create', compact('users', 'verticals', 'clients', 'technologies', 'projectMembers', 'projectRoles','task_types','task_statuses','projectManagers'));
     }
 
     public function store(Request $request)
@@ -83,37 +84,37 @@ class ProjectsController extends Controller
         $project->save();
 
         // Attach project members and roles to the project
-        $projectMembersIds = $request->input('project_members_id', []);
-        $projectRolesIds = $request->input('project_role_id', []);
-        $engagementPercentages = $request->input('engagement_percentage', []);
-        $startDates = $request->input('start_date', []);
-        $endDates = $request->input('end_date', []);
-        $durations = $request->input('duration', []);
-        $isActives = $request->input('is_active', []);
-        $engagementModes = $request->input('engagement_mode', []);
+        // $projectMembersIds = $request->input('project_members_id', []);
+        // $projectRolesIds = $request->input('project_role_id', []);
+        // $engagementPercentages = $request->input('engagement_percentage', []);
+        // $startDates = $request->input('start_date', []);
+        // $endDates = $request->input('end_date', []);
+        // $durations = $request->input('duration', []);
+        // $isActives = $request->input('is_active', []);
+        // $engagementModes = $request->input('engagement_mode', []);
 
-        $uniqueMembers = [];
+        // $uniqueMembers = [];
 
         //dd($projectMembersIds);
-        foreach ($projectMembersIds as $key => $memberId) {
-            $role = $projectRolesIds[$key] ?? null;
+        // foreach ($projectMembersIds as $key => $memberId) {
+        //     $role = $projectRolesIds[$key] ?? null;
 
-            // Make sure both member ID and role ID are provided before attaching, and they haven't been attached already
-            if ($memberId && $role && !in_array("$memberId-$role", $uniqueMembers)) {
-                $project->projectMembers()->attach($memberId, [
-                    'project_role_id' => $role,
-                    'engagement_percentage' => $engagementPercentages[$key] ?? null,
-                    'start_date' => $startDates[$key] ?? null,
-                    'end_date' => $endDates[$key] ?? null,
-                    'duration' => $durations[$key] ?? null,
-                    'is_active' => $isActives[$key] ?? null,
-                    'engagement_mode' => $engagementModes[$key] ?? null,
-                ]);
+        //     // Make sure both member ID and role ID are provided before attaching, and they haven't been attached already
+        //     if ($memberId && $role && !in_array("$memberId-$role", $uniqueMembers)) {
+        //         $project->projectMembers()->attach($memberId, [
+        //             'project_role_id' => $role,
+        //             'engagement_percentage' => $engagementPercentages[$key] ?? null,
+        //             'start_date' => $startDates[$key] ?? null,
+        //             'end_date' => $endDates[$key] ?? null,
+        //             'duration' => $durations[$key] ?? null,
+        //             'is_active' => $isActives[$key] ?? null,
+        //             'engagement_mode' => $engagementModes[$key] ?? null,
+        //         ]);
 
-                // Add this combination to the list of unique members
-                $uniqueMembers[] = "$memberId-$role";
-            }
-        }
+        //         // Add this combination to the list of unique members
+        //         $uniqueMembers[] = "$memberId-$role";
+        //     }
+        // }
 
         // store tasktypes in project_task_types 
         $taskTypeIds = $request->task_type_id;
@@ -430,11 +431,51 @@ class ProjectsController extends Controller
         return $memberCost;
     }
 
-    public function project_sidebar(Project $project)
+    public function overview(Project $project)
     {
         $technologies = Technology::all();
         $selectedTechnologies = explode(',', $project->technology_id);
 
-        return view('projects.project_sidebar', compact('project', 'technologies', 'selectedTechnologies'));
+        return view('projects.overview', compact('project', 'technologies', 'selectedTechnologies'));
+    }
+
+    public function team(Project $project)
+    {
+        $projectManagers = User::all();
+        $users = User::all();
+        $technologies = Technology::all();
+        $verticals = Vertical::all();
+        $clients = Client::all();
+        $projectRoles = ProjectRole::all();
+        $projectMembers = Profile::all();
+        $task_types = taskType::all();
+        $task_statuses = TaskStatus::all();
+        
+        // Retrieve the selected technologies for the project
+        $selectedTechnologies = explode(',', $project->technology_id);
+
+        // Retrieve the selected task_types for the project
+        $selectedTaskTypes = explode(',', $project->task_type_id);
+
+        // Retrieve the selected task_types for the project
+        $selectedTaskStatus = explode(',', $project->task_status_id);
+
+        return view('projects.team', compact('project','users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies','task_types','selectedTaskTypes','task_statuses','selectedTaskStatus'));
+    }
+
+    public function sidebar(Project $project)
+    {
+        return view('projects.sidebar', compact('project'));
+    }
+
+    public function sprint(Project $project)
+    {
+        return view('projects.sprint', compact('project'));
+    }
+
+    public function all_tasks(Project $project)
+    {
+        $tasks = Task::where('project_id', $project->id)->get();
+        return view('projects.all-tasks', compact('project','tasks'));
     }
 }
