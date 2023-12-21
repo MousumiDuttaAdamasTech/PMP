@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            //Drop allotted_to column
-            $table->dropColumn('allotted_to');
+        Schema::table('task_users', function (Blueprint $table) {
+            $table->dropForeign(['assigned_to']);
+            $table->dropColumn('assigned_to');
         });
     }
 
@@ -22,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tasks', function (Blueprint $table) {
-            // Add assigned_to column back (you may need to adjust the type)
-            $table->unsignedBigInteger('allotted_to');
+        Schema::table('task_users', function (Blueprint $table) {
+            $table->unsignedBigInteger('assigned_to');
         });
     }
 };
