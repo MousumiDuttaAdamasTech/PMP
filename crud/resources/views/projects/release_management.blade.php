@@ -1,10 +1,11 @@
-@extends('layouts.project_sidebar')
+@extends ('layouts.project_sidebar')
 @section('custom_breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('projects.index') }}">Home</a></li>
     <li class="breadcrumb-item">Project</li>
     <li class="breadcrumb-item" aria-current="page">{{ $project->project_name }}</li>
-    <li class="breadcrumb-item active" aria-current="page">Sprint</li>
+    <li class="breadcrumb-item active" aria-current="page">Release Management</li>
 @endsection
+
 @section('project_css')
     <link rel="stylesheet" href="{{ asset('css/project.css') }}"> 
     <link rel="stylesheet" href="{{ asset('css/form.css') }}"> 

@@ -473,6 +473,36 @@ class ProjectsController extends Controller
         return view('projects.sprint', compact('project'));
     }
 
+    public function daily_entry(Project $project)
+    {
+        return view('projects.daily_entry', compact('project'));
+    }
+
+    public function qa(Project $project)
+    {
+        return view('projects.qa', compact('project'));
+    }
+
+    public function meetings(Project $project)
+    {
+        return view('projects.meetings', compact('project'));
+    }
+
+    public function documents(Project $project)
+    {
+        return view('projects.documents', compact('project'));
+    }
+
+    public function release_management(Project $project)
+    {
+        return view('projects.release_management', compact('project'));
+    }
+
+    public function reports(Project $project)
+    {
+        return view('projects.reports', compact('project'));
+    }
+
     public function all_tasks(Project $project)
     {
         $tasks = Task::where('project_id', $project->id)->get();

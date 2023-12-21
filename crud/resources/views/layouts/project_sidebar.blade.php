@@ -23,10 +23,6 @@
             margin-right: 10px;
         }
 
-        .active-link {
-        background-color: grey; /* Change the background color to your desired highlight color */
-        color: red; /* Change the text color to your desired highlight color */
-        }
     </style>
 @endsection
 
@@ -39,33 +35,75 @@
     <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('js/table.js') }}"></script>
     
-    @parent
     <script>
-    console.log('Custom JavaScript is running'); // Log to indicate that the script is running
+        document.addEventListener('DOMContentLoaded', function () {
+            setActiveTab();
 
-    document.addEventListener('DOMContentLoaded', function () {
-        console.log('DOM content loaded'); // Log to check if DOM content is loaded
+            // Attach click event listeners to the links
+            document.querySelectorAll('.nav-link').forEach(function (link) {
+                link.addEventListener('click', function () {
+                    updateActiveTab(link);
+                });
+            });
 
-        var currentRoute = "{{ Route::currentRouteName() }}";
-        console.log('Current Route:', currentRoute); // Log the current route
+            // Dynamically add CSS styles for the active link
+            var styleTag = document.createElement('style');
+            styleTag.textContent = `
+                .nav-item {
+                    position: relative;
+                }
+                
+                .active-link {
+                    /* Change the background color to your desired highlight color */
+                    color: blue; /* Change the text color to your desired highlight color */
+                }
+                
+                .active-link::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -5px; /* Adjust the distance of the line from the left side */
+                    height: 100%;
+                    width: 3px; /* Adjust the width of the line */
+                    background-color: blue; /* Change the color of the line to your desired color */
+                }
+            `;
+            document.head.appendChild(styleTag);
 
-        var links = document.querySelectorAll('.nav-link');
-
-        links.forEach(function (link) {
-            var tabName = link.getAttribute('data-tab');
-            console.log('Tab Name:', tabName); // Log the tab name
-
-            if (currentRoute === tabName) {
-                link.classList.add('active-link');
-                console.log('Link marked as active');
-            } else {
-                link.classList.remove('active-link');
-                console.log('Link removed from active state');
-            }
+            // Check for URL changes
+            var currentURL = window.location.href;
+            window.addEventListener('popstate', function () {
+                if (currentURL !== window.location.href) {
+                    currentURL = window.location.href;
+                    setActiveTab();
+                }
+            });
         });
-    });
 
-</script>
+        function setActiveTab() {
+            var storedTab = sessionStorage.getItem('activeTab');
+            if (storedTab) {
+                document.querySelectorAll('.nav-link').forEach(function (link) {
+                    link.classList.remove('active-link');
+                });
+
+                var activeLink = document.querySelector('[data-tab="' + storedTab + '"]');
+                if (activeLink) {
+                    activeLink.classList.add('active-link');
+                }
+            }
+        }
+
+        function updateActiveTab(link) {
+            document.querySelectorAll('.nav-link').forEach(function (navLink) {
+                navLink.classList.remove('active-link');
+            });
+
+            link.classList.add('active-link');
+            var clickedTab = link.getAttribute('data-tab');
+            sessionStorage.setItem('activeTab', clickedTab);
+        }
+    </script>
 
     
 @endsection
@@ -92,25 +130,25 @@
                     <a class="nav-link" href="{{ route('projects.all-tasks', ['project' => $project->id]) }}" id="all_tasks" data-tab="projects.all-tasks">All Tasks</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#tab_5" id="daily_entry">Daily Entry</a>
+                    <a class="nav-link" href="{{ route('projects.daily_entry', ['project' => $project->id]) }}" id="daily_entry" data-tab="projects.daily_entry">Daily Entry</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#tab_6" id="qa">QA</a>
+                    <a class="nav-link" href="{{ route('projects.qa', ['project' => $project->id]) }}" id="qa" data-tab="projects.qa">QA</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#tab_7" id="meetings">Meetings</a>
+                    <a class="nav-link" href="{{ route('projects.meetings', ['project' => $project->id]) }}" id="meetings" data-tab="projects.meetings">Meetings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#tab_8" id="documents">Documents</a>
+                    <a class="nav-link" href="{{ route('projects.documents', ['project' => $project->id]) }}" id="documents" data-tab="projects.documents">Documents</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#tab_9" id="release_management">Release Management</a>
+                    <a class="nav-link" href="{{ route('projects.release_management', ['project' => $project->id]) }}" id="release_management" data-tab="projects.release_management">Release Management</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('projects.edit', ['project' => $project->id]) }}" id="settings" data-tab="projects.edit">Settings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#tab_11" id="reports">Reports</a>
+                    <a class="nav-link" href="{{ route('projects.reports', ['project' => $project->id]) }}" id="reports" data-tab="projects.reports">Reports</a>
                 </li>
             </ul>
         </div>
@@ -120,7 +158,4 @@
             @yield('main_content')
         </div>
     </div>
-@endsection
-
-
-    
+@endsection    

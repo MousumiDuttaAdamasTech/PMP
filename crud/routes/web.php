@@ -78,7 +78,12 @@ Route::middleware([
         Route::get('/{project}/team', [ProjectsController::class, 'team'])->name('projects.team');
         Route::get('/{project}/sprint', [ProjectsController::class, 'sprint'])->name('projects.sprint');
         Route::get('/{project}/all-tasks', [ProjectsController::class, 'all_tasks'])->name('projects.all-tasks');
-
+        Route::get('/{project}/daily_entry', [ProjectsController::class, 'daily_entry'])->name('projects.daily_entry');
+        Route::get('/{project}/qa', [ProjectsController::class, 'qa'])->name('projects.qa');
+        Route::get('/{project}/meetings', [ProjectsController::class, 'meetings'])->name('projects.meetings');
+        Route::get('/{project}/documents', [ProjectsController::class, 'documents'])->name('projects.documents');
+        Route::get('/{project}/release_management', [ProjectsController::class, 'release_management'])->name('projects.release_management');
+        Route::get('/{project}/reports', [ProjectsController::class, 'reports'])->name('projects.reports');
     });
 
     Route::group(['prefix' => 'vertical'], function () {
