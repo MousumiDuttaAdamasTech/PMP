@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Profile;
 use App\Models\Task;
+use App\Models\ProjectMember;
+use App\Models\Project;
+use App\Models\Sprint;
 use App\Models\TaskUser;
 
 use Illuminate\Support\Str;
@@ -36,15 +39,14 @@ class TaskController extends Controller
     {
         $validatedData = $request->validate([
             'title' => 'required',
-            'priority' => 'required|in:Low priority,Med priority,High priority',
-            'estimated_time_number' => 'required|numeric',
-            'estimated_time_unit' => 'required|in:hour,day,month,year',
+            'priority' => 'required',
+            'estimated_time' => 'required|numeric',
             'details' => 'required',
             'project_task_status_id' => 'required',
             'assigned_to' => 'required',
             'allotted_to' => 'required',
             'project_id' => 'required',
-           
+            'sprint_id' => 'required',
         ]);
 
         $projectId = $request->input('project_id');
@@ -53,12 +55,13 @@ class TaskController extends Controller
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);
         $task->title = $request->title;
         $task->priority = $request->priority;
-        $task->estimated_time = $request->estimated_time_number . ' ' . $request->estimated_time_unit;
+        $task->estimated_time = $request->estimated_time;
         $task->details = $request->details;
         $task->assigned_to = implode(',', $request->assigned_to);
         $task->allotted_to = implode(',', $request->allotted_to);
         $task->project_task_status_id = $request->project_task_status_id;
         $task->project_id = $projectId;
+        $task->sprint_id = $request->sprint_id;
         $task->save();
 
         $assignedTo = $request->assigned_to;
@@ -73,7 +76,7 @@ class TaskController extends Controller
             $taskUser->save();
         }
 
-        return redirect()->back()->with('success', 'Task created successfully.');
+        return redirect()->route('projects.sprint', ['project' => $projectId])->with('success', 'Task created successfully.');
     }
 
     public function show(Task $task)
@@ -86,7 +89,8 @@ public function edit(Task $task)
     $tasks = Task::all();
     $projectMembers = ProjectMember::all();
     $projects = Project::all();
-    return view('tasks.edit', compact('task', 'tasks', 'projectMembers', 'projects'));
+    $sprints = Sprint::all();
+    return view('tasks.edit', compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
 }
 
 
@@ -94,12 +98,14 @@ public function edit(Task $task)
     {
         $request->validate([
             'title' => 'required',
-            'priority' => 'required|in:Low priority,Med priority,High priority',
-            'estimated_time_number' => 'required|numeric',
-            'estimated_time_unit' => 'required|in:hour,day,month,year',
+            'priority' => 'required',
+            'estimated_time' => 'required|numeric',
             'details' => 'required',
+            'project_task_status_id' => 'required',
             'assigned_to' => 'required',
             'allotted_to' => 'required',
+            'project_id' => 'required',
+            'sprint_id' => 'required',
         ]);
 
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);

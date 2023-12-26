@@ -84,6 +84,9 @@ Route::middleware([
         Route::get('/{project}/documents', [ProjectsController::class, 'documents'])->name('projects.documents');
         Route::get('/{project}/release_management', [ProjectsController::class, 'release_management'])->name('projects.release_management');
         Route::get('/{project}/reports', [ProjectsController::class, 'reports'])->name('projects.reports');
+        Route::get('/get-sprints', [ProjectsController::class, 'getSprints'])->name('getSprints');
+        Route::get('/getTasks', [ProjectsController::class, 'getTasks'])->name('getTasks');
+        Route::post('/update-task-status', [ProjectsController::class, 'updateTaskStatus'])->name('update-task-status');
     });
 
     Route::group(['prefix' => 'vertical'], function () {

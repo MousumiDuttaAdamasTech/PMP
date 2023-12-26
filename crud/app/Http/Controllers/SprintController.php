@@ -37,31 +37,30 @@ class SprintController extends Controller
     {
         $request->validate([
             'sprint_name' => 'required',
-            'is_global_sprint' => 'required|in:yes,no', 
-            'project_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'status' => 'required',
-            'createdAt' => 'required',
-            'created_by' => 'required',
-            // 'assigned_to' => 'required',
-            // 'assigned_by' => 'required',
+            'estimated_hrs' => 'required|numeric',
+            'actual_hrs' => 'required|numeric',
+            'sprint_status' => 'required',
+            'current_date' => 'required|date',
+            'assign_to' => 'required|exists:project_members,id',
+            // 'task_status_id' => 'required|exists:task_status,id',
+            'project_id' => 'required|exists:project,id', // Update the field name to match your schema
+            'is_active' => 'required|boolean',
+            // Add validation rules for other fields
         ]);
 
         $sprint = new Sprint;
-        $sprint->uuid = substr(Str::uuid()->toString(), 0, 8);
         $sprint->sprint_name = $request->sprint_name;
-        $sprint->is_global_sprint = $request->is_global_sprint;
-        $sprint->project_id = $request->project_id;
-        $sprint->start_date = $request->start_date;
-        $sprint->end_date = $request->end_date;
-        $sprint->status = $request->status;
-        $sprint->createdAt = $request->createdAt;
-        $sprint->created_by = $request->created_by;
-
+        $sprint->estimated_hrs = $request->estimated_hrs;
+        $sprint->actual_hrs = $request->actual_hrs;
+        $sprint->sprint_status = $request->sprint_status;
+        $sprint->current_date = $request->current_date;
+        $sprint->assign_to = $request->assign_to;
+        // $sprint->task_status_id = $request->task_status_id;
+        $sprint->projects_id = $request->project_id; // Update the field name to match your schema
+        $sprint->is_active = $request->is_active;
         $sprint->save();
 
-        return redirect()->route('sprints.index')->with('success', 'Sprint created successfully.');
+        return redirect()->route('projects.sprint', ['project' => $request->project_id])->with('success', 'Sprint created successfully.');
     }
 
     public function show(Sprint $sprint)
@@ -84,30 +83,33 @@ class SprintController extends Controller
     {
         $request->validate([
             'sprint_name' => 'required',
-            'is_global_sprint' => 'required|in:yes,no',
-            'project_id' => 'required',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'status' => 'required',
-            'createdAt' => 'required',
-            'created_by' => 'required',
+            'estimated_hrs' => 'required|numeric',
+            'actual_hrs' => 'required|numeric',
+            'sprint_status' => 'required',
+            'current_date' => 'required|date',
+            'assign_to' => 'required|exists:project_members,id',
+            // 'task_status_id' => 'required|exists:task_status,id',
+            // 'project_id' => 'required|exists:project,id', // Update the field name to match your schema
+            'is_active' => 'required|boolean',
+            // Add validation rules for other fields
         ]);
 
-        $sprint->uuid = substr(Str::uuid()->toString(), 0, 8);
+        // $sprint->uuid = substr(Str::uuid()->toString(), 0, 8);
         $sprint->sprint_name = $request->sprint_name;
-        $sprint->is_global_sprint = $request->is_global_sprint;
-        $sprint->project_id = $request->project_id;
-        $sprint->start_date = $request->start_date;
-        $sprint->end_date = $request->end_date;
-        $sprint->status = $request->status;
-        $sprint->createdAt = $request->createdAt;
-        $sprint->created_by = $request->created_by;
-
-        $sprint->save();
+        $sprint->estimated_hrs = $request->estimated_hrs;
+        $sprint->actual_hrs = $request->actual_hrs;
+        $sprint->sprint_status = $request->sprint_status;
+        $sprint->current_date = $request->current_date;
+        $sprint->assign_to = $request->assign_to;
+        // $sprint->task_status_id = $request->task_status_id;
+        $sprint->projects_id = $request->project_id; // Update the field name to match your schema
+        $sprint->is_active = $request->is_active;
+        $sprint->save();;
 
         return redirect()->route('sprints.index')->with('success', 'Sprint settings updated successfully.');
 
     }
+
 
     public function destroy(Sprint $sprint)
     {

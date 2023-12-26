@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Project;
 use App\Models\User;
@@ -14,6 +15,9 @@ use App\Models\TaskStatus;
 use App\Models\RolePrice;
 use App\Models\WorkerPrice;
 use App\Models\Task;
+use App\Models\Sprint;
+use App\Models\Kanban;
+use App\Models\ProjectMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -470,7 +474,36 @@ class ProjectsController extends Controller
 
     public function sprint(Project $project)
     {
-        return view('projects.sprint', compact('project'));
+        $projectId = $project->id;
+        $tasks = Task::all();
+        $taskStatuses = TaskStatus::all();
+        $users = User::all();
+        $sprints = Sprint::where('projects_id', $project->id)->get();
+        $projects = Project::all(['id', 'project_name']);
+        $project = Project::with('members.user')->find($projectId); 
+        $profiles = Profile::all();
+        $projectMembers = ProjectMember::with('user')->get();
+
+        // Fetch task statuses for the current project
+        $taskStatusesWithIds = DB::table('project_task_status')
+            ->join('task_status', 'project_task_status.task_status_id', '=', 'task_status.id')
+            ->join('project', 'project_task_status.project_id', '=', 'project.id')
+            ->select('project_task_status.id as project_task_status_id', 'task_status.status')
+            ->where('project.id', $project->id) // Use $project->id instead of $projectId
+            ->distinct()
+            ->get();
+
+        // Fetch project types for the current project
+        $projectTypes = DB::table('project_task_types')
+            ->join('task_types', 'project_task_types.task_type_id', '=', 'task_types.id')
+            ->join('project', 'project_task_types.project_id', '=', 'project.id')
+            ->select('task_types.type_name')
+            ->where('project.id', $project->id)
+            ->distinct()
+            ->pluck('type_name')
+            ->toArray();
+
+        return view('projects.sprint', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));    
     }
 
     public function daily_entry(Project $project)
@@ -507,5 +540,32 @@ class ProjectsController extends Controller
     {
         $tasks = Task::where('project_id', $project->id)->get();
         return view('projects.all-tasks', compact('project','tasks'));
+    }
+
+    public function updateTaskStatus(Request $request)
+    {
+        $taskId = $request->input('taskId');
+        $statusId = $request->input('statusId');
+    
+        // Update the task status in the database
+        $task = Task::findOrFail($taskId);
+        $task->project_task_status_id = $statusId;
+        $task->save();
+    
+        // You can return a success response if needed
+        return response()->json(['message' => 'Task status updated successfully']);
+    }
+
+    public function getTasks(Request $request)
+    {
+        $projectId = $request->input('project_id');
+        $sprintId = $request->input('sprint_id');
+
+        // Fetch tasks based on project_id and sprint_id
+        $tasks = Task::where('project_id', $projectId)
+                    ->where('sprint_id', $sprintId)
+                    ->get();
+
+        return response()->json($tasks);
     }
 }

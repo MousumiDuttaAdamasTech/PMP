@@ -41,58 +41,41 @@
 
             <table id="sprintTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
                 <thead>
-                    <tr>
-                        <th style="padding-left:30px;">ID</th>
-                        <th>Sprint Name</th>
-                        <th>Is Global Sprint</th>
-                        <th>Project Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th style="padding-left:35px">Status</th>
-                        <th>CreatedAt</th>
-                        <th>Created By</th>
-                        <th>Actions</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Sprint Name</th>
+                    <th>Sprint Status</th>
+                    <th>Current Date</th>
+                    <th>Actions</th>
+                </tr>
                 </thead>
                 <tbody>
-                    @foreach ($sprints as $sprint)
-                        <tr class="shadow" style="border-radius:15px;">
-                            <td style="padding-left:30px;">{{ $sprint->uuid }}</td>
+                    @foreach($sprints as $sprint)
+                        <tr>
+                            <td>{{ $sprint->id }}</td>
                             <td>{{ $sprint->sprint_name }}</td>
-                            <td style="padding-left:27px;">
-                                @if ($sprint->is_global_sprint == 'yes')
-                                  <span class="tick_symbol">&#10004;</span> <!-- Tick symbol -->
-                                @else
-                                <i class="fas fa-times cross_sign"></i> <!-- Cross symbol -->
-                                @endif
-                              </td>
-                            <td>{{ $sprint->project->project_name }}</td>   
-                            <td>{{ $sprint->start_date }}</td>
-                            <td>{{ $sprint->end_date }}</td>
                             <td>
-                                @if($sprint->status == 'Under discussion')
-                                    <div class="badge badge-success-light text-white font-weight-bold" style="background-color: #79c57f;">{{ $sprint->status }}</div>
-                                @elseif($sprint->status == 'Delay')
-                                    <div class="badge badge-warning-light text-white font-weight-bold" style="background-color: #fbe99f; margin-left:16px; padding-left:18px; padding-right:18px;">{{ $sprint->status }}</div>
-                                @elseif($sprint->status == 'Pending')
-                                    <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f1909b; margin-left:16px;">{{ $sprint->status }}</div>
-                                @elseif($sprint->status == 'Under development')
-                                    <div class="badge badge-primary-light text-white font-weight-bold" style="background-color: #6ec6ff;">{{ $sprint->status }}</div>
-                                @elseif($sprint->status == 'In queue')
-                                    <div class="badge badge-info-light text-white font-weight-bold" style="background-color: #17a2b8; margin-left:16px;">{{ $sprint->status }}</div>
-                                @elseif($sprint->status == 'Not Started')
-                                    <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f07f8c; margin-left:12px;">{{ $sprint->status }}</div>
+                                @if($sprint->sprint_status == 'Under discussion')
+                                    <div class="badge badge-success-light text-white font-weight-bold" style="background-color: #79c57f;">{{ $sprint->sprint_status }}</div>
+                                @elseif($sprint->sprint_status == 'Delay')
+                                    <div class="badge badge-warning-light text-white font-weight-bold" style="background-color: #f0c20a; margin-left:16px; padding-left:18px; padding-right:18px;">{{ $sprint->sprint_status }}</div>
+                                @elseif($sprint->sprint_status == 'Pending')
+                                    <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f1909b; margin-left:16px;">{{ $sprint->sprint_status }}</div>
+                                @elseif($sprint->sprint_status == 'Under development')
+                                    <div class="badge badge-primary-light text-white font-weight-bold" style="background-color: #6ec6ff;">{{ $sprint->sprint_status }}</div>
+                                @elseif($sprint->sprint_status == 'In queue')
+                                    <div class="badge badge-info-light text-white font-weight-bold" style="background-color: #17a2b8; margin-left:16px;">{{ $sprint->sprint_status }}</div>
+                                @elseif($sprint->sprint_status == 'Not Started')
+                                    <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f07f8c; margin-left:12px;">{{ $sprint->sprint_status }}</div>
                                 @endif
                             </td>
-                            <td>{{ $sprint->createdAt }}</td>
-                            <td>{{ $sprint->createdBy->name }}</td>
-                            {{-- <td>{{ $sprint->assignedBy->name }}</td> --}}
+                            <td>{{ $sprint->current_date }}</td> 
                             <td>
                                 <div class="btn-group" role="group">
                                     <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showModal_{{ $sprint->id }}">
                                         <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                     </a>
-                                    <a href="{{ route('sprints.edit', ['sprint' => $sprint->id]) }}" data-toggle="tooltip" data-placement="top" title="Delete">
+                                    <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editSprintModal">
                                         <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                     </a>
                                     <form method="post" action="{{ route('sprints.destroy', ['sprint' => $sprint->id]) }}">
@@ -131,85 +114,7 @@
             </table>
             
             <!-- Show Modal -->
-            @foreach ($sprints as $sprint)
-            <div class="modal fade" id="showModal_{{ $sprint->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $sprint->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-md modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header" style=" background-color:#061148; ">
-                            <h5 class="modal-title" id="showModalLabel_{{ $sprint->id }}" style="color: white;font-weight: bolder;">Sprint Details</h5>
-                        </div>
-                        <div class="modal-body">
-                            <table class="table table-striped" style="margin: 0 auto;">
-                                <tbody>
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Sprint Name:</th>
-                                        <td style="font-weight: 500">{{ $sprint->sprint_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Is Global Sprint:</th>
-                                        <td style="padding-left:27px; font-weight: 500;">
-                                            @if ($sprint->is_global_sprint == 'yes')
-                                              <span class="tick_symbol">&#10004;</span> <!-- Tick symbol -->
-                                            @else
-                                            <i class="fas fa-times cross_sign"></i> <!-- Cross symbol -->
-                                            @endif
-                                          </td>
-                                    </tr>
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Project ID:</th>
-                                        <td style="font-weight: 500">{{ $sprint->project_id }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Start Date:</th>
-                                        <td style="font-weight: 500">{{ $sprint->start_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">End Date:</th>
-                                        <td style="font-weight: 500">{{ $sprint->end_date }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Status:</th>
-                                        <td style="font-weight: 500">
-                                            @if($sprint->status == 'Under discussion')
-                                                <div class="badge badge-success-light text-white font-weight-bold" style="background-color: #79c57f;">{{ $sprint->status }}</div>
-                                            @elseif($sprint->status == 'Delay')
-                                                <div class="badge badge-warning-light text-white font-weight-bold" style="background-color: #fbe99f;  padding-left: 18px; padding-right: 18px;">{{ $sprint->status }}</div>
-                                            @elseif($sprint->status == 'Pending')
-                                                <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f1909b;">{{ $sprint->status }}</div>
-                                            @elseif($sprint->status == 'Under development')
-                                                <div class="badge badge-primary-light text-white font-weight-bold" style="background-color: #6ec6ff;">{{ $sprint->status }}</div>
-                                            @elseif($sprint->status == 'In queue')
-                                                <div class="badge badge-info-light text-white font-weight-bold" style="background-color: #17a2b8;">{{ $sprint->status }}</div>
-                                            @elseif($sprint->status == 'Not Started')
-                                                <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f07f8c;">{{ $sprint->status }}</div>
-                                            @endif
-                                        </td>
-                                        
-                                    </tr>
-
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Created At:</th>
-                                        <td style="font-weight: 500">{{ $sprint->createdAt }}</td>
-                                    </tr>
-
-                                    <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Created By:</th>
-                                        <td>{{ $sprint->createdBy->name }}</td>
-                                    </tr>
-                                    {{-- <tr>
-                                        <th style="font-weight: 600; padding-left:30px;">Assigned By:</th>
-                                        <td style="font-weight: 500">{{ $sprint->assignedBy->name }}</td>
-                                    </tr> --}}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color:#D22B2B">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
+            
     </section>
 </main>
 @endsection

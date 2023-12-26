@@ -90,4 +90,14 @@ class Project extends Model
     {
         return $this->hasMany(ProjectTaskStatus::class, 'project_id');
     }
+
+    public function sprints()
+    {
+        return $this->hasMany(Sprint::class);
+    }
+
+    public function members()
+    {
+        return $this->hasMany(ProjectMember::class, 'project_id');
+    }
 }
