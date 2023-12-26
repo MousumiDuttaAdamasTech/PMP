@@ -54,7 +54,6 @@
                 }
                 
                 .active-link {
-                    /* Change the background color to your desired highlight color */
                     color: blue; /* Change the text color to your desired highlight color */
                 }
                 
