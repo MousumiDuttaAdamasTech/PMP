@@ -17,11 +17,14 @@ return new class extends Migration
             $table->unsignedBigInteger('doc_type_id');
             $table->foreign('doc_type_id')->references('id')->on('doctypes');
             $table->string('doc_name');
-            $table->string('version');
+            // $table->string('version');
+            $table->string('version')->default(1);
             $table->text('comments')->nullable();
             $table->unsignedBigInteger('approved_by');
             $table->foreign('approved_by')->references('id')->on('project_members');
-            $table->date('approved_on')->useCurrent(); // Automatically set to the current date
+            $table->date('approved_on')->useCurrent();
+            $table->unsignedBigInteger('project_id'); 
+            $table->foreign('project_id')->references('id')->on('project'); 
             $table->timestamps();
         });
     }

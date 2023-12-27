@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Document.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,5 +31,17 @@ class Document extends Model
     public function approver()
     {
         return $this->belongsTo(ProjectMember::class, 'approved_by');
+    }
+
+    // Define an accessor to retrieve the user_name from the associated user
+    public function getApprovedByNameAttribute()
+    {
+        return $this->approver->user->name;
+    }
+
+    public function wasUpdated()
+    {
+        // Compare the created_at and updated_at timestamps
+        return $this->created_at != $this->updated_at;
     }
 }
