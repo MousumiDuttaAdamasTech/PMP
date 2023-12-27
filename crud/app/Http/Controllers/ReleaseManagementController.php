@@ -22,7 +22,7 @@ class ReleaseManagementController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
             'details' => 'required',
-            'documents.*' => 'file|mimes:pdf,doc,docx',
+            'documents.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png',
             'release_date' => 'required',
         ]);
 
@@ -64,7 +64,7 @@ class ReleaseManagementController extends Controller
         $validatedData = $request->validate([
             'name' => 'required',
             'details' => 'required',
-            'documents.*' => 'file|mimes:pdf,doc,docx', //validation for multiple files
+            'documents.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png', //validation for multiple files
             'release_date' => 'required',
             // Add any additional validation rules for your specific requirements
         ]);
@@ -78,7 +78,7 @@ class ReleaseManagementController extends Controller
 
                 // Store the document in the storage/app/public/release_management_documents directory with the same name
                 $path = $document->storeAs('release_management_documents', $fileName, 'public');
-                
+
                 // Create ReleaseManagementDocument and associate it with ReleaseManagement
                 ReleaseManagementDocument::create([
                     'release_management_id' => $releaseManagement->id,
