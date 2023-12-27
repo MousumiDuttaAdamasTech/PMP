@@ -18,6 +18,7 @@ use App\Models\Task;
 use App\Models\Sprint;
 use App\Models\Kanban;
 use App\Models\ProjectMember;
+use App\Models\ReleaseManagement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -528,7 +529,21 @@ class ProjectsController extends Controller
 
     public function release_management(Project $project)
     {
-        return view('projects.release_management', compact('project'));
+        // Assuming you have a check for the request method
+        // to differentiate between GET and POST requests
+        if (request()->isMethod('get')) {
+            $releaseManagements = ReleaseManagement::where('project_id', $project->id)->get();
+
+            return view('projects.release_management', compact('project', 'releaseManagements'));
+        } elseif (request()->isMethod('post')) {
+            // Handle form submissions, e.g., store, update, delete
+            // Check for specific form actions and delegate to the appropriate methods in ReleaseManagementController
+            // You can use request parameters to determine the action and pass the request to the appropriate method
+            // Example: if ($request->has('create')) { return app(ReleaseManagementController::class)->store($request, $project); }
+
+            // Redirect back to the main view after handling the action
+            return redirect()->route('projects.release_management', $project);
+        }
     }
 
     public function reports(Project $project)

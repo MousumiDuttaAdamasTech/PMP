@@ -26,6 +26,7 @@ use App\Http\Controllers\KanbanController;
 use App\Http\Controllers\UserWorkDetailController;
 use App\Http\Controllers\RolePriceController;
 use App\Http\Controllers\WorkerPriceController;
+use App\Http\Controllers\ReleaseManagementController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -88,6 +89,8 @@ Route::middleware([
         Route::get('/getTasks', [ProjectsController::class, 'getTasks'])->name('getTasks');
         Route::post('/update-task-status', [ProjectsController::class, 'updateTaskStatus'])->name('update-task-status');
     });
+
+    Route::post('/{project}/release_management', [ReleaseManagementController::class, 'store'])->name('projects.release_management.store');
 
     Route::group(['prefix' => 'vertical'], function () {
         Route::get('/', [VerticalController::class, 'index'])->name('verticals.index');

@@ -100,4 +100,9 @@ class Project extends Model
     {
         return $this->hasMany(ProjectMember::class, 'project_id');
     }
+
+    public function releaseManagements()
+    {
+        return $this->hasMany(ReleaseManagement::class);
+    }
 }
