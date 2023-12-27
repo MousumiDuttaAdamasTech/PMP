@@ -19,6 +19,8 @@ use App\Models\Sprint;
 use App\Models\Kanban;
 use App\Models\ProjectMember;
 use App\Models\ReleaseManagement;
+use App\Models\Document;
+use App\Models\Doctype;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -524,8 +526,17 @@ class ProjectsController extends Controller
 
     public function documents(Project $project)
     {
-        return view('projects.documents', compact('project'));
+        $docTypes = Doctype::all();
+        $projectMembers = ProjectMember::all();
+
+        // Fetch documents specific to the selected project
+        $documents = Document::with(['doctype', 'approver'])
+            ->where('project_id', $project->id)
+            ->get();
+
+        return view('projects.documents', compact('project', 'documents', 'docTypes', 'projectMembers'));
     }
+
 
     public function release_management(Project $project)
     {

@@ -27,6 +27,7 @@ use App\Http\Controllers\UserWorkDetailController;
 use App\Http\Controllers\RolePriceController;
 use App\Http\Controllers\WorkerPriceController;
 use App\Http\Controllers\ReleaseManagementController;
+use App\Http\Controllers\DocumentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -88,6 +89,9 @@ Route::middleware([
         Route::get('/get-sprints', [ProjectsController::class, 'getSprints'])->name('getSprints');
         Route::get('/getTasks', [ProjectsController::class, 'getTasks'])->name('getTasks');
         Route::post('/update-task-status', [ProjectsController::class, 'updateTaskStatus'])->name('update-task-status');
+        Route::get('/get-documents/{project}', [ProjectsController::class, 'getDocuments'])->name('getDocuments');
+        // Route::get('/project/{project}/documents', [ProjectsController::class, 'documents'])->name('projects.documents');
+
     });
 
     Route::post('/{project}/release_management', [ReleaseManagementController::class, 'store'])->name('projects.release_management.store');
@@ -102,6 +106,8 @@ Route::middleware([
         Route::delete('/{vertical}', [VerticalController::class, 'destroy'])->name('verticals.destroy');
     });
 
+    Route::resource('documents', DocumentController::class);
+    
     Route::resource('highest-education-values', HighestEducationValueController::class);
 
     Route::resource('role-prices', RolePriceController::class);
@@ -138,7 +144,7 @@ Route::middleware([
     Route::resource('task_status', TaskStatusController::class);
     
     Route::get('/kanban/{projectId}', [KanbanController::class, 'showKanban'])->name('kanban');
-    Route::post('/update-task-status', [KanbanController::class, 'updateTaskStatus'])->name('update-task-status');
+    // Route::post('/update-task-status', [KanbanController::class, 'updateTaskStatus'])->name('update-task-status');
 
 
     Route::prefix('tasks')->group(function () {
