@@ -182,12 +182,14 @@
 
         <ul class="nav nav-tabs nav-tabs-bordered" id="sprintTabs">
             <li class="nav-item">
-                <button class="nav-link active" id="overviewTab" data-toggle="tab" data-bs-target="#overviewContent">Overview</button>
+                <button class="nav-link active" id="overviewTab" data-toggle="tab" data-bs-target="#overviewContent" href="#overviewContent">Overview</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manageContent" id="manageTab" data-toggle="tab" >Manage Sprint</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manageContent" href="#manageContent"  id="manageTab" data-toggle="tab" >Manage Sprint</button>
             </li>
         </ul>
+
+        
 
         <div class="tab-content">
             <div class="tab-pane fade show active overviewContent" id="overviewContent" style="margin-top: 1%; margin-bottom: 4%">
