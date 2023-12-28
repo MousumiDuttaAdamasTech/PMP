@@ -102,20 +102,17 @@ class SprintController extends Controller
         $sprint->current_date = $request->current_date;
         $sprint->assign_to = $request->assign_to;
         // $sprint->task_status_id = $request->task_status_id;
-        $sprint->projects_id = $request->project_id; // Update the field name to match your schema
+        // $sprint->projects_id = $request->project_id; // Update the field name to match your schema
         $sprint->is_active = $request->is_active;
         $sprint->save();;
 
-        return redirect()->route('sprints.index')->with('success', 'Sprint settings updated successfully.');
-
+        return back()->with('success', 'Sprint settings updated successfully.');
     }
 
 
     public function destroy(Sprint $sprint)
     {
         $sprint->delete();
-
-        return redirect()->route('sprints.index')
-            ->with('success', 'Sprint deleted successfully.');
+        return back()->with('success', 'Sprint deleted successfully.');
     }
 }
