@@ -87,90 +87,103 @@
 
                         <!-- Details Modal for each releaseManagement -->
                         <div class="modal fade" id="showReleaseManagementModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="showReleaseManagementModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
+                            <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="showReleaseManagementModalLabel{{ $releaseManagement->id }}">Release Management Details</h5>
                                     </div>
                                     <div class="modal-body">
+                                        
                                         <!-- Display release management details here -->
-                                        <p><strong>Name:</strong> {{ $releaseManagement->name }}</p>
-                                        <p><strong>Release Date:</strong> {{ $releaseManagement->release_date }}</p>
-                                        <p><strong>Details:</strong> {{ $releaseManagement->details }}</p>
+                                        <div class="mb-3">
+                                            <strong>Name:</strong> {{ $releaseManagement->name }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <strong>Release Date:</strong> {{ $releaseManagement->release_date }}
+                                        </div>
+                                        <div class="mb-3">
+                                            <strong>Details:</strong> {{ $releaseManagement->details }}
+                                        </div>
 
                                         <!-- Display documents with downloadable links -->
                                         @if ($releaseManagement->documents && $releaseManagement->documents->count() > 0)
-                                            <p><strong>Documents:</strong></p>
-                                            <ul>
-                                                @foreach ($releaseManagement->documents as $document)
-                                                    <li><a href="{{ Storage::url($document->document_path) }}" target="_blank">{{ $document->document_path }}</a></li>
-                                                @endforeach
-                                            </ul>
+                                            <div class="mb-3">
+                                                <strong>Documents:</strong>
+                                                <ul>
+                                                    @foreach ($releaseManagement->documents as $document)
+                                                        <li class="list-group-item">
+                                                            <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                            <a href="{{ Storage::url($document->document_path) }}" target="_blank">
+                                                                {{ $document->document_path }}
+                                                            </a>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
                                         @endif
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <div class="form-actions"> 
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-
-                </tbody>
-            </table>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <!-- Release Management Modal -->
-    <div class="modal" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="releaseManagementModalLabel">Add Release Management</h5>
+        <!-- Release Management Modal -->
+        <div class="modal" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="releaseManagementModalLabel">Add Release Management</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('projects.release_management.store', ['project' => $project->id]) }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="row">
+                                <!-- Project ID -->   
+                                <input type="hidden" name="project_id" value="{{ $project->id }}">
+
+                                <!-- Other Release Management Form Fields -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="name">Name:</label>
+                                        <input type="text" class="form-control shadow-sm" name="name" id="name" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="release_date">Release Date:</label>
+                                        <input type="date" class="form-control shadow-sm" name="release_date" id="release_date" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="details">Details:</label>
+                                        <textarea name="details" id="details" required class="form-control shadow-sm"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="documents">Documents:</label>
+                                        <input type="file" class="form-control shadow-sm" name="documents[]" id="documents" multiple>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="closeReleaseManagementModal">Close</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>    
                 </div>
-                <div class="modal-body">
-                    <form action="{{ route('projects.release_management.store', ['project' => $project->id]) }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="row">
-                            <!-- Project ID -->   
-                            <input type="hidden" name="project_id" value="{{ $project->id }}">
-
-                            <!-- Other Release Management Form Fields -->
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="name">Name:</label>
-                                    <input type="text" name="name" id="name" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="release_date">Release Date:</label>
-                                    <input type="date" name="release_date" id="release_date" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="details">Details:</label>
-                                    <textarea name="details" id="details" required></textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="documents">Documents:</label>
-                                    <input type="file" name="documents[]" id="documents" multiple>
-                                </div>
-                            </div>
-                            
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal" id="closeReleaseManagementModal">Close</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>    
             </div>
         </div>
     </div>

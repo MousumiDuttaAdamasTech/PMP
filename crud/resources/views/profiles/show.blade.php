@@ -174,10 +174,9 @@
       <div class="card">
         <div class="card-body pt-3">
           @if(Session::get('success'))
-          
-          <input type="hidden" id="flag" value="1">
+            <input type="hidden" id="flag" value="1">
           @else
-          <input type="hidden" id="flag" value="0">
+            <input type="hidden" id="flag" value="0">
           @endif
           <!-- Bordered Tabs -->
           <ul class="nav nav-tabs nav-tabs-bordered">
@@ -616,18 +615,17 @@
 
 @endsection
 <script>
-   window.addEventListener('load', function () {
-          
-          if(document.getElementById("flag").value==1)
-          {
-               const activeTab = "skill-set";
-               if (activeTab) {
-                   const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
-                   if (tabLink) {
-                       tabLink.click();
-                   }
-               } 
-           }
-         });
-  
+  window.addEventListener('load', function () {
+        
+        if(document.getElementById("flag").value==1)
+        {
+              const activeTab = "skill-set";
+              if (activeTab) {
+                  const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
+                  if (tabLink) {
+                      tabLink.click();
+                    }
+                } 
+          }
+        }); 
 </script>
