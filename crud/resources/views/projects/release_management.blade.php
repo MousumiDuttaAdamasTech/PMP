@@ -93,34 +93,43 @@
                                         <h5 class="modal-title" id="showReleaseManagementModalLabel{{ $releaseManagement->id }}">Release Management Details</h5>
                                     </div>
                                     <div class="modal-body">
-                                        
-                                        <!-- Display release management details here -->
-                                        <div class="mb-3">
-                                            <strong>Name:</strong> {{ $releaseManagement->name }}
-                                        </div>
-                                        <div class="mb-3">
-                                            <strong>Release Date:</strong> {{ $releaseManagement->release_date }}
-                                        </div>
-                                        <div class="mb-3">
-                                            <strong>Details:</strong> {{ $releaseManagement->details }}
-                                        </div>
-
-                                        <!-- Display documents with downloadable links -->
-                                        @if ($releaseManagement->documents && $releaseManagement->documents->count() > 0)
-                                            <div class="mb-3">
-                                                <strong>Documents:</strong>
-                                                <ul>
-                                                    @foreach ($releaseManagement->documents as $document)
-                                                        <li class="list-group-item">
-                                                            <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                            <a href="{{ Storage::url($document->document_path) }}" target="_blank">
-                                                                {{ $document->document_path }}
-                                                            </a>
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" style="font-size: 15px;">Name</label>
+                                                    <input type="text" name="name" id="name" class="form-control shadow-sm" required value="{{ old('name', $releaseManagement->name) }}" disabled>
+                                                </div>
                                             </div>
-                                        @endif
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="release_date" style="font-size: 15px;">Release Date</label>
+                                                    <input type="date" name="release_date" id="release_date" class="form-control shadow-sm" required value="{{ old('release_date', $releaseManagement->release_date) }}" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="details" style="font-size: 15px;">Details</label>
+                                                    <textarea name="details" id="details" class="form-control shadow-sm" disabled>{{ strip_tags($releaseManagement->details) }}</textarea>
+                                                </div>
+                                            </div>
+                                            @if ($releaseManagement->documents && $releaseManagement->documents->count() > 0)
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="documents">Documents</label>
+                                                        <ul>
+                                                            @foreach ($releaseManagement->documents as $document)
+                                                                <li class="list-group-item">
+                                                                    <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                                    <a href="{{ Storage::url($document->document_path) }}" target="_blank">
+                                                                        {{ $document->document_path }}
+                                                                    </a>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
                                         <div class="form-actions"> 
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                         </div>
