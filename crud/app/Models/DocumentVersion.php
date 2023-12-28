@@ -18,7 +18,11 @@ class DocumentVersion extends Model
         'approved_on',
         'project_id',
         'version',
+        'attachments',
     ];
 
-    // Define relationships if any
+    public function document()
+    {
+        return $this->belongsTo(Document::class);
+    }
 }

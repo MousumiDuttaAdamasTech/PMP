@@ -19,6 +19,8 @@ class Document extends Model
         'comments',
         'approved_by',
         'approved_on',
+        'project_id', // Add this line
+        'attachments',
     ];
 
     protected $dates = ['approved_on'];

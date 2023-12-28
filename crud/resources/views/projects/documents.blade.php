@@ -22,6 +22,10 @@
 
 @section('main_content')
 
+<div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
+            <a href="{{ route('documents.create') }}" class="btn btn-primary">Add New</a>
+        </div>
+
 <table id="documentTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
     <thead>
         <tr>
@@ -76,43 +80,53 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="viewDocName">Document Name</label>
-                                        <input type="text" name="doc_name" id="viewDocName" class="form-control" required value="{{ old('doc_name', $document->doc_name) }}" disabled>
+                                        <label for="viewDocName" style="font-size: 15px;">Document Name</label>
+                                        <input type="text" name="doc_name" id="viewDocName" class="form-control shadow-sm" required value="{{ old('doc_name', $document->doc_name) }}" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="viewDocType">Document Type</label>
-                                        <input type="text" name="doc_type_id" id="viewDocType" class="form-control" required value="{{ $document->doctype->doc_type }}" disabled>
+                                        <label for="viewDocType" style="font-size: 15px;">Document Type</label>
+                                        <input type="text" name="doc_type_id" id="viewDocType" class="form-control shadow-sm" required value="{{ $document->doctype->doc_type }}" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="viewVersion">Version</label> 
-                                        <input type="text" name="version" id="viewVersion" class="form-control" required value="{{ old('version', $document->version) }}" disabled>
+                                        <label for="viewVersion" style="font-size: 15px;">Version</label> 
+                                        <input type="text" name="version" id="viewVersion" class="form-control shadow-sm" required value="{{ old('version', $document->version) }}" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="viewComments">Comments</label>
-                                        <textarea name="comments" id="viewComments" class="form-control" disabled>{{ strip_tags($document->comments) }}</textarea>
+                                        <label for="attachments" style="font-size: 15px;">Attachments</label>
+                                        @if(isset($document) && !empty($document->attachments))
+                                            <i class="fas fa-paperclip text-primary mr-2"></i>
+                                            <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="viewComments" style="font-size: 15px;">Comments</label>
+                                        <textarea name="comments" id="viewComments" class="form-control shadow-sm" disabled>{{ strip_tags($document->comments) }}</textarea>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="viewApprovedBy">Approved By</label>
-                                        <input type="text" name="approved_by" id="viewApprovedBy" class="form-control" required value=" {{ $document->approved_by_name }}" disabled>
+                                        <label for="viewApprovedBy" style="font-size: 15px;">Approved By</label>
+                                        <input type="text" name="approved_by" id="viewApprovedBy" class="form-control shadow-sm" required value=" {{ $document->approved_by_name }}" disabled>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="viewApprovedOn">Approved On</label>
-                                        <input type="date" name="approved_on" id="viewApprovedOn" class="form-control" required value="{{ old('approved_on', $document->approved_on) }}" disabled>
+                                        <label for="viewApprovedOn" style="font-size: 15px;">Approved On</label>
+                                        <input type="date" name="approved_on" id="viewApprovedOn" class="form-control shadow-sm" required value="{{ old('approved_on', $document->approved_on) }}" disabled>
                                     </div>
                                 </div> 
                             </div> 
@@ -139,7 +153,7 @@
                     <h5 class="modal-title" id="editModalLabel">Edit Document</h5>
                 </div>
                 <div class="modal-body">
-                    <form action="{{ route('documents.update', $document->id) }}" method="POST">                      
+                    <form action="{{ route('documents.update', $document->id) }}" method="POST" enctype="multipart/form-data">                      
                         @csrf
                         @method('PUT')
                         <div class="row">
@@ -147,15 +161,15 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="editDocName">Document Name</label>
-                                    <input type="text" name="doc_name" id="editDocName" class="form-control" required value="{{ old('doc_name', $document->doc_name) }}">
+                                    <label for="editDocName" style="font-size: 15px;">Document Name</label>
+                                    <input type="text" name="doc_name" id="editDocName" class="form-control shadow-sm" required value="{{ old('doc_name', $document->doc_name) }}">
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="editDocType">Document Type</label>
-                                    <select name="doc_type_id" id="editDocType" class="form-control" required>
+                                    <label for="editDocType" style="font-size: 15px;">Document Type</label>
+                                    <select name="doc_type_id" id="editDocType" class="form-control shadow-sm" required>
                                         @foreach($docTypes as $docType)
                                             <option value="{{ $docType->id }}" {{ old('doc_type_id', $document->doc_type_id) == $docType->id ? 'selected' : '' }}>
                                                 {{ $docType->doc_type }}
@@ -167,15 +181,26 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="editComments">Comments</label>
-                                    <textarea name="comments" id="editComments" class="ckeditor form-control">{{ old('comments', $document->comments) }}</textarea>
+                                    <label for="editComments" style="font-size: 15px;">Comments</label>
+                                    <textarea name="comments" id="editComments" class="ckeditor form-control shadow-sm">{{ old('comments', $document->comments) }}</textarea>
                                 </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="attachments" style="font-size: 15px;">Attachments</label><br>
+
+                                @if(isset($document) && !empty($document->attachments))
+                                    <i class="fas fa-paperclip text-primary mr-2"></i>
+                                    <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
+                                @endif
+
+                                <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="editApprovedBy">Approved By</label>
-                                    <select name="approved_by" id="editApprovedBy" class="form-control" required>
+                                    <label for="editApprovedBy" style="font-size: 15px;">Approved By</label>
+                                    <select name="approved_by" id="editApprovedBy" class="form-control shadow-sm" required>
                                         <!-- Populate options based on project members -->
                                         @foreach($projectMembers as $projectMember)
                                             <option value="{{ $projectMember->id }}" {{ old('approved_by', $document->approved_by) == $projectMember->id ? 'selected' : '' }}>
@@ -188,8 +213,8 @@
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="editApprovedOn">Approved On</label>
-                                    <input type="date" name="approved_on" id="editApprovedOn" class="form-control" required value="{{ old('approved_on', $document->approved_on) }}">
+                                    <label for="editApprovedOn" style="font-size: 15px;">Approved On</label>
+                                    <input type="date" name="approved_on" id="editApprovedOn" class="form-control shadow-sm" required value="{{ old('approved_on', $document->approved_on) }}">
                                 </div>
                             </div>
 
