@@ -174,6 +174,7 @@
         </div>
     @endif
 
+<div class="form-container">
     @if(Session::get('success'))
         <input type="hidden" id="flag" value="1">
     @else
@@ -867,7 +868,7 @@
             </div>
 
         </div> 
-
+</div>
     <script>
         // Wait for the entire page to load
         $(document).ready(function () {
