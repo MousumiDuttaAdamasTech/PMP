@@ -25,28 +25,6 @@
     <script src="{{ asset('js/project.js') }}"></script>
     <script>
     $(document).ready(function () {
-        // Tab navigation
-        $('#sprint-link').on('click', function () {
-            $('#overview').hide();
-            $('#sprint').show();
-        });
-
-        $('#overview-link').on('click', function () {
-            $('#overview').show();
-            $('#sprint').hide();
-        });
-
-        $('#overviewTab').on('click', function () {
-            // Hide the "Overview" content and show the "Manage Sprint" content
-            $('#overviewContent').addClass('show active');
-            $('#manageContent').removeClass('show active');
-        });
-
-        $('#manageTab').on('click', function () {
-            // Hide the "Overview" content and show the "Manage Sprint" content
-            $('#overviewContent').removeClass('show active');
-            $('#manageContent').addClass('show active');
-        });
 
         // Select2 initialization
         $('.sprint').select2({
@@ -128,68 +106,59 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            function updateBreadcrumb(tabName) {
-                document.getElementById('tab-name').textContent = tabName;
-            }
-
-            // Add event listeners to each tab link
-            document.getElementById('overview-link').addEventListener('click', function () {
-                updateBreadcrumb('Overview');
-            });
-
-            document.getElementById('sprint-link').addEventListener('click', function () {
-                updateBreadcrumb('Sprint');
-            });
-
-            document.getElementById('sprint-link').addEventListener('click', function () {
-                updateBreadcrumb('Sprint');
-            });
-
-            document.getElementById('reports').addEventListener('click', function () {
-                updateBreadcrumb('Reports');
-            });
-        });
-
         $('.assign_to').select2({
             placeholder: 'Select user',
         });
     });
-</script>
+    </script>
 
-<script>
-    function drag(ev) {
-        ev.dataTransfer.setData("text", ev.target.id);
-    }
+    <script>
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
 
-    function allowDrop(ev) {
-        ev.preventDefault();
-    }
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
 
-    function drop(ev, statusId) {
-        ev.preventDefault();
-        var data = ev.dataTransfer.getData("text");
-        ev.currentTarget.appendChild(document.getElementById(data));
+        function drop(ev, statusId) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            ev.currentTarget.appendChild(document.getElementById(data));
 
-        // Update the task status in the database
-        var taskId = data.replace("task", "");
-        updateTaskStatus(taskId, statusId);
-    }
+            // Update the task status in the database
+            var taskId = data.replace("task", "");
+            updateTaskStatus(taskId, statusId);
+        }
 
-    function updateTaskStatus(taskId, statusId) {
-        $.ajax({
-            method: "POST",
-            url: "/update-task-status",
-            data: { taskId: taskId, statusId: statusId, _token: '{{ csrf_token() }}' }, // Add _token field
-            success: function (response) {
-                // Handle success response if needed
-            },
-            error: function (error) {
-                // Handle error response if needed
-            },
-        });
-    }
-</script>
+        function updateTaskStatus(taskId, statusId) {
+            $.ajax({
+                method: "POST",
+                url: "/update-task-status",
+                data: { taskId: taskId, statusId: statusId, _token: '{{ csrf_token() }}' }, // Add _token field
+                success: function (response) {
+                    // Handle success response if needed
+                },
+                error: function (error) {
+                    // Handle error response if needed
+                },
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            if(document.getElementById("flag").value==1)
+            {
+                const activeTab = "manageContent";
+                if (activeTab) {
+                    const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
+                    if (tabLink) {
+                        tabLink.click();
+                        }
+                    } 
+            }
+            }); 
+    </script>
     
 @endsection
 
@@ -205,17 +174,23 @@
         </div>
     @endif
 
-        <ul class="nav nav-tabs" id="sprintTabs">
+    @if(Session::get('success'))
+        <input type="hidden" id="flag" value="1">
+    @else
+        <input type="hidden" id="flag" value="0">
+    @endif
+
+        <ul class="nav nav-tabs nav-tabs-bordered" id="sprintTabs">
             <li class="nav-item">
-                <a class="nav-link active" id="overviewTab" data-toggle="tab" href="#overviewContent">Overview</a>
+                <button class="nav-link active" id="overviewTab" data-toggle="tab" data-bs-target="#overviewContent">Overview</button>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="manageTab" data-toggle="tab" href="#manageContent">Manage Sprint</a>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manageContent" id="manageTab" data-toggle="tab" >Manage Sprint</button>
             </li>
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane fade show active" id="overviewContent" style="margin-top: 1%; margin-bottom: 4%">
+            <div class="tab-pane fade show active overviewContent" id="overviewContent" style="margin-top: 1%; margin-bottom: 4%">
                 <div class="form-group">
                     <label for="sprint-dropdown">Select Sprint:</label>
                     <select class="sprint" id="sprint-dropdown" data-url="{{ route('getSprints') }}">
@@ -322,7 +297,7 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="manageContent" style="margin-bottom: 54px;">
+            <div class="tab-pane fade manageContent" id="manageContent" style="margin-bottom: 54px;">
                 <div id="manageContentSprint">
                     <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -30px;">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createSprintModal" style="margin-right: 10px;"> 
@@ -331,11 +306,6 @@
                     <button type="button" class="btn btn-primary" id="manageTaskAssignButton">
                         <i class="fa-solid fa-list-check"></i> Task Assign
                     </button>
-
-                        <!-- <a href="{{ route('sprints.create') }}" class="btn btn-primary" style="margin-right: 10px;">Add New</a> -->
-                        <!-- <a href="{{ route('sprints.export') }}">
-                            <img src="{{ asset('img/icon-export-icon.png') }}" style="width:30px; height:35px;" alt="Icon-export">
-                        </a> -->
                         
                     </div>
 
@@ -425,6 +395,7 @@
                                 <div class="modal-body">
                                     <form action="{{ route('sprints.store') }}" method="POST">
                                         @csrf
+                                        <input type="hidden" name="active-tab" value="manageContent">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -604,20 +575,10 @@
                                         <form action="{{ route('sprints.update', $sprint->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
+                                            <input type="hidden" name="active-tab" value="manageContent">
                                             <div class="row">
 
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label for="project_id" style="font-size: 15px;">Project ID:</label>
-                                                        <select name="project_id" id="project_id" class="form-controlcl shadow-sm"  style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
-                                                            @foreach ($projects as $project)
-                                                                <option value="{{ $project->id }}" {{ $sprint->project_id == $project->id ? 'selected' : '' }}>
-                                                                    {{ $project->project_name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                    </div>
-                                                </div>
+                                                
                                                 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
@@ -667,7 +628,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="current_date" style="font-size: 15px;">Current Date:</label>
-                                                        <input type="date" name="current_date" id="current_date" class="form-control shadow-sm" value="{{ old('end_date', $sprint->end_date) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required="required">
+                                                        <input type="date" name="current_date" id="current_date" class="form-control shadow-sm" value="{{ old('current_date', $sprint->current_date) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required="required">
                                                     </div>
                                                 </div>
 
@@ -905,26 +866,26 @@
 
         </div> 
 
-        <script>
-    // Wait for the entire page to load
-    $(document).ready(function () {
-        // Add a click event listener to the manageTaskAssignButton
-        $('#manageTaskAssignButton').click(function () {
-            console.log('Button clicked!');
-            // Hide manageContentSprint
-            $('#manageContentSprint').hide();
-            // Show manageContentTaskAssign
-            $('#manageContentTaskAssign').show();
-        });
+    <script>
+        // Wait for the entire page to load
+        $(document).ready(function () {
+            // Add a click event listener to the manageTaskAssignButton
+            $('#manageTaskAssignButton').click(function () {
+                console.log('Button clicked!');
+                // Hide manageContentSprint
+                $('#manageContentSprint').hide();
+                // Show manageContentTaskAssign
+                $('#manageContentTaskAssign').show();
+            });
 
-        // Add a click event listener to the backToSprintButton
-        $('#backToSprintButton').click(function () {
-            console.log('Back button clicked!');
-            // Hide manageContentTaskAssign
-            $('#manageContentTaskAssign').hide();
-            // Show manageContentSprint
-            $('#manageContentSprint').show();
-        }); 
-    });
-</script>
+            // Add a click event listener to the backToSprintButton
+            $('#backToSprintButton').click(function () {
+                console.log('Back button clicked!');
+                // Hide manageContentTaskAssign
+                $('#manageContentTaskAssign').hide();
+                // Show manageContentSprint
+                $('#manageContentSprint').show();
+            }); 
+        });
+    </script>
 @endsection
