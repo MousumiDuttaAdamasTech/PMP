@@ -43,7 +43,7 @@ class SprintController extends Controller
             'current_date' => 'required|date',
             'assign_to' => 'required|exists:project_members,id',
             // 'task_status_id' => 'required|exists:task_status,id',
-            'project_id' => 'required|exists:project,id', // Update the field name to match your schema
+            'projects_id' => 'required|exists:project,id', // Update the field name to match your schema
             'is_active' => 'required|boolean',
             // Add validation rules for other fields
         ]);
@@ -56,11 +56,11 @@ class SprintController extends Controller
         $sprint->current_date = $request->current_date;
         $sprint->assign_to = $request->assign_to;
         // $sprint->task_status_id = $request->task_status_id;
-        $sprint->projects_id = $request->project_id; // Update the field name to match your schema
+        $sprint->projects_id = $request->projects_id; // Update the field name to match your schema
         $sprint->is_active = $request->is_active;
         $sprint->save();
 
-        return redirect()->route('projects.sprint', ['project' => $request->project_id])->with('success', 'Sprint created successfully.');
+        return redirect()->route('projects.sprint', ['project' => $request->projects_id])->with('success', 'Sprint created successfully.');
     }
 
     public function show(Sprint $sprint)

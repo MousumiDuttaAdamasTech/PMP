@@ -22,9 +22,9 @@
 
 @section('main_content')
 <div class="form-container">
-    <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
+    <!-- <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
         <a href="{{ route('documents.create') }}" class="btn btn-primary">Add New</a>
-    </div>
+    </div> -->
 
     <table id="documentTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
     <thead>

@@ -312,7 +312,7 @@
                         
                     </div>
 
-                    <table id="sprintTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
+                    <table id="sprintTable"  class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -400,6 +400,8 @@
                                         @csrf
                                         <input type="hidden" name="active-tab" value="manageContent">
                                         <div class="row">
+                                            <input type="hidden" name="projects_id" value="{{ $project->id }}">
+
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="sprint_name" style="font-size: 15px;">Sprint Name</label>
@@ -407,17 +409,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="project_id" style="font-size: 15px;">Project ID:</label>
-                                                    <select name="project_id" id="project_id" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
-                                                        <option value="">Select Project</option>
-                                                        @foreach ($projects as $project)
-                                                            <option value="{{ $project->id }}">{{ $project->project_name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                            </div>
+                                           
 
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -673,7 +665,7 @@
                         </button>
                          
                     </div>
-                    <table id="taskTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
+                    <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
                             <tr>
                                 <th>ID</th>
