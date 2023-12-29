@@ -478,7 +478,7 @@ class ProjectsController extends Controller
     public function sprint(Project $project)
     {
         $projectId = $project->id;
-        $tasks = Task::all();
+        $tasks = Task::where('project_id', $project->id)->get();
         $taskStatuses = TaskStatus::all();
         $users = User::all();
         $sprints = Sprint::where('projects_id', $project->id)->get();
