@@ -41,9 +41,11 @@
     <div class="form-container">
         <div class="row">
             <div class="col-md-12 mb-3">
-                <button type="button" id="addmember" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="margin-left: 860px;">
-                    Add Member
-                </button>
+                <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -30px;">
+                    <button type="button" id="addmember" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="margin-right: 10px;">
+                        Add Member
+                    </button>
+                </div>
                 <div id="memberCardContainer">
                     @foreach ($project->projectMembers as $projectMember)
                         @php

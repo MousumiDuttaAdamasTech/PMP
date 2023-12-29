@@ -334,7 +334,7 @@
                                         @elseif($sprint->sprint_status == 'Delay')
                                             <div class="badge badge-warning-light text-white font-weight-bold" style="background-color: #f0c20a; margin-left:16px; padding-left:18px; padding-right:18px;">{{ $sprint->sprint_status }}</div>
                                         @elseif($sprint->sprint_status == 'Pending')
-                                            <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f1909b; margin-left:16px;">{{ $sprint->sprint_status }}</div>
+                                            <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #e134eb; margin-left:16px;">{{ $sprint->sprint_status }}</div>
                                         @elseif($sprint->sprint_status == 'Under development')
                                             <div class="badge badge-primary-light text-white font-weight-bold" style="background-color: #6ec6ff;">{{ $sprint->sprint_status }}</div>
                                         @elseif($sprint->sprint_status == 'In queue')
@@ -527,12 +527,12 @@
                                                         @elseif($sprint->sprint_status == 'Delay')
                                                             <div class="badge badge-warning-light text-white font-weight-bold" style="background-color: #f0c20a;  padding-left: 18px; padding-right: 18px;">{{ $sprint->sprint_status }}</div>
                                                         @elseif($sprint->sprint_status == 'Pending')
-                                                            <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f1909b;">{{ $sprint->sprint_status }}</div>
+                                                            <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #e134eb;">{{ $sprint->sprint_status }}</div>
                                                         @elseif($sprint->sprint_status == 'Under development')
                                                             <div class="badge badge-primary-light text-white font-weight-bold" style="background-color: #6ec6ff;">{{ $sprint->sprint_status }}</div>
                                                         @elseif($sprint->sprint_status == 'In queue')
                                                             <div class="badge badge-info-light text-white font-weight-bold" style="background-color: #17a2b8;">{{ $sprint->sprint_status }}</div>
-                                                        @elseif($sprint->status == 'Not Started')
+                                                        @elseif($sprint->sprint_status == 'Not Started')
                                                             <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f07f8c;">{{ $sprint->sprint_status }}</div>
                                                         @endif
                                                     </td>

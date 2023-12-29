@@ -56,9 +56,11 @@
     <div class="form-container">
         <div class="row">
             <div class="col-md-12 mb-3">
-                <button type="button" id="addReleaseManagementModalBtn" class="btn btn-primary" data-toggle="modal" data-target="#releaseManagementModal" style="margin-left: 930px;">
-                    Add
-                </button>
+                <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -30px;">
+                    <button type="button" id="addReleaseManagementModalBtn" class="btn btn-primary" data-toggle="modal" data-target="#releaseManagementModal" style="margin-right: 10px;">
+                        Add
+                    </button>
+                </div>
             </div>
             <table id="release_managementTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
                 <thead>
