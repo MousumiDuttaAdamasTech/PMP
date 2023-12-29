@@ -352,38 +352,44 @@ function updateTaskStatus(taskId, statusId) {
 </script>
 
 <script>
-// assigned_to user select2 function
-$(document).ready(function() {
-  $('.assigned_to').select2({
-      placeholder: 'Select user',
-      templateSelection: formatUserSelection,
-      templateResult: formatUserOption
-  });
+    // assigned_to user select2 function
+    $(document).ready(function() {
+        $('.assigned_to').select2({
+            placeholder: 'Select user',
+            templateSelection: formatUserSelection,
+            templateResult: formatUserOption
+        });
 
-  function formatUserOption(option) {
-      if (!option.id) return option.text;
+        $('.allotted_to').select2({
+            placeholder: 'Select user',
+            templateSelection: formatUserSelection,
+            templateResult: formatUserOption
+        });
 
-      var avatar = $(option.element).data('avatar');
-      var optionText = option.text;
+        function formatUserOption(option) {
+            if (!option.id) return option.text;
 
-      var $option = $(
-          `<span><img class="user-avatar" src="${avatar}">${optionText}</span>`
-      );
+            var avatar = $(option.element).data('avatar');
+            var optionText = option.text;
 
-      return $option;
-  }
+            var $option = $(
+                `<span><img class="user-avatar" src="${avatar}">${optionText}</span>`
+            );
 
-  function formatUserSelection(selection) {
-      var avatar = $(selection.element).data('avatar');
-      var selectionText = selection.text;
+            return $option;
+        }
 
-      var $selection = $(
-          `<span><img class="user-avatar" src="${avatar}" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 5px;">${selectionText}</span>`
-      );
+        function formatUserSelection(selection) {
+            var avatar = $(selection.element).data('avatar');
+            var selectionText = selection.text;
 
-      return $selection;
-  }
-});
+            var $selection = $(
+                `<span><img class="user-avatar" src="${avatar}" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 5px;">${selectionText}</span>`
+            );
+
+            return $selection;
+        }
+    });
 </script>
 
 <script>
