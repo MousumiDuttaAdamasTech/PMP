@@ -37,6 +37,41 @@
             </ul>
         </div>
     @endif
+    
+<style>
+    /* Default styling for medium screens and wider */
+    .member-card {
+        width: 222px;
+        height: 250px;
+        margin-bottom: 20px; /* Add margin between cards */
+    }
+
+    @media (max-width: 1200px) {
+        /* Adjust for large screens */
+        .memberCardContainer .card {
+           
+            margin-left: 39px;
+        }
+    }
+
+    @media (max-width: 992px) {
+        /* Adjust for medium screens */
+        .member-card {
+            
+            margin-left: 39px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* Adjust for small screens */
+        .member-card {
+          
+            margin-left: 39px;
+        }
+    }
+</style>
+
+
 
     <div class="form-container">
         <div class="row">
@@ -46,7 +81,7 @@
                         Add Member
                     </button>
                 </div>
-                <div id="memberCardContainer">
+                <div id="memberCardContainer" class="row row-cols-lg-3">
                     @foreach ($project->projectMembers as $projectMember)
                         @php
                             // Find the pivot data for the current member
