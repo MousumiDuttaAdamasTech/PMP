@@ -65,10 +65,9 @@
             <table id="release_managementTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
                 <thead>
                     <tr>
-                        <th>Sl No.</th>
-                        <th>UUID</th>
+                        <th>Release Management ID</th>
                         <th>Release Date</th>
-                        <th>Name</th>
+                        <th>Title</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -76,8 +75,7 @@
                     <!-- Loop through releaseManagements -->
                     @foreach ($releaseManagements as $index => $releaseManagement)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ $releaseManagement->uuid }}</td>
+                            <td>{{ $releaseManagement->rmid }}</td>
                             <td>{{ $releaseManagement->release_date }}</td>
                             <td>{{ $releaseManagement->name }}</td>
                             <td>
