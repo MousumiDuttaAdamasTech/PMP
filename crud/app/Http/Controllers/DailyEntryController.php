@@ -23,6 +23,6 @@ class DailyEntryController extends Controller
             $dailyEntries->completed = 0;
         }
         $dailyEntries->save();
-        return redirect("/project");
+        return back()->with('success', 'Daily Entry Created.');
     }
 }
