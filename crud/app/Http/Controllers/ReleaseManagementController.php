@@ -5,14 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\ReleaseManagement;
 use App\Models\ReleaseManagementDocument;
 use App\Models\Project;
+use App\Models\ProjectMember;
+use App\Models\Stakeholder;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ReleaseManagementController extends Controller
 {
     public function index(Project $project)
     {
-        $releaseManagements = ReleaseManagement::where('project_id', $project->id)->get();
+        $releaseManagements = ReleaseManagement::with('approver')->where('project_id', $project->id)->get();
 
         return view('projects.release_management', compact('project', 'releaseManagements'));
     }
@@ -24,12 +27,16 @@ class ReleaseManagementController extends Controller
             'details' => 'required',
             'documents.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png',
             'release_date' => 'required',
+            'approved_by' => 'required',
+            'rmid' => 'required',
         ]);
 
         $releaseManagement = $project->releaseManagements()->create([
             'name' => $validatedData['name'],
             'details' => $validatedData['details'],
             'release_date' => $validatedData['release_date'],
+            'approved_by' => $validatedData['approved_by'],
+            'rmid' => $validatedData['rmid'],
         ]);
 
         // Process and store the documents
@@ -66,6 +73,8 @@ class ReleaseManagementController extends Controller
             'details' => 'required',
             'documents.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png', //validation for multiple files
             'release_date' => 'required',
+            'approved_by' => 'required',
+            'rmid' => 'required',
             // Add any additional validation rules for your specific requirements
         ]);
 
@@ -95,10 +104,47 @@ class ReleaseManagementController extends Controller
             'details' => $validatedData['details'],
             'documents' => $documents,
             'release_date' => $validatedData['release_date'],
+            'approved_by' => $validatedData['approved_by'],
+            'rmid' => $validatedData['rmid'],
         ]);
 
         return redirect()->route('projects.release_management', $project)->with('success', 'Release Management entry updated successfully!');
     }
+
+    public function addStakeholder(Request $request, Project $project, ReleaseManagement $releaseManagement)
+    {
+        // Validation logic...
+        $request->validate([
+            'member_id.*' => 'required',
+            //'member_id.*' => 'exists:project_members,id',
+            'release_management_id' => 'required',
+            // Add any other validation rules as needed
+        ]);
+
+        // Create a new Stakeholder instance
+        $stakeholder = new Stakeholder([
+            'member_id' => $request->input('member_id'),
+            'release_management_id' => $request->input('release_management_id'),
+        ]);
+
+        foreach ($request->input('member_id') as $memberId) {
+            // Create a new Stakeholder instance
+            $stakeholder = new Stakeholder([
+                'member_id' => $memberId,
+                'release_management_id' => $request->input('release_management_id'),
+            ]);
+    
+            // Associate the Stakeholder with the current ReleaseManagement
+            $stakeholder->release_management()->associate($releaseManagement);
+    
+            // Save the Stakeholder
+            $stakeholder->save();
+        }
+
+        return redirect()->route('projects.release_management', ['project' => $project->id, 'releaseManagement' => $releaseManagement->id])
+            ->with('success', 'Stakeholder added successfully');
+    }
+
 
     public function destroy(Project $project, ReleaseManagement $releaseManagement)
     {

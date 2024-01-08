@@ -16,7 +16,6 @@ class DailyEntryController extends Controller
         $dailyEntries->description = $request->description;
         if ($request->completed_yes == "on") {
             $dailyEntries->completed = 1;
-            // NEED TO FIND OUT FIRST WHERE THE ACTUAL STATUS OF THE TASK IS COMING FROM
             $taskController = new TaskController();
             $taskController->updateTaskStatus($request->task_id);
         }

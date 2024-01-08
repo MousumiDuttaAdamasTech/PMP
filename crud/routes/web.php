@@ -98,6 +98,12 @@ Route::middleware([
 
     Route::post('/{project}/release_management', [ReleaseManagementController::class, 'store'])->name('projects.release_management.store');
 
+    Route::post('/project/{project}/release_management/{releaseManagement}/add-stakeholder', [ReleaseManagementController::class, 'addStakeholder'])->name('projects.release_management.addStakeholder');
+
+    // Route::post('/project/{project}/release-management/{releaseManagement}/add-stakeholder', 'ReleaseManagementController@addStakeholder')
+    // ->name('projects.release_management.addStakeholder');
+
+
     Route::group(['prefix' => 'vertical'], function () {
         Route::get('/', [VerticalController::class, 'index'])->name('verticals.index');
         Route::get('/create', [VerticalController::class, 'create'])->name('verticals.create');
