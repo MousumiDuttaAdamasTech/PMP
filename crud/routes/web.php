@@ -28,6 +28,8 @@ use App\Http\Controllers\RolePriceController;
 use App\Http\Controllers\WorkerPriceController;
 use App\Http\Controllers\ReleaseManagementController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DailyEntryController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -71,10 +73,10 @@ Route::middleware([
         Route::get('/{project}/edit', [ProjectsController::class, 'edit'])->name('projects.edit');
         Route::put('/{project}', [ProjectsController::class, 'update'])->name('projects.update');
         Route::get('/{project}/settings', [ProjectsController::class, 'settings'])->name('projects.settings');
-        Route::put('/{project}/settings', [ProjectsController::class, 'updateSettings'])->name('projects.updateSettings');    
+        Route::put('/{project}/settings', [ProjectsController::class, 'updateSettings'])->name('projects.updateSettings');
         Route::delete('/{project}', [ProjectsController::class, 'destroy'])->name('projects.destroy');
-        Route::put('/{project}/cost', [ProjectsController::class,'updateCost'])->name('projects.updateCost');
-        Route::get('/{project}/cost', [ProjectsController::class,'viewCost'])->name('projects.cost');
+        Route::put('/{project}/cost', [ProjectsController::class, 'updateCost'])->name('projects.updateCost');
+        Route::get('/{project}/cost', [ProjectsController::class, 'viewCost'])->name('projects.cost');
         Route::get('/{project}', [ProjectsController::class, 'sidebar'])->name('projects.sidebar');
         Route::get('/{project}/overview', [ProjectsController::class, 'overview'])->name('projects.overview');
         Route::get('/{project}/team', [ProjectsController::class, 'team'])->name('projects.team');
@@ -107,7 +109,7 @@ Route::middleware([
     });
 
     Route::resource('documents', DocumentController::class);
-    
+
     Route::resource('highest-education-values', HighestEducationValueController::class);
 
     Route::resource('role-prices', RolePriceController::class);
@@ -125,7 +127,7 @@ Route::middleware([
     Route::resource('designations', DesignationController::class);
     Route::resource('user_work_details', UserWorkDetailController::class);
 
-    Route::post('/get-tasks/{projectId}', [UserWorkDetailController::class,'getTasksForProject']);
+    Route::post('/get-tasks/{projectId}', [UserWorkDetailController::class, 'getTasksForProject']);
 
 
     Route::resource('technologies', TechnologyController::class);
@@ -142,7 +144,7 @@ Route::middleware([
     Route::resource('task_types', TaskTypeController::class);
 
     Route::resource('task_status', TaskStatusController::class);
-    
+
     Route::get('/kanban/{projectId}', [KanbanController::class, 'showKanban'])->name('kanban');
     // Route::post('/update-task-status', [KanbanController::class, 'updateTaskStatus'])->name('update-task-status');
 
@@ -158,13 +160,13 @@ Route::middleware([
 
         Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     });
-    
+
     // Route::resource('tasks', TaskController::class)->except([
     // 'store' // Exclude the store route from the resource routes
     // ]);
 
     // Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    });
+});
 
 //Microsoft Authentication Route
 
@@ -175,3 +177,5 @@ Route::controller(MicrosoftController::class, '')->group(function () {
     Route::get('auth/microsoft/callback', 'handleProviderCallback')->name('auth.microsoft.callback');
 
 });
+
+Route::post('/dailyEntry', [DailyEntryController::class, 'dailyEntry'])->name("dailyEntry");

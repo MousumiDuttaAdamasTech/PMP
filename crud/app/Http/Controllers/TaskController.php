@@ -27,12 +27,12 @@ class TaskController extends Controller
         return view('projects.all-tasks', compact('tasks'));
     }
 
-        public function create()
+    public function create()
     {
         $tasks = Task::all();
-        $projectMembers= ProjectMember::all();
-        $projects= Project::all();
-        return view('kanban.kanban', compact('tasks','projectMembers','projects'));
+        $projectMembers = ProjectMember::all();
+        $projects = Project::all();
+        return view('kanban.kanban', compact('tasks', 'projectMembers', 'projects'));
     }
 
     public function store(Request $request)
@@ -84,14 +84,14 @@ class TaskController extends Controller
         return view('tasks.show', compact('task'));
     }
 
-public function edit(Task $task)
-{
-    $tasks = Task::all();
-    $projectMembers = ProjectMember::all();
-    $projects = Project::all();
-    $sprints = Sprint::all();
-    return view('tasks.edit', compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
-}
+    public function edit(Task $task)
+    {
+        $tasks = Task::all();
+        $projectMembers = ProjectMember::all();
+        $projects = Project::all();
+        $sprints = Sprint::all();
+        return view('tasks.edit', compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
+    }
 
 
     public function update(Request $request, Task $task)
@@ -141,7 +141,7 @@ public function edit(Task $task)
                 $taskUser->save();
             }
         }
-        
+
         return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
     }
 
@@ -151,5 +151,14 @@ public function edit(Task $task)
         $task->delete();
         return redirect()->route('tasks.index');
     }
+
+    //ASK SAMPURNA DIDI WHERE IS THIS FOREIGN KEY COMING FROM AND HOW DO I UPDATE IT
+    public function updateTaskStatus($taskId)
+    {
+        $task = Task::findOrFail($taskId);
+        $task->project_task_status_id = 7;
+        $task->save();
+    }
+
 
 }

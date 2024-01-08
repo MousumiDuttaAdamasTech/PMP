@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Project;
@@ -44,7 +45,7 @@ class ProjectsController extends Controller
         $task_types = taskType::all();
         $task_statuses = TaskStatus::all();
 
-        return view('projects.create', compact('users', 'verticals', 'clients', 'technologies', 'projectMembers', 'projectRoles','task_types','task_statuses','projectManagers'));
+        return view('projects.create', compact('users', 'verticals', 'clients', 'technologies', 'projectMembers', 'projectRoles', 'task_types', 'task_statuses', 'projectManagers'));
     }
 
     public function store(Request $request)
@@ -83,7 +84,7 @@ class ProjectsController extends Controller
         $project->client_spoc_email = $request->client_spoc_email;
         $project->client_spoc_contact = $request->client_spoc_contact;
         $project->vertical_id = $request->vertical_id;
-        $project->technology_id = implode(',', $request->technology_id); 
+        $project->technology_id = implode(',', $request->technology_id);
         $project->client_id = $request->client_id;
         $project->task_type_id = implode(',', $request->task_type_id);
         $project->task_status_id = implode(',', $request->task_status_id);
@@ -168,7 +169,7 @@ class ProjectsController extends Controller
         $projectMembers = Profile::all();
         $task_types = taskType::all();
         $task_statuses = TaskStatus::all();
-        
+
         // Retrieve the selected technologies for the project
         $selectedTechnologies = explode(',', $project->technology_id);
 
@@ -178,7 +179,7 @@ class ProjectsController extends Controller
         // Retrieve the selected task_types for the project
         $selectedTaskStatus = explode(',', $project->task_status_id);
 
-        return view('projects.edit', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies','task_types','selectedTaskTypes','task_statuses','selectedTaskStatus'));
+        return view('projects.edit', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies', 'task_types', 'selectedTaskTypes', 'task_statuses', 'selectedTaskStatus'));
     }
 
 
@@ -217,7 +218,7 @@ class ProjectsController extends Controller
         $project->client_spoc_contact = $request->client_spoc_contact;
         $project->vertical_id = $request->vertical_id;
         // $project->technology_id = $request->technology_id;
-        $project->technology_id = implode(',', $request->technology_id); 
+        $project->technology_id = implode(',', $request->technology_id);
         $project->client_id = $request->client_id;
         //$project->project_members_id = $request->project_members_id;
         //$project->project_role_id = $request->project_role_id;
@@ -227,12 +228,12 @@ class ProjectsController extends Controller
 
         // $projectMembersIds = $request->input('project_members_id', []);
         // $projectRolesIds = $request->input('project_role_id', []);
-        
+
         // foreach ($projectMembersIds as $key => $memberId) {
         //     // Make sure the $key index exists in the $projectRolesIds array
         //     if (isset($projectRolesIds[$key])) {
         //         $role = $projectRolesIds[$key];
-                
+
         //         // Make sure both member ID and role ID are provided before attaching
         //         if ($memberId && $role) {
         //             $project->projectMembers()->attach($memberId, ['project_role_id' => $role]);
@@ -242,7 +243,7 @@ class ProjectsController extends Controller
 
         $taskTypeIds = array_unique($request->task_type_id);
         $project->projectTaskTypes()->whereNotIn('task_type_id', $taskTypeIds)->delete();
-    
+
         // Add new task types
         foreach ($taskTypeIds as $taskTypeId) {
             if (!$project->projectTaskTypes()->where('task_type_id', $taskTypeId)->exists()) {
@@ -282,7 +283,7 @@ class ProjectsController extends Controller
         }
 
         // Recalculate the total cost
-        $projectMembers = $project->projectMembers; 
+        $projectMembers = $project->projectMembers;
         $totalCost = $this->calculateTotalCost($project);
 
         return view('projects.cost', compact('project', 'totalCost', 'projectMembers'))
@@ -379,7 +380,7 @@ class ProjectsController extends Controller
 
         return $totalCost;
     }
-    
+
     public function viewCost(Project $project)
     {
         // Calculate total cost and retrieve project members
@@ -424,10 +425,10 @@ class ProjectsController extends Controller
                 $memberCost = ($engagementPercentage * ($monthlyEmployeePrice)) * $duration;
                 break;
             case 'yearly':
-                $memberCost = ($engagementPercentage * ($yearlyEmployeePrice )) * $duration;
+                $memberCost = ($engagementPercentage * ($yearlyEmployeePrice)) * $duration;
                 break;
             case 'daily':
-                $memberCost = ($engagementPercentage * ($dailyEmployeePrice )) * $duration;
+                $memberCost = ($engagementPercentage * ($dailyEmployeePrice)) * $duration;
                 break;
             default:
                 // Default case, e.g., if engagement mode is not specified
@@ -457,7 +458,7 @@ class ProjectsController extends Controller
         $projectMembers = Profile::all();
         $task_types = taskType::all();
         $task_statuses = TaskStatus::all();
-        
+
         // Retrieve the selected technologies for the project
         $selectedTechnologies = explode(',', $project->technology_id);
 
@@ -467,7 +468,7 @@ class ProjectsController extends Controller
         // Retrieve the selected task_types for the project
         $selectedTaskStatus = explode(',', $project->task_status_id);
 
-        return view('projects.team', compact('project','users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies','task_types','selectedTaskTypes','task_statuses','selectedTaskStatus'));
+        return view('projects.team', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies', 'task_types', 'selectedTaskTypes', 'task_statuses', 'selectedTaskStatus'));
     }
 
     public function sidebar(Project $project)
@@ -483,7 +484,7 @@ class ProjectsController extends Controller
         $users = User::all();
         $sprints = Sprint::where('projects_id', $project->id)->get();
         $projects = Project::all(['id', 'project_name']);
-        $project = Project::with('members.user')->find($projectId); 
+        $project = Project::with('members.user')->find($projectId);
         $profiles = Profile::all();
         $projectMembers = ProjectMember::with('user')->get();
 
@@ -506,12 +507,13 @@ class ProjectsController extends Controller
             ->pluck('type_name')
             ->toArray();
 
-        return view('projects.sprint', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));    
+        return view('projects.sprint', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
     }
 
     public function daily_entry(Project $project)
     {
-        return view('projects.daily_entry', compact('project'));
+        $tasks = Task::where('project_id', $project->id)->get();
+        return view('projects.daily_entry', compact('project', 'tasks'));
     }
 
     public function qa(Project $project)
@@ -565,19 +567,19 @@ class ProjectsController extends Controller
     public function all_tasks(Project $project)
     {
         $tasks = Task::where('project_id', $project->id)->get();
-        return view('projects.all-tasks', compact('project','tasks'));
+        return view('projects.all-tasks', compact('project', 'tasks'));
     }
 
     public function updateTaskStatus(Request $request)
     {
         $taskId = $request->input('taskId');
         $statusId = $request->input('statusId');
-    
+
         // Update the task status in the database
         $task = Task::findOrFail($taskId);
         $task->project_task_status_id = $statusId;
         $task->save();
-    
+
         // You can return a success response if needed
         return response()->json(['message' => 'Task status updated successfully']);
     }
@@ -589,8 +591,8 @@ class ProjectsController extends Controller
 
         // Fetch tasks based on project_id and sprint_id
         $tasks = Task::where('project_id', $projectId)
-                    ->where('sprint_id', $sprintId)
-                    ->get();
+            ->where('sprint_id', $sprintId)
+            ->get();
 
         return response()->json($tasks);
     }

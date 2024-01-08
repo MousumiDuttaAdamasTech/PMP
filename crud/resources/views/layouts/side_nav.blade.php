@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-  @yield('custom_css') 
+  @yield('custom_css')
   @yield('project_css')
   @yield('kanban_css')
-  @yield('project_js') 
+  @yield('project_js')
   @yield('custom_js')
-  
+
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title></title>
@@ -18,10 +18,13 @@
   <link href="{{ asset('img/apple-touch-icon.png') }}" rel="apple-touch-icon">
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
   <!-- Vendor CSS Files -->
   <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <link href="{{ asset('vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
   <link href="{{ asset('vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
   <link href="{{ asset('vendor/quill/quill.snow.css') }}" rel="stylesheet">
@@ -31,7 +34,9 @@
   <!-- Template Main CSS File -->
   <link href="{{ asset('css/style.css') }}" rel="stylesheet">
   <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-dfBg4NhRnVgz6bYpK+Ut3G6+ia+WNC0RlgSksF9koQYnAr7z7RfQox7iC7f/J73XKnO0C7vyG3HqQqXyG/9zFg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src="https://kit.fontawesome.com/416ffb3c0f.js" crossorigin="anonymous"></script>
 
 </head>
@@ -208,17 +213,17 @@
 
         <li class="nav-item dropdown pe-3">
 
-            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-              <img src="{{ asset(auth()->user()->profile->image) }}" alt="Profile" class="rounded-circle">
-              <span class="d-none d-md-block dropdown-toggle ps-2" style="color:white">{{ auth()->user()->name }}</span>
-            </a><!-- End Profile Iamge Icon -->
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="{{ asset(auth()->user()->profile->image) }}" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2" style="color:white">{{ auth()->user()->name }}</span>
+          </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
               <h6>{{ auth()->user()->name }}</h6>
               <span>
                 @if (auth()->user()->profile)
-                    {{ auth()->user()->profile->designation->level }}
+                {{ auth()->user()->profile->designation->level }}
                 @endif
               </span>
             </li>
@@ -227,7 +232,8 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ auth()->user()->profile ? route('profiles.show', auth()->user()->profile->id) : route('profiles.create') }}">
+              <a class="dropdown-item d-flex align-items-center"
+                href="{{ auth()->user()->profile ? route('profiles.show', auth()->user()->profile->id) : route('profiles.create') }}">
                 <i class="bi bi-person"></i>
                 <span>My Profile</span>
               </a>
@@ -249,9 +255,9 @@
 
             @if (Auth::check() && Auth::user()->role_id === 1)
             <li>
-               <a class="dropdown-item d-flex align-items-center" href="{{ route('register') }}">
-               <i class="fa-regular fa-address-card"></i>
-               <span>Register</span>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('register') }}">
+                <i class="fa-regular fa-address-card"></i>
+                <span>Register</span>
               </a>
             </li>
             @endif
@@ -273,11 +279,11 @@
             <form method="POST" action="{{ route('logout') }}">
               @csrf
               <button type="submit" class="dropdown-item d-flex align-items-center">
-                  <i class="bi bi-box-arrow-right"></i>
-                  <span>Sign Out</span>
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
               </button>
-          </form>
-          
+            </form>
+
 
           </ul><!-- End Profile Dropdown Items -->
         </li><!-- End Profile Nav -->
@@ -297,7 +303,7 @@
           <span class="logo_name"></span>
         </section>
       </a>
-    
+
     </div><!-- End Logo -->
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -310,7 +316,7 @@
       </li><!-- End Dashboard Nav -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="{{ route('profiles.index') }}"  data-section="profiles">
+        <a class="nav-link collapsed" href="{{ route('profiles.index') }}" data-section="profiles">
           <i class="fa-solid fa-users" style="font-size:25px"></i>
           <span class="icon_text">Users</span>
         </a>
@@ -329,16 +335,16 @@
           <span class="icon_text">Projects</span>
         </a>
       </li><!-- End projects Nav -->
-      
+
       <i class="fa-solid fa-circle-chevron-left fa-lg toggle-sidebar-btn sidebar_collapse_icon"></i>
-      
+
     </ul>
 
-</aside><!-- End Sidebar-->
+  </aside><!-- End Sidebar-->
 
   <main id="main" class="main">
 
-  <div class="pagetitle">
+    <div class="pagetitle">
       <h1>@yield('pageTitle')</h1>
       <nav>
         <ol class="breadcrumb">
@@ -353,7 +359,7 @@
 
         <div class="container">
           @yield('content')
-      </div>
+        </div>
 
       </div>
     </section>
@@ -363,8 +369,9 @@
   </main><!-- End #main -->
 
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+      class="bi bi-arrow-up-short"></i></a>
+
   <!-- Vendor JS Files -->
   <script src="{{ asset('vendor/apexcharts/apexcharts.min.js') }}"></script>
   <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
