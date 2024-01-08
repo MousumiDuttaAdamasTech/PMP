@@ -492,7 +492,7 @@ class ProjectsController extends Controller
             ->join('task_status', 'project_task_status.task_status_id', '=', 'task_status.id')
             ->join('project', 'project_task_status.project_id', '=', 'project.id')
             ->select('project_task_status.id as project_task_status_id', 'task_status.status')
-            ->where('project.id', $project->id) // Use $project->id instead of $projectId
+            ->where('project.id', $projectId) // Use $project->id instead of $projectId
             ->distinct()
             ->get();
 
@@ -501,7 +501,7 @@ class ProjectsController extends Controller
             ->join('task_types', 'project_task_types.task_type_id', '=', 'task_types.id')
             ->join('project', 'project_task_types.project_id', '=', 'project.id')
             ->select('task_types.type_name')
-            ->where('project.id', $project->id)
+            ->where('project.id', $projectId)
             ->distinct()
             ->pluck('type_name')
             ->toArray();
@@ -564,8 +564,35 @@ class ProjectsController extends Controller
 
     public function all_tasks(Project $project)
     {
+        $projectId = $project->id;
         $tasks = Task::where('project_id', $project->id)->get();
-        return view('projects.all-tasks', compact('project','tasks'));
+        $taskStatuses = TaskStatus::all();
+        $users = User::all();
+        $sprints = Sprint::where('projects_id', $project->id)->get();
+        $projects = Project::all(['id', 'project_name']);
+        $project = Project::with('members.user')->find($projectId); 
+        $profiles = Profile::all();
+        $projectMembers = ProjectMember::with('user')->get();
+
+        // Fetch task statuses for the current project
+        $taskStatusesWithIds = DB::table('project_task_status')
+            ->join('task_status', 'project_task_status.task_status_id', '=', 'task_status.id')
+            ->join('project', 'project_task_status.project_id', '=', 'project.id')
+            ->select('project_task_status.id as project_task_status_id', 'task_status.status')
+            ->where('project.id', $projectId) // Use $project->id instead of $projectId
+            ->distinct()
+            ->get();
+
+        // Fetch project types for the current project
+        $projectTypes = DB::table('project_task_types')
+            ->join('task_types', 'project_task_types.task_type_id', '=', 'task_types.id')
+            ->join('project', 'project_task_types.project_id', '=', 'project.id')
+            ->select('task_types.type_name')
+            ->where('project.id', $projectId)
+            ->distinct()
+            ->pluck('type_name')
+            ->toArray();
+        return view('projects.all-tasks', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
     }
 
     public function updateTaskStatus(Request $request)

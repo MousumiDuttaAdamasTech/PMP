@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/project.css') }}"> 
     <link rel="stylesheet" href="{{ asset('css/form.css') }}"> 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/css/select2.min.css" rel="stylesheet" />
     
 @endsection  
 
@@ -20,6 +21,8 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/side_highlight.js') }}"></script>
     <script src="{{ asset('js/project.js') }}"></script>
 
@@ -39,6 +42,11 @@
 
             // Add additional JavaScript logic here if needed
         });
+
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+
     </script>
 @endsection
 
@@ -68,6 +76,7 @@
                         <th>Release Management ID</th>
                         <th>Release Date</th>
                         <th>Title</th>
+                        <th>Approved By</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -78,9 +87,14 @@
                             <td>{{ $releaseManagement->rmid }}</td>
                             <td>{{ $releaseManagement->release_date }}</td>
                             <td>{{ $releaseManagement->name }}</td>
+                            <td>{{ $releaseManagement->approver->user->name }}</td>
+
                             <td>
                                 <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showReleaseManagementModal{{ $releaseManagement->id }}" style="margin-left: 20px">
                                     <i class="fas fa-eye text-info"></i>
+                                </a>
+                                <a href="#" data-placement="top" data-toggle="modal" data-target="#addStakeholderModal{{ $releaseManagement->id }}">
+                                    <i class="fa-solid fa-people-roof text-warning" style="margin-right: 10px"></i>
                                 </a>
                             </td>
                         </tr>
@@ -96,7 +110,13 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group">
-                                                    <label for="name" style="font-size: 15px;">Name</label>
+                                                    <label for="rmid" style="font-size: 15px;">Release Management</label>
+                                                    <input type="text" name="rmid" id="rmid" class="form-control shadow-sm" required value="{{ old('rmid', $releaseManagement->rmid) }}" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" style="font-size: 15px;">Title</label>
                                                     <input type="text" name="name" id="name" class="form-control shadow-sm" required value="{{ old('name', $releaseManagement->name) }}" disabled>
                                                 </div>
                                             </div>
@@ -104,6 +124,12 @@
                                                 <div class="form-group">
                                                     <label for="release_date" style="font-size: 15px;">Release Date</label>
                                                     <input type="date" name="release_date" id="release_date" class="form-control shadow-sm" required value="{{ old('release_date', $releaseManagement->release_date) }}" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="approved_by" style="font-size: 15px;">Approved By</label>
+                                                    <input type="text" name="approved_by" id="release_date" class="form-control shadow-sm" required value="{{ $releaseManagement->approver->user->name }}" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -136,11 +162,61 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Add Stakeholder Modal for each releaseManagement -->
+                        <div class="modal fade" id="addStakeholderModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="addStakeholderModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="addStakeholderModalLabel{{ $releaseManagement->id }}">Stakeholders</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Stakeholder addition form goes here -->
+                                        <form action="{{ route('projects.release_management.addStakeholder', ['project' => $project->id, 'releaseManagement' => $releaseManagement->id]) }}" method="post">
+                                            @csrf
+                                            <div class="form-group">
+                                                <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
+                                                <label for="member_id">Select Project Member:</label>
+                                                <select name="member_id[]" id="member_id" class="form-control select2" multiple>
+                                                    @foreach ($releaseManagement->projectMembers() as $projectMember)
+                                                        <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <!-- Additional form fields go here -->
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </form>
+
+                                        <!-- Display existing stakeholders -->
+                @if ($releaseManagement->stakeholders->count() > 0)
+                    <div class="row">
+                        @foreach ($releaseManagement->stakeholders as $stakeholder)
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                    <h5 class="card-title">{{ optional(optional($stakeholder->member)->user)->name }}</h5>
+                                        <!-- You can add more details if needed -->
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
+                    </div>
+                @else
+                    <p>No stakeholders added yet.</p>
+                @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
+    </div>
 
         <!-- Release Management Modal -->
         <div class="modal" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel" aria-hidden="true">
@@ -157,6 +233,13 @@
                                 <input type="hidden" name="project_id" value="{{ $project->id }}">
 
                                 <!-- Other Release Management Form Fields -->
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="rmid">Release Management ID:</label>
+                                        <input type="text" class="form-control shadow-sm" name="rmid" id="rmid" required>
+                                    </div>
+                                </div>
+                                
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="name">Name:</label>
@@ -182,6 +265,18 @@
                                     <div class="form-group">
                                         <label for="documents">Documents:</label>
                                         <input type="file" class="form-control shadow-sm" name="documents[]" id="documents" multiple>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="approved_by">Approved By:</label>
+                                        <select name="approved_by" id="approved_by" class="form-controlcl shadow-sm" required>
+                                            <option value="">Select User</option>
+                                            @foreach ($project->projectMembers as $projectMember)
+                                                <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 

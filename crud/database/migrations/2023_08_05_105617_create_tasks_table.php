@@ -20,7 +20,10 @@ return new class extends Migration
             $table->text('details');
             $table->string('assigned_to');
             $table->unsignedBigInteger('project_task_status_id');
-            $table->foreign('project_task_status_id')->references('id')->on('project_task_status');
+            $table->unsignedBigInteger('sprint_id');
+            $table->foreign('sprint_id')->references('id')->on('sprints');
+            $table->unsignedBigInteger('parent_task')->nullable();
+            $table->foreign('parent_task')->references('id')->on('tasks'); 
             $table->timestamps();
         });
     }

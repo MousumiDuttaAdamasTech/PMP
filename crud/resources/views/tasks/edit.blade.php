@@ -96,7 +96,7 @@
                 <select name="assigned_to[]" id="assigned_to" class="assign_to form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required multiple>
                     <option value="" selected disabled>Select User</option>   
                     @foreach ($project->members as $member)
-                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id, old('assigned_to', optional($task)->assignedToIds() ?? [])) ? 'selected' : '' }}>
+                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id, old('assigned_to', optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
                             {{ $member->user->name }}
                         </option>
                     @endforeach
@@ -110,7 +110,7 @@
                 <select name="allotted_to[]" id="allotted_to" class="assign_to form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required multiple>
                     <option value="" selected disabled>Select User</option>   
                     @foreach ($project->members as $member)
-                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id, old('allotted_to', optional($task)->allottedToIds() ?? [])) ? 'selected' : '' }}>
+                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id, old('allotted_to', optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ? 'selected' : '' }}>
                             {{ $member->user->name }}
                         </option>
                     @endforeach

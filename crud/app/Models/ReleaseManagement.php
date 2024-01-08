@@ -17,6 +17,8 @@ class ReleaseManagement extends Model
         'name',
         'details',
         'release_date',
+        'approved_by',
+        'rmid',
     ];
 
     protected static function boot()
@@ -37,5 +39,30 @@ class ReleaseManagement extends Model
     public function documents()
     {
         return $this->hasMany(ReleaseManagementDocument::class);
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(ProjectMember::class, 'approved_by' , 'project_members_id');
+    }
+
+    public function getApprovedByNameAttribute()
+    {
+        return $this->approver->user->name;
+    }
+
+    public function projectMembers()
+    {
+        return $this->project->projectMembers;
+    }
+
+    public function stakeholdersWithMembers()
+    {
+        return $this->hasMany(Stakeholder::class)->with('projectMember.user');
+    }
+
+    public function stakeholders()
+    {
+        return $this->hasMany(Stakeholder::class);
     }
 }

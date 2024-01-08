@@ -23,8 +23,10 @@ class TaskController extends Controller
         // Assuming you have a 'project_id' column in your tasks table
         $tasks = Task::where('project_id', $projectId)->get();
 
+        $sprints = Sprint::all();
+
         // Pass the tasks to the view
-        return view('projects.all-tasks', compact('tasks'));
+        return view('projects.all-tasks', compact('tasks', 'sprints'));
     }
 
         public function create()
@@ -32,7 +34,8 @@ class TaskController extends Controller
         $tasks = Task::all();
         $projectMembers= ProjectMember::all();
         $projects= Project::all();
-        return view('kanban.kanban', compact('tasks','projectMembers','projects'));
+        $sprints = Sprint::all();
+        return back() -> with(compact('tasks','projectMembers','projects','sprints'));
     }
 
     public function store(Request $request)
@@ -76,7 +79,7 @@ class TaskController extends Controller
             $taskUser->save();
         }
 
-        return redirect()->route('projects.sprint', ['project' => $projectId])->with('success', 'Task created successfully.');
+        return back()->with('success', 'Task created successfully.');
     }
 
     public function show(Task $task)
@@ -84,14 +87,14 @@ class TaskController extends Controller
         return view('tasks.show', compact('task'));
     }
 
-public function edit(Task $task)
-{
-    $tasks = Task::all();
-    $projectMembers = ProjectMember::all();
-    $projects = Project::all();
-    $sprints = Sprint::all();
-    return view('tasks.edit', compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
-}
+    public function edit(Task $task)
+    {
+        $tasks = Task::all();
+        $projectMembers = ProjectMember::all();
+        $projects = Project::all();
+        $sprints = Sprint::all();
+        return back()->with(compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
+    }
 
 
     public function update(Request $request, Task $task)
@@ -111,45 +114,35 @@ public function edit(Task $task)
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);
         $task->title = $request->title;
         $task->priority = $request->priority;
-        $task->estimated_time = $request->estimated_time_number . ' ' . $request->estimated_time_unit;
+        $task->estimated_time = $request->estimated_time;
         $task->details = $request->details;
         $task->assigned_to = implode(',', $request->assigned_to);
         $task->allotted_to = implode(',', $request->allotted_to);
+        $task->project_task_status_id = $request->project_task_status_id;
+        $task->sprint_id = $request->sprint_id;
 
         $task->save();
 
         $assignedTo = $request->assigned_to;
-        foreach ($assignedTo as $userId) {
-            // Check if the relationship already exists before creating a new entry
-            if (!$task->taskUsers->contains('assigned_to', $userId)) {
-                $taskUser = new TaskUser([
-                    'task_id' => $task->id,
-                    'assigned_to' => $userId,
-                ]);
-                $taskUser->save();
-            }
-        }
-
         $allottedTo = $request->allotted_to;
-        foreach ($allottedTo as $userId) {
-            // Check if the relationship already exists before creating a new entry
-            if (!$task->taskUsers->contains('allotted_to', $userId)) {
-                $taskUser = new TaskUser([
-                    'task_id' => $task->id,
-                    'allotted_to' => $userId,
-                ]);
-                $taskUser->save();
-            }
+
+        foreach ($allottedTo as $index => $userId) {
+            $taskUser = new TaskUser([
+                'task_id' => $task->id,
+                'allotted_to' => $userId,
+                'assigned_to' => $allottedTo[$index], // Set 'assigned_to' based on the corresponding index in the allotted_to array
+            ]);
+            $taskUser->save();
         }
         
-        return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+        return back()->with('success', 'Updated successfully.');
     }
 
 
     public function destroy(Task $task)
     {
         $task->delete();
-        return redirect()->route('tasks.index');
+        return back()->with('success', 'Deleted successfully.');
     }
 
 }
