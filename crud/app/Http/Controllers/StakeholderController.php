@@ -24,6 +24,8 @@ class  StakeholderController extends Controller
         $members = ProjectMember::all();
         $stakeholders = Stakeholder::all();
         $stakeholderRoles = StakeholderRole::all();
+
+        dd($stakeholders);
     
         return view('projects.release_management', compact('releaseManagement', 'members', 'stakeholders', 'stakeholderRoles'));
     }

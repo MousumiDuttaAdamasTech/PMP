@@ -155,6 +155,7 @@
 
                 // Get the role name if found, otherwise an empty string
                 $roleName = $role ? $role->member_role_type : '';
+                
                 @endphp
                 <div class="col-lg-3 col-md-6 d-flex flex-col align-items-center card member-card" data-toggle="modal"
                     data-target="#memberDetailsModal" data-member-name="{{ $projectMember->profile_name }}"

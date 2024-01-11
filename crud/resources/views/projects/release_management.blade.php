@@ -52,6 +52,8 @@
 </script>
 @endsection
 
+
+
 @section('main_content')
 @if ($errors->any())
 <div class="error-messages">
@@ -97,13 +99,20 @@
                     <td>
                         <a href="#" data-toggle="modal" data-placement="top" title="Show"
                             data-target="#showReleaseManagementModal{{ $releaseManagement->id }}"
-                            style="margin-left: 20px">
+                            style="">
                             <i class="fas fa-eye text-info"></i>
+                        </a>
+                        <a href="#" data-toggle="modal" data-placement="top" title="Edit"
+                        data-target="#" style="margin-left: 10px">
+                            <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                         </a>
                         <a href="#" data-placement="top" data-toggle="modal"
                             data-target="#addStakeholderModal{{ $releaseManagement->id }}">
-                            <i class="fa-solid fa-people-roof text-warning" style="margin-right: 10px"></i>
+                            <i class="fa-solid fa-people-roof text-warning" style=""></i>
                         </a>
+                        <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#" style="margin-left: 10px">
+                                        <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                                    </button>  
                     </td>
                 </tr>
 
@@ -198,66 +207,94 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <div class="row">
-                                    <!-- Stakeholder addition form goes here -->
-                                    <form action="{{ route('stakeholders.store') }}" method="post">
-                                        @csrf
-                                        <div class="form-group stakeform">
-                                            <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
+                                <!-- Stakeholder addition form goes here -->
+                                <form action="{{ route('stakeholders.store') }}" method="post">
+                                    @csrf
+                                    <div class="form-group stakeform">
+                                        <input type="hidden" name="release_management_id"
+                                            value="{{ $releaseManagement->id }}">
+                                        <div class="row">
                                             <div class="col-md-6">
                                                 <label for="member_id">Select Project Member:</label>
-                                                <select name="member_id" id="member_id" class="form-control" style="width: 100%;">
-                                                <option value="">Select Member</option>
+                                                <select name="member_id" id="member_id" class="form-control"
+                                                    style="width: 100%;">
+                                                    <option value="">Select Member</option>
                                                     @foreach ($members as $projectMember)
-                                                        <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
+                                                    <option value="{{ $projectMember->id }}">{{
+                                                        $projectMember->user->name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="stakeholder_role_id">Select Member Role:</label>
-                                                <select name="stakeholder_role_id" id="stakeholder_role_id" class="form-control" style="width: 100%;">
-                                                <option value="">Select Member Role</option>
+                                                <select name="stakeholder_role_id" id="stakeholder_role_id"
+                                                    class="form-control" style="width: 100%;">
+                                                    <option value="">Select Member Role</option>
                                                     @foreach ($stakeholderRoles as $stakeholderRole)
-                                                        <option value="{{ $stakeholderRole->id }}">{{ $stakeholderRole->stakeholder_role_name }}</option>
+                                                    <option value="{{ $stakeholderRole->id }}">{{
+                                                        $stakeholderRole->stakeholder_role_name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
                                         </div>
-                                        </div>
-                                        <div class="form-actions">
-                                        <button type="submit" class="btn btn-primary">Save</button>
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
-                                        <!-- Additional form fields go here -->
-                                        
-                                    </form>
+                                    </div>
+                                    <!-- Additional form fields go here -->
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </form>
 
-                                    <!-- Display existing stakeholders -->
-                                    <div class="row mt-3">
+                                <!-- Display existing stakeholders -->
+                                <div class="row mt-3">
                                     @foreach ($releaseManagement->stakeholders as $stakeholder)
-                                        <div class="col-md-4 mb-3">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <li>
-                                                        @if ($stakeholder->projectMember && $stakeholder->projectMember->user)
-                                                            {{ $stakeholder->projectMember->user->name }} - 
-                                                        @else
-                                                            User Not Found - 
-                                                        @endif
 
-                                                        @if ($stakeholder->stakeholderRole)
-                                                            {{ $stakeholder->stakeholderRole->stakeholder_role_name }}
-                                                        @else
-                                                            Role Not Found
-                                                        @endif
-                                                    </li>
+                                    <div class="col-md-6">
+                                        <div class=" card">
+                                            <div class="card-body">
+                                                @if ($stakeholder->projectMember && $stakeholder->projectMember->user)
+                                                <!-- {{ $stakeholder->projectMember->user->name }} - -->
+                                                <div class="avatar"
+                                                    style="margin-left: 0px; margin-top: 10px; left: 17px">
+                                                    <img class="rounded_circle mb-1 mt-3"
+                                                        src="{{asset($images[$stakeholder->member_id]->image)}}"
+                                                        alt="Profile Image" style="height: 140px; width: 140px;">
                                                 </div>
+                                                <p>{{ $stakeholder->projectMember->user->profile_photo_path}}</p>
+                                                <p id="card-title" class="card-title user-name"
+                                                    style="font-size: 20px !important; font-weight: 1000 !important; text-align:center">
+                                                    {{ $stakeholder->projectMember->user->name }}
+                                                </p>
+                                                @else
+                                                <!-- User Not Found - -->
+                                                <div class="avatar"
+                                                    style="margin-left: 0px; margin-top: 10px; left: 17px">
+                                                    <img class="rounded_circle mb-1 mt-3" src="" alt="Profile Image"
+                                                        style="height: 140px; width: 140px;">
+                                                </div>
+                                                <p id="card-title" class="card-title user-name"
+                                                    style="font-size: 20px !important; font-weight: 1000 !important;">
+                                                    User Not Found
+                                                </p>
+                                                @endif
+
+                                                @if ($stakeholder->stakeholderRole)
+                                                <!-- {{ $stakeholder->stakeholderRole->stakeholder_role_name }} -->
+                                                <p class="card-text role"
+                                                    style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px;text-align:center">
+                                                    {{ $stakeholder->stakeholderRole->stakeholder_role_name }}
+                                                </p>
+                                                @else
+                                                <!-- Role Not Found -->
+                                                <p class="card-text role"
+                                                    style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
+                                                    Role Not Found
+                                                </p>
+                                                @endif
                                             </div>
                                         </div>
+                                    </div>
                                     @endforeach
-                                
-                            </div>
-                                
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
