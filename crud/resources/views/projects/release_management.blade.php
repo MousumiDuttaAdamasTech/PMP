@@ -199,19 +199,22 @@
                             </div>
                             <div class="modal-body">
                                 <!-- Stakeholder addition form goes here -->
-                                <form
-                                    action="{{ route('projects.release_management.addStakeholder', ['project' => $project->id, 'releaseManagement' => $releaseManagement->id]) }}"
-                                    method="post">
+                                <form action="{{ route('stakeholders.store') }}" method="post">
                                     @csrf
                                     <div class="form-group stakeform">
-                                        <input type="hidden" name="release_management_id"
-                                            value="{{ $releaseManagement->id }}">
+                                        <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
                                         <label for="member_id">Select Project Member:</label>
-                                        <select name="member_id[]" id="member_id" class="form-control stakelist"
-                                            multiple="multiple" style="width: 100%;">
-                                            @foreach ($releaseManagement->projectMembers() as $projectMember)
-                                            <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}
-                                            </option>
+                                        <select name="member_id" id="member_id" class="form-control" style="width: 100%;">
+                                        <option value="">Select Member</option>
+                                            @foreach ($members as $projectMember)
+                                                <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <label for="stakeholder_role_id">Select Member Role:</label>
+                                        <select name="stakeholder_role_id" id="stakeholder_role_id" class="form-control" style="width: 100%;">
+                                        <option value="">Select Member Role</option>
+                                            @foreach ($stakeholderRoles as $stakeholderRole)
+                                                <option value="{{ $stakeholderRole->id }}">{{ $stakeholderRole->stakeholder_role_name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -220,23 +223,30 @@
                                 </form>
 
                                 <!-- Display existing stakeholders -->
-                                @if ($releaseManagement->stakeholders->count() > 0)
-                                <div class="row">
-                                    @foreach ($releaseManagement->stakeholders as $stakeholder)
+                                <div class="row mt-3">
+                                @foreach ($releaseManagement->stakeholders as $stakeholder)
                                     <div class="col-md-4 mb-3">
                                         <div class="card">
                                             <div class="card-body">
-                                                <h5 class="card-title">{{
-                                                    optional(optional($stakeholder->member)->user)->name }}</h5>
-                                                <!-- You can add more details if needed -->
+                                                <li>
+                                                    @if ($stakeholder->projectMember && $stakeholder->projectMember->user)
+                                                        {{ $stakeholder->projectMember->user->name }} - 
+                                                    @else
+                                                        User Not Found - 
+                                                    @endif
+
+                                                    @if ($stakeholder->stakeholderRole)
+                                                        {{ $stakeholder->stakeholderRole->stakeholder_role_name }}
+                                                    @else
+                                                        Role Not Found
+                                                    @endif
+                                                </li>
                                             </div>
                                         </div>
                                     </div>
-                                    @endforeach
-                                </div>
-                                @else
-                                <p class="mt-3">No stakeholders added yet.</p>
-                                @endif
+                                @endforeach
+                            </div>
+                                
                             </div>
                         </div>
                     </div>

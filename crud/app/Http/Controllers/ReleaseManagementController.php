@@ -7,6 +7,7 @@ use App\Models\ReleaseManagementDocument;
 use App\Models\Project;
 use App\Models\ProjectMember;
 use App\Models\Stakeholder;
+use App\Models\StakeholderRole;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -111,7 +112,7 @@ class ReleaseManagementController extends Controller
         return redirect()->route('projects.release_management', $project)->with('success', 'Release Management entry updated successfully!');
     }
 
-    public function addStakeholder(Request $request, Project $project, ReleaseManagement $releaseManagement)
+    public function addStakeholder(Request $request, Project $project, ReleaseManagement $releaseManagement, StakeholderRole $stakeholderRole)
     {
         // Validation logic...
         $request->validate([
@@ -119,12 +120,14 @@ class ReleaseManagementController extends Controller
             //'member_id.*' => 'exists:project_members,id',
             'release_management_id' => 'required',
             // Add any other validation rules as needed
+            'stakeholder_role_id' => 'required'
         ]);
 
         // Create a new Stakeholder instance
         $stakeholder = new Stakeholder([
             'member_id' => $request->input('member_id'),
             'release_management_id' => $request->input('release_management_id'),
+            'stakeholder_role_id' => $request->input('stakeholder_role_id'),
         ]);
 
         foreach ($request->input('member_id') as $memberId) {
@@ -132,6 +135,7 @@ class ReleaseManagementController extends Controller
             $stakeholder = new Stakeholder([
                 'member_id' => $memberId,
                 'release_management_id' => $request->input('release_management_id'),
+                'stakeholder_role_id' => $request->input('stakeholder_role_id'),
             ]);
     
             // Associate the Stakeholder with the current ReleaseManagement

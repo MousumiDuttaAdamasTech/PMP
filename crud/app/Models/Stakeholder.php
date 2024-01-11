@@ -12,6 +12,7 @@ class Stakeholder extends Model
     protected $fillable = [
         'release_management_id',
         'member_id',
+        'stakeholder_role_id',
     ];
 
     public function release_management()
@@ -22,5 +23,10 @@ class Stakeholder extends Model
     public function projectMember()
     {
         return $this->belongsTo(ProjectMember::class, 'member_id' , 'project_members_id');
+    }
+
+    public function stakeholderRole()
+    {
+        return $this->belongsTo(StakeholderRole::class);
     }
 }

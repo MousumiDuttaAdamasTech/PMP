@@ -29,6 +29,7 @@ use App\Http\Controllers\WorkerPriceController;
 use App\Http\Controllers\ReleaseManagementController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DailyEntryController;
+use App\Http\Controllers\StakeholderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +100,8 @@ Route::middleware([
     Route::post('/{project}/release_management', [ReleaseManagementController::class, 'store'])->name('projects.release_management.store');
 
     Route::post('/project/{project}/release_management/{releaseManagement}/add-stakeholder', [ReleaseManagementController::class, 'addStakeholder'])->name('projects.release_management.addStakeholder');
+
+    Route::resource('stakeholders', StakeholderController::class);
 
     // Route::post('/project/{project}/release-management/{releaseManagement}/add-stakeholder', 'ReleaseManagementController@addStakeholder')
     // ->name('projects.release_management.addStakeholder');

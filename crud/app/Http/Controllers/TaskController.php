@@ -96,7 +96,6 @@ class TaskController extends Controller
         return back()->with(compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
     }
 
-
     public function update(Request $request, Task $task)
     {
         $request->validate([
@@ -137,7 +136,6 @@ class TaskController extends Controller
         return back()->with('success', 'Updated successfully.');
     }
 
-
     public function destroy(Task $task)
     {
         $task->delete();
@@ -150,6 +148,4 @@ class TaskController extends Controller
         $task->project_task_status_id = 7;
         $task->save();
     }
-
-
 }

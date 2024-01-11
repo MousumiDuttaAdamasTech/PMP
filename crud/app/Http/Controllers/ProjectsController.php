@@ -22,6 +22,8 @@ use App\Models\ProjectMember;
 use App\Models\ReleaseManagement;
 use App\Models\Document;
 use App\Models\Doctype;
+use App\Models\StakeholderRole;
+use App\Models\Stakeholder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -542,12 +544,16 @@ class ProjectsController extends Controller
 
     public function release_management(Project $project)
     {
+        
+        $members = ProjectMember::all();
+        $stakeholders = Stakeholder::all();
+        $stakeholderRoles = StakeholderRole::all();
         // Assuming you have a check for the request method
         // to differentiate between GET and POST requests
         if (request()->isMethod('get')) {
             $releaseManagements = ReleaseManagement::where('project_id', $project->id)->get();
 
-            return view('projects.release_management', compact('project', 'releaseManagements'));
+            return view('projects.release_management', compact('project', 'releaseManagements','members','stakeholders','stakeholderRoles'));
         } elseif (request()->isMethod('post')) {
             // Handle form submissions, e.g., store, update, delete
             // Check for specific form actions and delegate to the appropriate methods in ReleaseManagementController
