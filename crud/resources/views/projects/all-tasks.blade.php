@@ -35,6 +35,20 @@
 
 @section('main_content')
 
+<script>
+    $(document).ready(function () {
+        $('.allotted_to_task').select2({
+            dropdownParent: $('.allot_task'),
+            placeholder: "Select a task"
+        });
+    });
+    $(document).ready(function () {
+        $('.allotted_to_user').select2({
+            dropdownParent: $('.allot_user'),
+            placeholder: "Select a user"
+        });
+    });
+</script>
 @if ($errors->any())
 <div class="error-messages">
     <strong>Validation Errors:</strong>
@@ -222,13 +236,12 @@
                             </div>
 
                             <div class="col-md-6">
-                                <div class="form-group allot">
+                                <div class="form-group allot_task">
                                     <label for="allotted_to" style="font-size: 15px;">Allotted To</label>
                                     <select name="allotted_to[]" id="allotted_to"
-                                        class="allotted_to form-controlcl shadow-sm"
+                                        class="allotted_to_task form-controlcl shadow-sm"
                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
                                         required multiple>
-                                        <option value="" selected disabled>Select User</option>
                                         @foreach ($project->members as $member)
                                         <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
                                         @endforeach
@@ -535,14 +548,17 @@
                             </div>
 
                             <div class="col-md-6">
+<<<<<<< HEAD
                                 <div class="form-group allot">
+=======
+                                <div class="form-group allot_user">
+>>>>>>> f64cf8d342337b6235c006e4afb56e009d658233
                                     <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
                                         To</label>
                                     <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
-                                        class="assign_to form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                        class="assign_to form-controlcl shadow-sm allotted_to_user"
+                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
                                         required multiple>
-                                        <option value="" selected disabled>Select User</option>
                                         @foreach ($project->members as $member)
                                         <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                             old('allotted_to',
