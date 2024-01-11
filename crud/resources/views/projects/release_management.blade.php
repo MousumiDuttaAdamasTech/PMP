@@ -202,21 +202,32 @@
                                 <form action="{{ route('stakeholders.store') }}" method="post">
                                     @csrf
                                     <div class="form-group stakeform">
-                                        <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
-                                        <label for="member_id">Select Project Member:</label>
-                                        <select name="member_id" id="member_id" class="form-control" style="width: 100%;">
-                                        <option value="">Select Member</option>
-                                            @foreach ($members as $projectMember)
-                                                <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <label for="stakeholder_role_id">Select Member Role:</label>
-                                        <select name="stakeholder_role_id" id="stakeholder_role_id" class="form-control" style="width: 100%;">
-                                        <option value="">Select Member Role</option>
-                                            @foreach ($stakeholderRoles as $stakeholderRole)
-                                                <option value="{{ $stakeholderRole->id }}">{{ $stakeholderRole->stakeholder_role_name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="hidden" name="release_management_id"
+                                            value="{{ $releaseManagement->id }}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="member_id">Select Project Member:</label>
+                                                <select name="member_id" id="member_id" class="form-control"
+                                                    style="width: 100%;">
+                                                    <option value="">Select Member</option>
+                                                    @foreach ($members as $projectMember)
+                                                    <option value="{{ $projectMember->id }}">{{
+                                                        $projectMember->user->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="stakeholder_role_id">Select Member Role:</label>
+                                                <select name="stakeholder_role_id" id="stakeholder_role_id"
+                                                    class="form-control" style="width: 100%;">
+                                                    <option value="">Select Member Role</option>
+                                                    @foreach ($stakeholderRoles as $stakeholderRole)
+                                                    <option value="{{ $stakeholderRole->id }}">{{
+                                                        $stakeholderRole->stakeholder_role_name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                     <!-- Additional form fields go here -->
                                     <button type="submit" class="btn btn-primary">Save</button>
@@ -224,29 +235,55 @@
 
                                 <!-- Display existing stakeholders -->
                                 <div class="row mt-3">
-                                @foreach ($releaseManagement->stakeholders as $stakeholder)
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card">
+                                    @foreach ($releaseManagement->stakeholders as $stakeholder)
+                                    <div class="col-md-6">
+                                        <div class=" card">
                                             <div class="card-body">
-                                                <li>
-                                                    @if ($stakeholder->projectMember && $stakeholder->projectMember->user)
-                                                        {{ $stakeholder->projectMember->user->name }} - 
-                                                    @else
-                                                        User Not Found - 
-                                                    @endif
+                                                @if ($stakeholder->projectMember && $stakeholder->projectMember->user)
+                                                <!-- {{ $stakeholder->projectMember->user->name }} - -->
+                                                <div class="avatar"
+                                                    style="margin-left: 0px; margin-top: 10px; left: 17px">
+                                                    <img class="rounded_circle mb-1 mt-3"
+                                                        src="{{ $stakeholder->projectMember->user->profile_photo_path}}"
+                                                        alt="Profile Image" style="height: 140px; width: 140px;">
+                                                </div>
+                                                <p id="card-title" class="card-title user-name"
+                                                    style="font-size: 20px !important; font-weight: 1000 !important;">
+                                                    {{ $stakeholder->projectMember->user->name }}
+                                                </p>
+                                                @else
+                                                <!-- User Not Found - -->
+                                                <div class="avatar"
+                                                    style="margin-left: 0px; margin-top: 10px; left: 17px">
+                                                    <img class="rounded_circle mb-1 mt-3" src="" alt="Profile Image"
+                                                        style="height: 140px; width: 140px;">
+                                                </div>
+                                                <p id="card-title" class="card-title user-name"
+                                                    style="font-size: 20px !important; font-weight: 1000 !important;">
+                                                    User Not Found
+                                                </p>
+                                                @endif
 
-                                                    @if ($stakeholder->stakeholderRole)
-                                                        {{ $stakeholder->stakeholderRole->stakeholder_role_name }}
-                                                    @else
-                                                        Role Not Found
-                                                    @endif
-                                                </li>
+                                                @if ($stakeholder->stakeholderRole)
+                                                <!-- {{ $stakeholder->stakeholderRole->stakeholder_role_name }} -->
+                                                <p class="card-text role"
+                                                    style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px;text-align:center">
+                                                    {{ $stakeholder->stakeholderRole->stakeholder_role_name }}
+                                                </p>
+                                                @else
+                                                <!-- Role Not Found -->
+                                                <p class="card-text role"
+                                                    style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
+                                                    Role Not Found
+                                                </p>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
-                                
+                                    @endforeach
+                                </div>
+
+
                             </div>
                         </div>
                     </div>
