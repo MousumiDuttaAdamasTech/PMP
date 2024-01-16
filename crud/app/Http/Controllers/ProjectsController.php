@@ -550,11 +550,23 @@ class ProjectsController extends Controller
         $stakeholders = Stakeholder::all();
         $stakeholderRoles = StakeholderRole::all();
 
-        $images = \App\Models\Stakeholder::leftJoin('profiles', 'profiles.id', '=', 'stakeholders.member_id')
-        ->select('profiles.image')
-        //->distinct()
-        ->get();
+        //dd($stakeholders);
 
+        $images = DB::table('release_management as RM')
+            ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name')
+            ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
+            ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
+            ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'st.stakeholder_role_id')
+            ->where('RM.id', '=', 4)
+            ->get();
+
+        // $images = \App\Models\Stakeholder::leftJoin('profiles', 'profiles.id', '=', 'stakeholders.member_id')
+        // ->select('profiles.image','profiles.profile_name')
+        // ->distinct()
+        // ->get();
+
+        
+    
 // $images is now a collection containing distinct profile images
 
 
@@ -578,6 +590,26 @@ class ProjectsController extends Controller
         }
     }
 
+    public function getImages(Request $request)
+    {
+
+        $release_management_id = $request->id;
+
+        
+        
+        $images = DB::table('release_management as RM')
+        ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name')
+        ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
+        ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
+        ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'st.stakeholder_role_id')
+        ->where('RM.id', '=', $release_management_id)
+        ->get();
+        
+        dd($images);
+        
+        return response()->json($images);
+    }
+
     public function reports(Project $project)
     {
         return view('projects.reports', compact('project'));
@@ -594,6 +626,7 @@ class ProjectsController extends Controller
         $project = Project::with('members.user')->find($projectId);
         $profiles = Profile::all();
         $projectMembers = ProjectMember::with('user')->get();
+        
 
         // Fetch task statuses for the current project
         $taskStatusesWithIds = DB::table('project_task_status')

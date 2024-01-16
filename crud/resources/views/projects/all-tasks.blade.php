@@ -80,56 +80,345 @@
         </thead>
         <tbody>
             @foreach($tasks as $task)
-            <tr class="shadow" style="border-radius:15px;">
-                <td style="font-size: 15px;">{{ $task->uuid }}</td>
-                <td style="font-size: 15px;">{{ $task->title }}</td>
-                <td style="font-size: 15px;">{{ $task->priority }}</td>
-                <td style="font-size: 15px;">{{ $task->estimated_time }}</td>
-                <td class="d-flex align-items-center" style="font-size: 15px;">
-                    <a href="#" data-toggle="modal" data-placement="top" title="Show"
-                        data-target="#showModal_{{ $task->id }}">
-                        <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
-                    </a>
-                    <a href="#" data-toggle="modal" data-placement="top" title="Edit"
-                        data-target="#editModal_{{ $task->id }}">
-                        <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                    </a>
-                    <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
-                        @method('delete')
-                        @csrf
-                        <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal"
-                            data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
-                            <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                        </button>
-                        <!-- Delete Modal start -->
-                        <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1"
-                            role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header flex-column">
-                                        <div class="icon-box">
-                                            <i class="material-icons">&#xE5CD;</i>
+                <tr class="shadow" style="border-radius:15px;">
+                    <td style="font-size: 15px;">{{ $task->uuid }}</td>
+                    <td style="font-size: 15px;">{{ $task->title }}</td>
+                    <td style="font-size: 15px;">{{ $task->priority }}</td>
+                    <td style="font-size: 15px;">{{ $task->estimated_time }}</td>
+                    <td class="d-flex align-items-center" style="font-size: 15px;">
+                        <a href="#" data-toggle="modal" data-placement="top" title="Show"
+                            data-target="#showModal_{{ $task->id }}">
+                            <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
+                        </a>
+                        <a href="#" data-toggle="modal" data-placement="top" title="Edit"
+                            data-target="#editModal_{{ $task->id }}">
+                            <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                        </a>
+                        <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
+                            @method('delete')
+                            @csrf
+                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal"
+                                data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
+                                <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                            </button>
+                            <!-- Delete Modal start -->
+                            <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1"
+                                role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header flex-column">
+                                            <div class="icon-box">
+                                                <i class="material-icons">&#xE5CD;</i>
+                                            </div>
+                                            <h3 class="modal-title w-100">Are you sure?</h3>
                                         </div>
-                                        <h3 class="modal-title w-100">Are you sure?</h3>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>Do you really want to delete these record?</p>
-                                    </div>
-                                    <div class="modal-footer justify-content-center">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                        <div class="modal-body">
+                                            <p>Do you really want to delete these record?</p>
+                                        </div>
+                                        <div class="modal-footer justify-content-center">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- Delete Modal end-->
+                        </form>
+                    </td>
+                </tr>
+
+                <!-- Show Task Modal -->
+                <div class="modal fade" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header" style=" background-color:#061148; ">
+                                <h5 class="modal-title" id="showModalLabel_{{ $task->id }}" style="color: white;font-weight: bolder;">Task Details</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                      
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="parent_task_{{ $task->id }}" style="font-size: 15px;">Parent Task</label>
+                                            <input type="text" name="parent_task" id="parent_task" class="form-controlcl shadow-sm" disabled>
+                                                <!-- @foreach ($tasks as $taskOption)
+                                                <option value="{{ $taskOption->id }}" {{ $taskOption->title ==
+                                                    $task->parent_task ? 'selected' : '' }} disabled>
+                                                    {{ $taskOption->title }}
+                                                </option>
+                                                @endforeach -->
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="title_{{ $task->id }}" style="font-size: 15px;">Title</label>
+                                            <input type="text" name="title" id="title_{{ $task->id }}" class="form-control shadow-sm" value="{{ $task->title }}" required disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
+                                            <input type="text" name="priority" id="priority_{{ $task->id }}" class="form-control shadow-sm" value="{{ $task->priority }}" required disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
+                                            <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}" value="{{ $task->estimated_time }}" class="form-control shadow-sm" required disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
+                                            <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
+                                                class="form-controlcl shadow-sm"
+                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                required>
+                                                <option value="" selected disabled>Select Task Status</option>
+                                                @foreach ($taskStatuses as $taskStatus)
+                                                <option value="{{ $taskStatus->id }}" {{ old('project_task_status_id',
+                                                    optional($task)->project_task_status_id) == $taskStatus->id ? 'selected' :
+                                                    '' }} disabled>
+                                                    {{ $taskStatus->status }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
+                                            <textarea name="details" id="details_{{ $task->id }}"
+                                                class="form-controlcl shadow-sm" required disabled>{{ $task->details }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
+                                                To</label>
+                                            <select name="assigned_to" id="assigned_to_{{ $task->id }}"
+                                                class="assign_to form-controlcl shadow-sm"
+                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                required>
+                                                <option value="" selected disabled>Select User</option>
+                                                @foreach ($project->members as $member)
+                                                <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                    old('assigned_to',
+                                                    optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
+                                                    'selected' : '' }} disabled>
+                                                    {{ $member->user->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group allot_user">
+                                            <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
+                                                To</label>
+                                            <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
+                                                class="assign_to form-controlcl shadow-sm"
+                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                required multiple>
+                                                <option value="" selected disabled>Select User</option>
+                                                @foreach ($project->members as $member)
+                                                <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                    old('allotted_to',
+                                                    optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ?
+                                                    'selected' : '' }}>
+                                                    {{ $member->user->name }}
+                                                </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                            <!-- Add other form fields with unique identifiers -->
+
+                                            <div class="form-actions">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                            </div>
                         </div>
-                        <!-- Delete Modal end-->
-                    </form>
-                </td>
-            </tr>
+                    </div>
+                </div>
+
+                <!-- Edit modal -->
+                @foreach($tasks as $task)
+                    <div class="modal fade" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editModalLabel">Edit Task</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('tasks.update', ['task' => $task->id]) }}" method="POST"
+                                        enctype="multipart/form-data">
+                                        @method('put')
+                                        @csrf
+                                        <div class="row">
+                                            <!-- Populate form fields with existing data -->
+                                            <input type="hidden" name="project_id" value="{{ $project->id }}">
+                                            <!-- Add other form fields and populate them with existing data -->
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="sprint_id_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
+                                                    <select name="sprint_id" id="sprint_id_{{ $task->id }}"
+                                                        class="form-controlcl shadow-sm">
+                                                        <option value="" selected disabled>Select Sprint</option>
+                                                        @foreach ($sprints as $sprint)
+                                                        <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
+                                                            sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                                            {{ $sprint->sprint_name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="parent_task" style="font-size: 15px;">Parent Task</label>
+                                                    <select name="parent_task" id="parent_task" class="form-controlcl shadow-sm"
+                                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <option value="">No Parent Task</option>
+                                                        @foreach ($tasks as $taskOption)
+                                                            <option value="{{ $taskOption->id }}" {{ old('parent_task', optional($task)->parent_task) == $taskOption->id ? 'selected' : '' }}>
+                                                                {{ $taskOption->title }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="title_{{ $task->id }}" style="font-size: 15px;">Title</label>
+                                                    <input type="text" name="title" id="title_{{ $task->id }}"
+                                                        class="form-control shadow-sm" value="{{ $task->title }}" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
+                                                    <select name="priority" id="priority_{{ $task->id }}" class="form-control shadow-sm" required>
+                                                        @foreach (\App\Models\Task::getPriorityOptions() as $value => $label)
+                                                            <option value="{{ $value }}" {{ $task->priority == $value ? 'selected' : '' }}>
+                                                                {{ $label }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated
+                                                        Time</label>
+                                                    <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
+                                                        value="{{ $task->estimated_time }}" class="form-control shadow-sm" required>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task
+                                                        Status</label>
+                                                    <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
+                                                        class="form-controlcl shadow-sm"
+                                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                        required>
+                                                        <option value="" selected disabled>Select Task Status</option>
+                                                        @foreach ($taskStatuses as $taskStatus)
+                                                        <option value="{{ $taskStatus->id }}" {{ old('project_task_status_id',
+                                                            optional($task)->project_task_status_id) == $taskStatus->id ? 'selected' :
+                                                            '' }}>
+                                                            {{ $taskStatus->status }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
+                                                    <textarea name="details" id="details_{{ $task->id }}"
+                                                        class="form-controlcl shadow-sm" required>{{ $task->details }}</textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
+                                                        To</label>
+                                                    <select name="assigned_to[]" id="assigned_to_{{ $task->id }}"
+                                                        class="assign_to form-controlcl shadow-sm"
+                                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                        required>
+                                                        <option value="" selected disabled>Select User</option>
+                                                        @foreach ($project->members as $member)
+                                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                            old('assigned_to',
+                                                            optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
+                                                            'selected' : '' }}>
+                                                            {{ $member->user->name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="form-group allot_user">
+                                                    <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
+                                                        To</label>
+                                                    <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
+                                                        class="assign_to form-controlcl shadow-sm allotted_to_user"
+                                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
+                                                        required multiple>
+                                                        @foreach ($project->members as $member)
+                                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                            old('allotted_to',
+                                                            optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ?
+                                                            'selected' : '' }}>
+                                                            {{ $member->user->name }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <!-- Add other form fields with unique identifiers -->
+
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
             @endforeach
         </tbody>
     </table>
+
     <!-- Create modal -->
     <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
         aria-hidden="true">
@@ -162,12 +451,13 @@
                                     <label for="parent_task" style="font-size: 15px;">Parent Task</label>
                                     <select name="parent_task" id="parent_task" class="form-controlcl shadow-sm"
                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                        <option value="">Select Task</option>
-                                        @foreach ($tasks as $task)
-                                        <option value="{{ $task->id }}">{{ $task->title }}</option>
+                                        <option value="">No Parent Task</option>
+                                        @foreach ($tasks as $taskOption)
+                                            <option value="{{ $taskOption->id }}" {{ old('parent_task', optional($task)->parent_task) == $taskOption->id ? 'selected' : '' }}>
+                                                {{ $taskOption->title }}
+                                            </option>
                                         @endforeach
                                     </select>
-
                                 </div>
                             </div>
 
@@ -182,14 +472,17 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="priority" style="font-size: 15px;">Priority</label>
-                                    <input type="text" name="priority" id="priority" placeholder="Enter the priority"
-                                        class="form-control shadow-sm" required>
+                                    <select name="priority" id="priority" class="form-control">
+                                        @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
+                                            <option value="{{ $value }}">{{ $label }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="estimated_time" style="font-size: 15px;">Estimated Time</label>
+                                    <label for="estimated_time" style="font-size: 15px;">Estimated Hours</label>
                                     <input type="number" name="estimated_time" id="estimated_time"
                                         placeholder="Enter the time" class="form-control shadow-sm" required>
                                 </div>
@@ -262,327 +555,6 @@
         </div>
     </div>
 
-    <!-- Show Task Modal -->
-    <div class="modal fade" id="showModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="showModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="showModalLabel">Task Details</h5>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('tasks.update', ['task' => $task->id]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @method('put')
-                        @csrf
-                        <div class="row">
-                            <!-- Populate form fields with existing data -->
-                            <input type="hidden" name="project_id" value="{{ $project->id }}">
-                            <!-- Add other form fields and populate them with existing data -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="sprint_id_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
-                                    <select name="sprint_id" id="sprint_id_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm">
-                                        <option value="" selected disabled>Select Sprint</option>
-                                        @foreach ($sprints as $sprint)
-                                        <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
-                                            sprint_id) == $sprint->id ? 'selected' : '' }} disabled>
-                                            {{ $sprint->sprint_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="parent_task_{{ $task->id }}" style="font-size: 15px;">Parent
-                                        Task</label>
-                                    <select name="parent_task" id="parent_task_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                        <option value="">Select Task</option>
-                                        @foreach ($tasks as $taskOption)
-                                        <option value="{{ $taskOption->id }}" {{ $taskOption->title ==
-                                            $task->parent_task ? 'selected' : '' }} disabled>
-                                            {{ $taskOption->title }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="title_{{ $task->id }}" style="font-size: 15px;">Title</label>
-                                    <input type="text" name="title" id="title_{{ $task->id }}"
-                                        class="form-control shadow-sm" value="{{ $task->title }}" required disabled>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
-                                    <input type="text" name="priority" id="priority_{{ $task->id }}"
-                                        class="form-control shadow-sm" value="{{ $task->priority }}" required disabled>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated
-                                        Time</label>
-                                    <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
-                                        value="{{ $task->estimated_time }}" class="form-control shadow-sm" required disabled>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task
-                                        Status</label>
-                                    <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                        required>
-                                        <option value="" selected disabled>Select Task Status</option>
-                                        @foreach ($taskStatuses as $taskStatus)
-                                        <option value="{{ $taskStatus->id }}" {{ old('project_task_status_id',
-                                            optional($task)->project_task_status_id) == $taskStatus->id ? 'selected' :
-                                            '' }} disabled>
-                                            {{ $taskStatus->status }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
-                                    <textarea name="details" id="details_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm" required disabled>{{ $task->details }}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
-                                        To</label>
-                                    <select name="assigned_to[]" id="assigned_to_{{ $task->id }}"
-                                        class="assign_to form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                        required>
-                                        <option value="" selected disabled>Select User</option>
-                                        @foreach ($project->members as $member)
-                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                            old('assigned_to',
-                                            optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                            'selected' : '' }} disabled>
-                                            {{ $member->user->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group allot">
-                                    <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
-                                        To</label>
-                                    <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
-                                        class="assign_to form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                        required multiple>
-                                        <option value="" selected disabled>Select User</option>
-                                        @foreach ($project->members as $member)
-                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                            old('allotted_to',
-                                            optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                            'selected' : '' }}>
-                                            {{ $member->user->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Add other form fields with unique identifiers -->
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Edit modal -->
-    @foreach($tasks as $task)
-    <div class="modal fade" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Task</h5>
-                </div>
-                <div class="modal-body">
-                    <form action="{{ route('tasks.update', ['task' => $task->id]) }}" method="POST"
-                        enctype="multipart/form-data">
-                        @method('put')
-                        @csrf
-                        <div class="row">
-                            <!-- Populate form fields with existing data -->
-                            <input type="hidden" name="project_id" value="{{ $project->id }}">
-                            <!-- Add other form fields and populate them with existing data -->
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="sprint_id_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
-                                    <select name="sprint_id" id="sprint_id_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm">
-                                        <option value="" selected disabled>Select Sprint</option>
-                                        @foreach ($sprints as $sprint)
-                                        <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
-                                            sprint_id) == $sprint->id ? 'selected' : '' }}>
-                                            {{ $sprint->sprint_name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="parent_task_{{ $task->id }}" style="font-size: 15px;">Parent
-                                        Task</label>
-                                    <select name="parent_task" id="parent_task_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                        <option value="">Select Task</option>
-                                        @foreach ($tasks as $taskOption)
-                                        <option value="{{ $taskOption->id }}" {{ $taskOption->title ==
-                                            $task->parent_task ? 'selected' : '' }}>
-                                            {{ $taskOption->title }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="title_{{ $task->id }}" style="font-size: 15px;">Title</label>
-                                    <input type="text" name="title" id="title_{{ $task->id }}"
-                                        class="form-control shadow-sm" value="{{ $task->title }}" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
-                                    <input type="text" name="priority" id="priority_{{ $task->id }}"
-                                        class="form-control shadow-sm" value="{{ $task->priority }}" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated
-                                        Time</label>
-                                    <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
-                                        value="{{ $task->estimated_time }}" class="form-control shadow-sm" required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task
-                                        Status</label>
-                                    <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                        required>
-                                        <option value="" selected disabled>Select Task Status</option>
-                                        @foreach ($taskStatuses as $taskStatus)
-                                        <option value="{{ $taskStatus->id }}" {{ old('project_task_status_id',
-                                            optional($task)->project_task_status_id) == $taskStatus->id ? 'selected' :
-                                            '' }}>
-                                            {{ $taskStatus->status }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
-                                    <textarea name="details" id="details_{{ $task->id }}"
-                                        class="form-controlcl shadow-sm" required>{{ $task->details }}</textarea>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
-                                        To</label>
-                                    <select name="assigned_to[]" id="assigned_to_{{ $task->id }}"
-                                        class="assign_to form-controlcl shadow-sm"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                        required>
-                                        <option value="" selected disabled>Select User</option>
-                                        @foreach ($project->members as $member)
-                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                            old('assigned_to',
-                                            optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                            'selected' : '' }}>
-                                            {{ $member->user->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-<<<<<<< HEAD
-                                <div class="form-group allot">
-=======
-                                <div class="form-group allot_user">
->>>>>>> f64cf8d342337b6235c006e4afb56e009d658233
-                                    <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
-                                        To</label>
-                                    <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
-                                        class="assign_to form-controlcl shadow-sm allotted_to_user"
-                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
-                                        required multiple>
-                                        @foreach ($project->members as $member)
-                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                            old('allotted_to',
-                                            optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                            'selected' : '' }}>
-                                            {{ $member->user->name }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Add other form fields with unique identifiers -->
-
-                            <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endforeach
+    
 </div>
 @endsection
