@@ -46,10 +46,6 @@
             {{csrf_field()}}
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="statusSelect" class="form-label"
-                        style="margin-bottom: 0.3rem; font-size: 25px;padding:3px;">
-                        <b>Tasks</b>
-                    </label>
                     <select id="statusSelect" name="task_id" class="shadow-sm"
                         style="padding-top:5px; padding-bottom:5px; height:39px;outline:none;" required>
                         <option value="">Select Task</option>

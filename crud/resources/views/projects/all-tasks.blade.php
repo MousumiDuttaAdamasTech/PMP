@@ -548,11 +548,7 @@
                             </div>
 
                             <div class="col-md-6">
-<<<<<<< HEAD
-                                <div class="form-group allot">
-=======
                                 <div class="form-group allot_user">
->>>>>>> f64cf8d342337b6235c006e4afb56e009d658233
                                     <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
                                         To</label>
                                     <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"

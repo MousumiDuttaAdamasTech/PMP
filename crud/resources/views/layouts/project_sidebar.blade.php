@@ -141,10 +141,10 @@
                 <a class="nav-link mainLinks" href="{{ route('projects.qa', ['project' => $project->id]) }}" id="qa"
                     data-tab="projects.qa">QA</a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link mainLinks" href="{{ route('projects.meetings', ['project' => $project->id]) }}"
                     id="meetings" data-tab="projects.meetings">Meetings</a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link mainLinks" href="{{ route('projects.documents', ['project' => $project->id]) }}"
                     id="documents" data-tab="projects.documents">Documents</a>
