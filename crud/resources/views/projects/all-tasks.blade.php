@@ -39,7 +39,7 @@
     $(document).ready(function () {
         $('.allotted_to_task').select2({
             dropdownParent: $('.allot_task'),
-            placeholder: "Select a task"
+            placeholder: "Select User"
         });
     });
     $(document).ready(function () {
@@ -74,7 +74,7 @@
                 <th>ID</th>
                 <th>Title</th>
                 <th>Priority</th>
-                <th>Estimated Time</th>
+                <th>Estimated Hours</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -87,20 +87,20 @@
                     <td style="font-size: 15px;">{{ $task->estimated_time }}</td>
                     <td class="d-flex align-items-center" style="font-size: 15px;">
                         <a href="#" data-toggle="modal" data-placement="top" title="Show"
-                            data-target="#showModal_{{ $task->id }}">
+                            data-target="#showModal_{{ $task->id }}" class="p-1">
                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                         </a>
                         <a href="#" data-toggle="modal" data-placement="top" title="Edit"
-                            data-target="#editModal_{{ $task->id }}">
+                            data-target="#editModal_{{ $task->id }}" class="p-1">
                             <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                         </a>
                         <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                             @method('delete')
                             @csrf
-                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal"
+                            <a href="#" class="delete-button p-1" data-toggle="modal"
                                 data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
-                                <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                            </button>
+                                <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
+                            </a>
                             <!-- Delete Modal start -->
                             <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1"
                                 role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -129,7 +129,7 @@
                 </tr>
 
                 <!-- Show Task Modal -->
-                <div class="modal fade" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                <div class="modal fade modal-xl" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
                     aria-hidden="true">
                     <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                         <div class="modal-content">
@@ -143,15 +143,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="parent_task_{{ $task->id }}" style="font-size: 15px;">Parent Task</label>
-                                            <input type="text" name="parent_task" id="parent_task" class="form-controlcl shadow-sm" disabled>
-                                                <!-- @foreach ($tasks as $taskOption)
-                                                <option value="{{ $taskOption->id }}" {{ $taskOption->title ==
-                                                    $task->parent_task ? 'selected' : '' }} disabled>
-                                                    {{ $taskOption->title }}
-                                                </option>
-                                                @endforeach -->
+                                            @if($task->parentTask)
+                                                <input type="text" name="parent_task" id="parent_task_{{ $task->id }}" class="form-controlcl shadow-sm" value="{{ $task->parentTask->title }}" disabled>
+                                            @else
+                                                <input type="text" name="parent_task" id="parent_task_{{ $task->id }}" class="form-controlcl shadow-sm" value="No parent task assigned" disabled>
+                                            @endif
                                         </div>
                                     </div>
+
 
                                     <div class="col-md-12">
                                         <div class="form-group">
@@ -160,14 +159,14 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
-                                            <input type="text" name="priority" id="priority_{{ $task->id }}" class="form-control shadow-sm" value="{{ $task->priority }}" required disabled>
+                                            <input type="text" name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" value="{{ $task->priority }}" required disabled>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <div class="form-group">
                                             <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                             <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}" value="{{ $task->estimated_time }}" class="form-control shadow-sm" required disabled>
@@ -203,13 +202,10 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
-                                                To</label>
+                                            <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned To</label>
                                             <select name="assigned_to" id="assigned_to_{{ $task->id }}"
                                                 class="assign_to form-controlcl shadow-sm"
-                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                                required>
-                                                <option value="" selected disabled>Select User</option>
+                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                 @foreach ($project->members as $member)
                                                 <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                                     old('assigned_to',
@@ -224,8 +220,7 @@
 
                                     <div class="col-md-6">
                                         <div class="form-group allot_user">
-                                            <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
-                                                To</label>
+                                            <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted To</label>
                                             <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
                                                 class="assign_to form-controlcl shadow-sm"
                                                 style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -257,11 +252,11 @@
 
                 <!-- Edit modal -->
                 @foreach($tasks as $task)
-                    <div class="modal fade" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal fade modal-xl" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="editModalLabel">Edit Task</h5>
+                                <div class="modal-header" style=" background-color:#061148;">
+                                    <h5 class="modal-title" id="editModalLabel" style="color: white;font-weight: bolder;">Edit Task</h5>
                                 </div>
                                 <div class="modal-body">
                                     <form action="{{ route('tasks.update', ['task' => $task->id]) }}" method="POST"
@@ -276,7 +271,7 @@
                                                 <div class="form-group">
                                                     <label for="sprint_id_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
                                                     <select name="sprint_id" id="sprint_id_{{ $task->id }}"
-                                                        class="form-controlcl shadow-sm">
+                                                        class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                         <option value="" selected disabled>Select Sprint</option>
                                                         @foreach ($sprints as $sprint)
                                                         <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
@@ -314,7 +309,7 @@
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
-                                                    <select name="priority" id="priority_{{ $task->id }}" class="form-control shadow-sm" required>
+                                                    <select name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                         @foreach (\App\Models\Task::getPriorityOptions() as $value => $label)
                                                             <option value="{{ $value }}" {{ $task->priority == $value ? 'selected' : '' }}>
                                                                 {{ $label }}
@@ -326,8 +321,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated
-                                                        Time</label>
+                                                    <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                                     <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
                                                         value="{{ $task->estimated_time }}" class="form-control shadow-sm" required>
                                                 </div>
@@ -335,8 +329,7 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task
-                                                        Status</label>
+                                                    <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                     <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
                                                         class="form-controlcl shadow-sm"
                                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -357,7 +350,7 @@
                                                 <div class="form-group">
                                                     <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
                                                     <textarea name="details" id="details_{{ $task->id }}"
-                                                        class="form-controlcl shadow-sm" required>{{ $task->details }}</textarea>
+                                                    class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>{{ $task->details }}</textarea>
                                                 </div>
                                             </div>
 
@@ -420,12 +413,12 @@
     </table>
 
     <!-- Create modal -->
-    <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
+    <div class="modal fade modal-xl" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
+                <div class="modal-header" style=" background-color:#061148; ">
+                    <h5 class="modal-title" id="createTaskModalLabel" style="color: white;font-weight: bolder;">Create Task</h5>
                 </div>
                 <div class="modal-body">
                     <!-- Your form goes here -->
@@ -437,7 +430,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="sprint_id" style="font-size: 15px;">Sprint</label>
-                                    <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm">
+                                    <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                         <option value="" selected disabled>Select Sprint</option>
                                         @foreach ($sprints as $sprint)
                                         <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
@@ -451,9 +444,9 @@
                                     <label for="parent_task" style="font-size: 15px;">Parent Task</label>
                                     <select name="parent_task" id="parent_task" class="form-controlcl shadow-sm"
                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                        <option value="">No Parent Task</option>
+                                        <option value="" selected disabled>No Parent Task</option>
                                         @foreach ($tasks as $taskOption)
-                                            <option value="{{ $taskOption->id }}" {{ old('parent_task', optional($task)->parent_task) == $taskOption->id ? 'selected' : '' }}>
+                                            <option value="{{ $taskOption->id }}">
                                                 {{ $taskOption->title }}
                                             </option>
                                         @endforeach
@@ -464,7 +457,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="title">Title</label>
-                                    <input type="text" name="title" id="title" placeholder="Enter the sprint title"
+                                    <input type="text" name="title" id="title" placeholder="Enter the task title"
                                         class="form-control shadow-sm" required>
                                 </div>
                             </div>
@@ -472,7 +465,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="priority" style="font-size: 15px;">Priority</label>
-                                    <select name="priority" id="priority" class="form-control">
+                                    <select name="priority" id="priority" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                        <option value="" selected disabled>Select Priority</option>
                                         @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
                                             <option value="{{ $value }}">{{ $label }}</option>
                                         @endforeach
@@ -506,7 +500,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="details" style="font-size: 15px;">Details</label>
-                                    <textarea name="details" id="details" class="form-controlcl shadow-sm"
+                                    <textarea name="details" id="details" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                         placeholder="Enter the details"
                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                         required></textarea>

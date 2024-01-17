@@ -21,6 +21,7 @@ class Task extends Model
         'allotted_to',
         'project_id',
         'parent_task',
+        'sprint_id',
     ];
 
     public function taskUsers()
@@ -60,8 +61,13 @@ class Task extends Model
         return $this->belongsTo(Task::class, 'parent_task');
     }
 
+    public function sprint()
+    {
+        return $this->belongsTo(Sprint::class);
+    }
+
     public static function getPriorityOptions()
     {
-        return array_combine(self::PRIORITIES, array_map('strtoupper', self::PRIORITIES));
+        return array_combine(self::PRIORITIES, array_map('strtolower', self::PRIORITIES));
     }
 }

@@ -99,14 +99,11 @@ Route::middleware([
     });
 
     Route::post('/{project}/release_management', [ReleaseManagementController::class, 'store'])->name('projects.release_management.store');
+    Route::put('/{project}/release_management/{releaseManagement}', [ReleaseManagementController::class, 'update'])->name('projects.release_management.update');
 
     Route::post('/project/{project}/release_management/{releaseManagement}/add-stakeholder', [ReleaseManagementController::class, 'addStakeholder'])->name('projects.release_management.addStakeholder');
 
     Route::resource('stakeholders', StakeholderController::class);
-
-    // Route::post('/project/{project}/release-management/{releaseManagement}/add-stakeholder', 'ReleaseManagementController@addStakeholder')
-    // ->name('projects.release_management.addStakeholder');
-
 
     Route::group(['prefix' => 'vertical'], function () {
         Route::get('/', [VerticalController::class, 'index'])->name('verticals.index');
@@ -145,7 +142,6 @@ Route::middleware([
     Route::get('/exports', [SprintController::class, 'export'])->name('sprints.export');
     Route::resource('project_item_statuses', ProjectItemStatusController::class);
     Route::resource('project-items', ProjectItemController::class);
-    // Route::resource('tasks', TaskController::class);
     Route::resource('comments', CommentController::class);
     Route::resource('user_technologies', UserTechnologyController::class);
 
@@ -156,7 +152,6 @@ Route::middleware([
     Route::resource('task_status', TaskStatusController::class);
 
     Route::get('/kanban/{projectId}', [KanbanController::class, 'showKanban'])->name('kanban');
-    // Route::post('/update-task-status', [KanbanController::class, 'updateTaskStatus'])->name('update-task-status');
 
 
     Route::prefix('tasks')->group(function () {
@@ -166,8 +161,6 @@ Route::middleware([
         Route::get('/{task}', [TaskController::class, 'show'])->name('tasks.show');
         Route::get('/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit'); // Note the {task} parameter here
         Route::put('/{task}', [TaskController::class, 'update'])->name('tasks.update');
-        // Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-
         Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     });
 

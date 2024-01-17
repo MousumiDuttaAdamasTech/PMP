@@ -8,13 +8,11 @@ class Sprint extends Model
 {
     protected $fillable = [
         'sprint_name',
-        // 'backlog_module',
         'estimated_hrs',
         'actual_hrs',
         'sprint_status',
         'current_date',
         'assign_to',
-        //'task_status_id',
         'projects_id',
         'is_active',
     ];
