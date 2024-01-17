@@ -553,10 +553,10 @@ class ProjectsController extends Controller
         //dd($stakeholders);
 
         $images = DB::table('release_management as RM')
-            ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name')
+            ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name','ST.id as stakeholder_id')
             ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
             ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
-            ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'st.stakeholder_role_id')
+            ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'ST.stakeholder_role_id')
             ->where('RM.id', '=', 4)
             ->get();
 
@@ -598,14 +598,14 @@ class ProjectsController extends Controller
         
         
         $images = DB::table('release_management as RM')
-        ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name')
+        ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name','ST.id as stakeholder_id')
         ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
         ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
-        ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'st.stakeholder_role_id')
+        ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'ST.stakeholder_role_id')
         ->where('RM.id', '=', $release_management_id)
         ->get();
         
-        dd($images);
+        //dd($images);
         
         return response()->json($images);
     }

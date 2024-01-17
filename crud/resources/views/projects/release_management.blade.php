@@ -158,7 +158,13 @@
                                     <i class="fas fa-eye text-info"></i>
                                 </a>
                                 <a href="#" data-toggle="modal" data-placement="top" title="Edit"
-                                data-target="#editModal{{ $releaseManagement->id }}" style="margin-left: 10px">
+                                    data-target="#editModal{{ $releaseManagement->id }}" style="margin-left: 10px" 
+                                    data-release-id="{{ $releaseManagement->id }}"
+                                    data-release-name="{{ $releaseManagement->name }}"
+                                    data-release-details="{{ $releaseManagement->details }}"
+                                    data-release-date="{{ $releaseManagement->release_date }}"
+                                    data-approved-by="{{ $releaseManagement->approved_by }}"
+                                    data-rmid="{{ $releaseManagement->rmid }}">
                                     <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                 </a>
                                 <a href="#" data-placement="top" data-toggle="modal" id="release_management_id{{ $releaseManagement->id }}"
@@ -272,22 +278,70 @@
                             </div>
                         </div>
 
-                        <!-- Edit modal --> 
-                        <div class="modal fade" id="#editModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                        <!-- Edit modal -->
+                        <div class="modal fade modal-lg" id="editModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editModalLabel{{ $releaseManagement->id }}">Edit Release Management</h5>
                                     </div>
                                     <div class="modal-body">
-                                        
+                                        <form action="{{ route('projects.release_management.update', ['project' => $project, 'releaseManagement' => $releaseManagement]) }}" method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            @method('PUT')
+                                            <!-- Existing form fields go here -->
+                                            <div class="row">
+                                            <!-- Add this section to populate the fields with releaseManagement data -->
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="edit_rmid">Release Management ID:</label>
+                                                        <input type="text" class="form-control shadow-sm" name="rmid" id="edit_rmid" value="{{ old('rmid', $releaseManagement->rmid) }}" required>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="edit_release_date">Release Date:</label>
+                                                        <input type="date" class="form-control shadow-sm" name="release_date" id="edit_release_date" value="{{ old('release_date', $releaseManagement->release_date) }}" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="edit_name">Name:</label>
+                                                        <input type="text" class="form-control shadow-sm" name="name" id="edit_name" value="{{ old('name', $releaseManagement->name) }}" required>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="edit_details">Details:</label>
+                                                        <textarea name="details" id="edit_details" required class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">{{ old('details', $releaseManagement->details) }}</textarea>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="edit_approved_by">Approved By:</label>
+                                                        <input type="text" class="form-control shadow-sm" name="approved_by" id="edit_approved_by" value="{{ old('approved_by', $releaseManagement->approved_by) }}" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- End of the added section -->
+
+                                            <div class="form-actions">
+                                                <button type="submit" class="btn btn-primary">Update</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Add Stakeholder Modal for each releaseManagement -->
-                        <div class="modal fade" id="addStakeholderModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="addStakeholderModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                        <div class="modal fade modal-lg" id="addStakeholderModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="addStakeholderModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -330,28 +384,14 @@
                                                 </div>
                                             </div>
                                             <!-- Additional form fields go here -->
-                                            <button type="submit" class="btn btn-primary">Add</button>
+                                            <div class="d-flex w-100 justify-content-center my-2">
+                                                <button type="submit" class="btn btn-primary col-md-2">Add</button>
+                                            </div>
+                                            
                                         </form>
 
                                         <!-- Display existing stakeholders -->
-                                        <div class="row mt-3">
-                                        @foreach ($images as $i => $image)
-                                            <div class="col-md-6">
-                                                <div class="card">
-                                                    <div class="card-body">
-                                                        <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px">
-                                                            <img class="rounded_circle mb-1 mt-3" src="{{ asset($images[$i]->image) }}" alt="Profile Image" style="height: 140px; width: 140px;">
-                                                        </div>
-                                                        <p id="card-title" class="card-title user-name" style="font-size: 20px !important; font-weight: 1000 !important; text-align: center">
-                                                            {{ $images[$i]->profile_name }}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-
-
-                                        </div>
+                                        
 
 
                                     </div>
@@ -365,7 +405,7 @@
     </div>
 
     <!-- Release Management Modal -->
-    <div class="modal" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel"
+    <div class="modal fade modal-xl" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -381,10 +421,30 @@
                             <input type="hidden" name="project_id" value="{{ $project->id }}">
 
                             <!-- Other Release Management Form Fields -->
-                            <div class="col-md-12">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="rmid">Release Management ID:</label>
                                     <input type="text" class="form-control shadow-sm" name="rmid" id="rmid" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="release_date">Release Date:</label>
+                                    <input type="date" class="form-control shadow-sm" name="release_date" id="release_date"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="approved_by">Approved By:</label>
+                                    <select name="approved_by" id="approved_by" class="form-controlcl shadow-sm" required>
+                                        <option value="">Select User</option>
+                                        @foreach ($project->projectMembers as $projectMember)
+                                        <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 
@@ -397,17 +457,9 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="release_date">Release Date:</label>
-                                    <input type="date" class="form-control shadow-sm" name="release_date" id="release_date"
-                                        required>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
                                     <label for="details">Details:</label>
                                     <textarea name="details" id="details" required
-                                        class="form-control shadow-sm"></textarea>
+                                    class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"></textarea>
                                 </div>
                             </div>
 
@@ -416,18 +468,6 @@
                                     <label for="documents">Documents:</label>
                                     <input type="file" class="form-control shadow-sm" name="documents[]" id="documents"
                                         multiple>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="approved_by">Approved By:</label>
-                                    <select name="approved_by" id="approved_by" class="form-controlcl shadow-sm" required>
-                                        <option value="">Select User</option>
-                                        @foreach ($project->projectMembers as $projectMember)
-                                        <option value="{{ $projectMember->id }}">{{ $projectMember->user->name }}</option>
-                                        @endforeach
-                                    </select>
                                 </div>
                             </div>
 
