@@ -163,7 +163,7 @@
 </div>
 
 
-<script src="//cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
         CKEDITOR.replace('project_description', {

@@ -60,6 +60,7 @@ class TaskController extends Controller
         $task->priority = $request->priority;
         $task->estimated_time = $request->estimated_time;
         $task->details = $request->details;
+        $task->parent_task = $request->input('parent_task');
         $task->assigned_to = implode(',', $request->assigned_to);
         $task->allotted_to = implode(',', $request->allotted_to);
         $task->project_task_status_id = $request->project_task_status_id;
@@ -115,6 +116,7 @@ class TaskController extends Controller
         $task->priority = $request->priority;
         $task->estimated_time = $request->estimated_time;
         $task->details = $request->details;
+        $task->parent_task = $request->input('parent_task');
         $task->assigned_to = implode(',', $request->assigned_to);
         $task->allotted_to = implode(',', $request->allotted_to);
         $task->project_task_status_id = $request->project_task_status_id;

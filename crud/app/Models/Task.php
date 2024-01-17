@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+
+    public const PRIORITIES = [
+        'p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10',
+    ];
+
     protected $fillable = [
         'title',
         'priority',
@@ -15,6 +20,7 @@ class Task extends Model
         'assigned_to',
         'allotted_to',
         'project_id',
+        'parent_task',
     ];
 
     public function taskUsers()
@@ -47,5 +53,15 @@ class Task extends Model
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    public function parentTask()
+    {
+        return $this->belongsTo(Task::class, 'parent_task');
+    }
+
+    public static function getPriorityOptions()
+    {
+        return array_combine(self::PRIORITIES, array_map('strtoupper', self::PRIORITIES));
     }
 }

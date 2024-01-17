@@ -309,7 +309,7 @@
 <script src="{{ asset('js/bundle.24f6873edaef6bd85f9e.js') }}"></script>
 <script src="{{ asset('js/bundle.8c4c1640f9a406d21583.js') }}"></script>
 <script src="{{ asset('js/bundle.4e09edb465a6cb160c4a.js') }}"></script>
-<script src="//cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 

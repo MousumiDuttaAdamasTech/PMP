@@ -16,7 +16,7 @@
 <!-- Include necessary scripts here -->
 
 @section('project_js')
-<script src="//cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -276,7 +276,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="date" id="end_date" name="end_date[]" class="form-control" required>
+                            <input type="date" id="end_date" name="end_date[]" class="form-control" required onchange=handleEndDateChange()>
                         </div>
 
                         <div class="col-md-6">
@@ -284,7 +284,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="number" id="duration" name="duration[]" class="form-control" required>
+                            <input type="number" id="duration" name="duration[]" class="form-control" required oninput="handleDuration(this.value)">
                         </div>
 
                         <div class="col-md-6">
@@ -326,6 +326,39 @@
 @endsection
 
 <script>
+
+    function calculateDuration(startDate, endDate) {
+        var start = new Date(startDate);
+        var end = new Date(endDate);
+        var durationInMilliseconds = end - start;
+        var durationInDays = durationInMilliseconds / (24 * 60 * 60 * 1000);
+        return Math.ceil(durationInDays);
+    }
+
+    function calculateEndDate(startDate, duration) {
+        var start = new Date(startDate);
+        var durationInDays = parseInt(duration);
+        var end = new Date(start.getTime() + durationInDays * 24 * 60 * 60 * 1000);
+        return end.toISOString().split('T')[0];
+    }
+
+    function handleEndDateChange() {
+        var endDate = document.getElementById("end_date").value;
+        if (endDate) {
+            var startDate = document.getElementById("start_date").value;
+            var duration = calculateDuration(startDate, endDate);
+            document.getElementById("duration").value = duration;
+        }
+    }
+
+    function handleDuration(duration){
+        if (duration) {
+            var startDate = document.getElementById("start_date").value;
+            var endDate = calculateEndDate(startDate, duration);
+            document.getElementById("end_date").value = endDate;
+         }
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         var memberCards = document.querySelectorAll('.member-card');
         var modalMemberName = document.getElementById('modalMemberName');
@@ -438,54 +471,12 @@
                 $("#memberCardContainer").append(cardHtml);
             }
 
-            // Handle changes in the "End Date" field
-            $("#end_date").on("change", function () {
-                var endDate = $(this).val();
-                if (endDate) {
-                    // Calculate duration based on the difference between start and end dates
-                    var startDate = $("#start_date").val();
-                    var duration = calculateDuration(startDate, endDate);
-                    $("#duration").val(duration);
-                }
-            });
-
-            // Handle changes in the "Duration" field
-            $("#duration").on("input", function () {
-                var duration = $(this).val();
-                if (duration) {
-                    // Calculate end date based on the start date and duration
-                    var startDate = $("#start_date").val();
-                    var endDate = calculateEndDate(startDate, duration);
-                    $("#end_date").val(endDate);
-                }
-            });
-
             $("#myModal").modal("hide");
 
             $('#myModal').on('show.bs.modal', function () {
                 $('#project_members_id').val(null).trigger('change');
                 $('#project_role_id').val(null).trigger('change');
             });
-
-            function calculateDuration(startDate, endDate) {
-                // Perform your calculation logic here and return the duration
-                // For simplicity, this example assumes the dates are in YYYY-MM-DD format
-                var start = new Date(startDate);
-                var end = new Date(endDate);
-                var durationInMilliseconds = end - start;
-                var durationInDays = durationInMilliseconds / (24 * 60 * 60 * 1000);
-                return Math.ceil(durationInDays);
-            }
-
-            // Function to calculate end date based on start date and duration
-            function calculateEndDate(startDate, duration) {
-                // Perform your calculation logic here and return the end date
-                // For simplicity, this example assumes the start date is in YYYY-MM-DD format
-                var start = new Date(startDate);
-                var durationInDays = parseInt(duration);
-                var end = new Date(start.getTime() + durationInDays * 24 * 60 * 60 * 1000);
-                return end.toISOString().split('T')[0];
-            }
 
         });
 

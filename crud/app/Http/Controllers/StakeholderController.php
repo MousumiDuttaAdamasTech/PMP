@@ -43,4 +43,12 @@ class  StakeholderController extends Controller
         return back()->with('success', 'Stakeholder created successfully');
     }
 
+    public function destroy($id)
+    {
+        $stakeholder = Stakeholder::findOrFail($id);
+        $stakeholder->delete();
+
+        return back()->with('success', 'Stakeholder deleted successfully');    
+    
+    }
 }
