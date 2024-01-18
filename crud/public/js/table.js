@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   $("#example").DataTable({
     aaSorting: [],
     responsive: true,
@@ -17,6 +17,40 @@ $(document).ready(function() {
   });
 
   $("#sprintTable").DataTable({
+    aaSorting: [],
+    responsive: true,
+    lengthMenu: [5, 10, 25, 50, 100],
+
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+
+  $("#bugsTable").DataTable({
+    aaSorting: [],
+    responsive: true,
+    lengthMenu: [5, 10, 25, 50, 100],
+
+    columnDefs: [
+      {
+        responsivePriority: 1,
+        targets: 0
+      },
+      {
+        responsivePriority: 2,
+        targets: -1
+      }
+    ]
+  });
+
+  $("#manageTable").DataTable({
     aaSorting: [],
     responsive: true,
     lengthMenu: [5, 10, 25, 50, 100],
@@ -402,24 +436,24 @@ $(document).ready(function() {
   $('[data-toggle="tooltip"]').tooltip();
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
   adjustNameFieldWidth();
 
-  $(window).resize(function() {
-      adjustNameFieldWidth();
+  $(window).resize(function () {
+    adjustNameFieldWidth();
   });
 
   function adjustNameFieldWidth() {
-      $('.name-container').each(function() {
-          var maxWidth = 150; // Maximum width for the name field
-          var containerWidth = $(this).parent().width();
-          var nameWidth = $(this).find('.name').width();
+    $('.name-container').each(function () {
+      var maxWidth = 150; // Maximum width for the name field
+      var containerWidth = $(this).parent().width();
+      var nameWidth = $(this).find('.name').width();
 
-          if (nameWidth > maxWidth && nameWidth > containerWidth) {
-              $(this).css('max-width', nameWidth + 10 + 'px');
-          } else {
-              $(this).css('max-width', '');
-          }
-      });
+      if (nameWidth > maxWidth && nameWidth > containerWidth) {
+        $(this).css('max-width', nameWidth + 10 + 'px');
+      } else {
+        $(this).css('max-width', '');
+      }
+    });
   }
 });
