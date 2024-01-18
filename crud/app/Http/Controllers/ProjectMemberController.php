@@ -62,4 +62,62 @@ class ProjectMemberController extends Controller
             ->with('success', 'Project members added successfully');
     }
 
+    public function edit($id)
+    {
+        // Find the project member by ID
+        $projectMember = ProjectMember::findOrFail($id);
+        $users = User::all();
+        $projectRoles = ProjectRole::all();
+
+        // You may also fetch additional data if needed, e.g., users, project roles, etc.
+
+        return view('projects.team', compact('projectMember', 'users', 'projectRoles'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'project_member_id' => 'required|exists:project_members,id',
+            'project_role_id' => 'required|exists:project_roles,id',
+            'engagement_percentage' => 'required',
+            'start_date' => 'nullable',
+            'end_date' => 'nullable',
+            'duration' => 'nullable',
+            'is_active' => 'required',
+            'engagement_mode' => 'nullable',
+        ]);
+
+        // Find the project member by ID
+        $projectMember = ProjectMember::findOrFail($id);
+
+        // Update the project member with validated data
+        $projectMember->update([
+            'project_member_id' => $validatedData['project_member_id'],
+            'project_role_id' => $validatedData['project_role_id'],
+            'engagement_percentage' => $validatedData['engagement_percentage'],
+            'start_date' => $validatedData['start_date'],
+            'end_date' => $validatedData['end_date'],
+            'duration' => $validatedData['duration'],
+            'is_active' => $validatedData['is_active'],
+            'engagement_mode' => $validatedData['engagement_mode'],
+        ]);
+
+        return redirect()->route('projects.team', ['project' => $request->project_id])
+            ->with('success', 'Project member updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        // Find the project member by ID
+        $projectMember = ProjectMember::findOrFail($id);
+
+        // Get the project ID before deleting the project member
+        $projectId = $projectMember->project_id;
+
+        // Delete the project member
+        $projectMember->delete();
+
+        return redirect()->route('projects.team', ['project' => $projectId])
+            ->with('success', 'Project member deleted successfully');
+    }
 }
