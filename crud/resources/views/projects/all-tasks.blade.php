@@ -28,6 +28,14 @@
         $('.allotted_to').select2({
         dropdownParent: $('.allot')
         });
+
+        @foreach($tasks as $task)
+        console.log('Initializing for task ID: {{ $task->id }}');
+        // $('.allotted_to__{{ $task->id }}').select2({
+        //         dropdownParent: $('.allot_user_{{ $task->id }}'),
+        //         placeholder: "Select a user"
+        // });
+        @endforeach
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -396,7 +404,7 @@
                                             </div>
 
                                             <div class="col-md-6">
-                                                <div class="form-group allot_user">
+                                                <div class="form-group allot_user_{{ $task->id }}">
                                                     <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
                                                         To</label>
                                                     <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
