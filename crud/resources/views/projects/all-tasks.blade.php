@@ -28,14 +28,6 @@
         $('.allotted_to').select2({
         dropdownParent: $('.allot')
         });
-
-        @foreach($tasks as $task)
-        console.log('Initializing for task ID: {{ $task->id }}');
-        // $('.allotted_to__{{ $task->id }}').select2({
-        //         dropdownParent: $('.allot_user_{{ $task->id }}'),
-        //         placeholder: "Select a user"
-        // });
-        @endforeach
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -69,6 +61,14 @@
             placeholder: "Select a user"
         });
     });
+    @foreach($tasks as $task)
+    $(document).ready(function () {
+        $('#allotted_to_{{ $task->id }}').select2({
+            dropdownParent: $('.allot_user_{{ $task->id }}'),
+            placeholder: "Select a user"
+        });
+    });
+    @endforeach
 </script>
 @if ($errors->any())
 <div class="error-messages">
