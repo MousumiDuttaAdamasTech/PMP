@@ -17,12 +17,12 @@
 <!-- Include necessary scripts here -->
 
 @section('project_js')
+<script src="https:https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 <script src="/js/jquery-3.7.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-<script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0/dist/js/select2.min.js"></script>
 <script src="{{ asset('js/side_highlight.js') }}"></script>
 <script src="{{ asset('js/project.js') }}"></script>
@@ -49,111 +49,60 @@
             dropdownParent: $('.stakeform')
         });
     });
-    
-    function modal_opener(button) {
-    // Get release management ID from the button
-    var rmId = button.getAttribute('data-release-id');
+    // function modal_opener() {
+    //     console.log('hello');
+    //     let rmId = $(this).data('release-id');
+    //     $.ajax({
+    //         url:'{{route('projects.getImages')}}',
+    //         method:'POST',
+    //         data:{
+    //             id: rmId
+    //         },
+    //         success: (data) => {
+    //             console.log('success');
+    //         },
+    //         error: (data) => {
+    //             console.log('error');
+    //         }
+    //     });
+    // }
 
-    // Get the URL for fetching images
-    var imagesUrl = button.getAttribute('data-images-url');
+    function modal_opener(clickedElement) {
+    console.log('hello');
 
-    // Fetch images
-        fetch(imagesUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                id: rmId,
-                _token: '{{ csrf_token() }}',
-            }),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('success', data);
-                // Update modal content with the received data
-                updateModalContent(rmId, data);
-            })
-            .catch(error => {
-                console.error('Error during fetch:', error);
-                // Handle errors here
-            });
+    let rmId = $(clickedElement).data('release-id');
+    console.log(rmId);
+
+    const csrf = '{{ csrf_token() }}';
+    fetch('http://127.0.0.1:8000/project/profile/get_images', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: rmId,
+            _token: '{{ csrf_token() }}',
+        }),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
+        return response.json();
+    })
+    .then(data => {
+        console.log('success', data);
+        // Handle the received data here
+    })
+    .catch(error => {
+        console.error('Error during fetch:', error);
+        // Handle errors here
+    });
+}
 
-        function updateModalContent(rmId, imagesData) {
-            // Update modal content with the received imagesData
-            // You can use the rmId to target the specific modal
-            var modalId = '#addStakeholderModal' + rmId;
 
-            // Assuming you have a function to update the modal content with imagesData
-            updateModalImages(modalId, imagesData);
-        }
 
-        function updateModalImages(modalId, imagesData) {
-            // Update the modal content with the imagesData
-            // You can modify this function based on your modal structure
-            var modal = document.querySelector(modalId);
 
-            // Assuming you have a container for displaying images in the modal
-            var imagesContainer = modal.querySelector('.row');
-
-            // Clear existing content
-            imagesContainer.innerHTML = '';
-
-            // Iterate through imagesData and append image elements to the container
-            imagesData.forEach(image => {
-            if(image.image !== null) {
-            var imageElement = document.createElement('div');
-            imageElement.className = 'col-md-3';
-            var deleteActionUrl = "{{ route('stakeholders.destroy', ':stakeholder_id') }}";
-            deleteActionUrl = deleteActionUrl.replace(':stakeholder_id', image.stakeholder_id);
-
-            imageElement.innerHTML = `
-                <div class="card" style="width:9rem;">
-                    <div class="card-header">
-                        <div class="float-right">
-                            <!-- Delete icon with a form for the delete action -->
-                            <form action="${deleteActionUrl}" method="post" style="display:inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete this stakeholder?')" class="btn btn-link p-0 delete-button" style="padding-right : 10px;">
-                                    <i class="fas fa-trash-alt text-danger mb-2" style="margin-right: 5px;"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div>
-                            <img class="rounded_circle mb-1 mt-3" src="${window.location.origin}/${image.image}" alt="Profile Image" style="height: 80px; width: 80px;">
-                        </div>
-                        <p id="card-title" class="card-title user-name" style="font-size: 14px !important; font-weight: 1000 !important; text-align: center">
-                            ${image.profile_name}
-                        </p>
-                        <p id="card-title" class="card-title user-name" style="font-size: 14px !important; font-weight: 1000 !important; text-align: center">
-                            ${image.stakeholder_role_name}
-                        </p>
-                    </div>
-                </div>
-            `;
-
-            imagesContainer.appendChild(imageElement);
-            } else {
-                var imageElement = document.createElement('div');
-                imageElement.innerHTML = `
-                <div>
-                    <h6>No stakeholders available. Please add members.</h6>
-                </div>
-                `
-                imagesContainer.appendChild(imageElement);
-            }
-        });
-
-    }
 
 </script>
 @endsection
@@ -218,12 +167,10 @@
                                     data-rmid="{{ $releaseManagement->rmid }}">
                                     <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                 </a>
-                                
                                 <a href="#" data-placement="top" data-toggle="modal" id="release_management_id{{ $releaseManagement->id }}"
                                     onclick="modal_opener(this)"
                                     data-target="#addStakeholderModal{{ $releaseManagement->id }}"
-                                    data-release-id="{{ $releaseManagement->id }}"
-                                    data-images-url="{{ route('projects.getImages') }}"> <!-- Update the URL accordingly -->
+                                    data-release-id="{{ $releaseManagement->id }}">
                                     <i class="fa-solid fa-people-roof text-warning" style=""></i>
                                 </a>
                                 <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $releaseManagement->id }}" style="margin-left: 10px">
@@ -256,24 +203,31 @@
                         </tr>
 
                         <!-- Details Modal for each releaseManagement -->
-                        <div class="modal fade modal-xl" id="showReleaseManagementModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="showReleaseManagementModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                        <div class="modal fade" id="showReleaseManagementModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="showReleaseManagementModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header" >
+                                    <div class="modal-header">
                                         <h5 class="modal-title"
                                             id="showReleaseManagementModalLabel{{ $releaseManagement->id }}">Release Management Details
                                         </h5>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="rmid" style="font-size: 15px;">Release Management</label>
                                                     <input type="text" name="rmid" id="rmid" class="form-control shadow-sm"
                                                         required value="{{ old('rmid', $releaseManagement->rmid) }}" disabled>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="name" style="font-size: 15px;">Title</label>
+                                                    <input type="text" name="name" id="name" class="form-control shadow-sm"
+                                                        required value="{{ old('name', $releaseManagement->name) }}" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="release_date" style="font-size: 15px;">Release Date</label>
                                                     <input type="date" name="release_date" id="release_date"
@@ -282,19 +236,12 @@
                                                         disabled>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="approved_by" style="font-size: 15px;">Approved By</label>
                                                     <input type="text" name="approved_by" id="release_date"
                                                         class="form-control shadow-sm" required
                                                         value="{{ $releaseManagement->approver->user->name }}" disabled>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="name" style="font-size: 15px;">Title</label>
-                                                    <input type="text" name="name" id="name" class="form-control shadow-sm"
-                                                        required value="{{ old('name', $releaseManagement->name) }}" disabled>
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -332,7 +279,7 @@
                         </div>
 
                         <!-- Edit modal -->
-                        <div class="modal fade modal-lg modal-xl" id="editModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                        <div class="modal fade modal-lg" id="editModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -345,30 +292,17 @@
                                             <!-- Existing form fields go here -->
                                             <div class="row">
                                             <!-- Add this section to populate the fields with releaseManagement data -->
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="edit_rmid">Release Management ID:</label>
                                                         <input type="text" class="form-control shadow-sm" name="rmid" id="edit_rmid" value="{{ old('rmid', $releaseManagement->rmid) }}" required>
                                                     </div>
                                                 </div>
                                                 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="edit_release_date">Release Date:</label>
                                                         <input type="date" class="form-control shadow-sm" name="release_date" id="edit_release_date" value="{{ old('release_date', $releaseManagement->release_date) }}" required>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    <div class="form-group">
-                                                        <label for="edit_approved_by">Approved By:</label>
-                                                        <select name="approved_by" id="edit_approved_by" class="form-control shadow-sm" required>
-                                                            @foreach ($project->projectMembers as $projectMember)
-                                                                <option value="{{ $projectMember->id }}" {{ $projectMember->id == $releaseManagement->approved_by ? 'selected' : '' }}>
-                                                                    {{ $projectMember->user->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -386,6 +320,13 @@
                                                     </div>
                                                 </div>
 
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="edit_approved_by">Approved By:</label>
+                                                        <input type="text" class="form-control shadow-sm" name="approved_by" id="edit_approved_by" value="{{ old('approved_by', $releaseManagement->approved_by) }}" required>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <!-- End of the added section -->
 
@@ -404,55 +345,82 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addStakeholderModalLabel{{ $releaseManagement->id }}">Stakeholders</h5>
+                                        <h5 class="modal-title" id="addStakeholderModalLabel{{ $releaseManagement->id }}">
+                                            Stakeholders</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
                                     <div class="modal-body">
                                         <!-- Stakeholder addition form goes here -->
-                                        <div>
-                                            <form action="{{ route('stakeholders.store') }}" method="post">
-                                                @csrf
-                                                <div class="form-group stakeform">
-                                                    <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div class="col-md-6">
-                                                            <label for="member_id">Select Project Member:</label>
-                                                            <select name="member_id" id="member_id" class="form-control"
-                                                                style="width: 100%;">
-                                                                <option value="">Select Member</option>
-                                                                @foreach ($members as $projectMember)
-                                                                <option value="{{ $projectMember->project_members_id }}">{{
-                                                                    $projectMember->user->name }}</option>
-                                                                @endforeach
-                                                            </select>
+                                        <form action="{{ route('stakeholders.store') }}" method="post">
+                                            @csrf
+                                            <div class="form-group stakeform">
+                                                <input type="hidden" name="release_management_id"
+                                                    value="{{ $releaseManagement->id }}">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="member_id">Select Project Member:</label>
+                                                        <select name="member_id" id="member_id" class="form-control"
+                                                            style="width: 100%;">
+                                                            <option value="">Select Member</option>
+                                                            @foreach ($members as $projectMember)
+                                                            <option value="{{ $projectMember->project_members_id }}">{{
+                                                                $projectMember->user->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="stakeholder_role_id">Select Member Role:</label>
+                                                        <select name="stakeholder_role_id" id="stakeholder_role_id"
+                                                            class="form-control" style="width: 100%;">
+                                                            <option value="">Select Member Role</option>
+                                                            @foreach ($stakeholderRoles as $stakeholderRole)
+                                                            <option value="{{ $stakeholderRole->id }}">{{
+                                                                $stakeholderRole->stakeholder_role_name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Additional form fields go here -->
+                                            <div class="d-flex w-100 justify-content-center my-2">
+                                                <button type="submit" class="btn btn-primary col-md-2">Add</button>
+                                            </div>
+                                            
+                                        </form>
+
+                                        <!-- Display existing stakeholders -->
+                                        <div class="row mt-3">
+                                            @foreach ($images as $i => $image)
+                                                <div class="col-md-3">
+                                                    <div class="card" style="width:9rem;">
+                                                        <div class="card-header">
+                                                            <div class="float-right">
+                                                                <!-- Delete icon with a form for the delete action -->
+                                                                <form action="{{ route('stakeholders.destroy', $image->stakeholder_id) }}" method="post" style="display: inline;">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this stakeholder?')" class="btn btn-link p-0 delete-button" style="padding-right : 10px;">
+                                                                        <i class="fas fa-trash-alt text-danger mb-2" style="margin-right: 5px;"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-6">
-                                                            <label for="stakeholder_role_id">Select Member Role:</label>
-                                                            <select name="stakeholder_role_id" id="stakeholder_role_id"
-                                                                class="form-control" style="width: 100%;">
-                                                                <option value="">Select Member Role</option>
-                                                                @foreach ($stakeholderRoles as $stakeholderRole)
-                                                                <option value="{{ $stakeholderRole->id }}">{{
-                                                                    $stakeholderRole->stakeholder_role_name }}</option>
-                                                                @endforeach
-                                                            </select>
+                                                        <div class="card-body">
+                                                            <div>
+                                                                <img class="rounded_circle mb-1 mt-3" src="{{ asset($images[$i]->image) }}" alt="Profile Image" style="height: 80px; width: 80px;">
+                                                            </div>
+                                                            <p id="card-title" class="card-title user-name" style="font-size: 14px !important; font-weight: 1000 !important; text-align: center">
+                                                                {{ $images[$i]->profile_name }}
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <!-- Additional form fields go here -->
-                                                <div class="d-flex w-100 justify-content-center my-2">
-                                                    <button type="submit" class="btn btn-primary col-md-2">Add</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        
-                                        <!-- Display existing stakeholders -->
-                                        <div class="row mt-3" id="modalImageContainer{{ $releaseManagement->id }}">
-                                            <!-- Images will be dynamically added here -->
+                                            @endforeach
+
                                         </div>
 
-                                        <div class="form-actions">
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
 
                                     </div>
                                 </div>

@@ -190,10 +190,11 @@ z-index: 1061 !important;
 }
 
 .rounded_circle{
-margin-top: 13px; 
+margin-top: 10px;
+margin-bottom: 10px; 
 height: 55px; 
 width: 55px; 
-/* margin-left: 6px;  */
+margin-left: 12px; 
 border-radius: 50%;
 margin-right: 34px;
 }
