@@ -32,13 +32,19 @@ class Document extends Model
 
     public function approver()
     {
-        return $this->belongsTo(ProjectMember::class, 'approved_by');
+        return $this->belongsTo(ProjectMember::class, 'approved_by', 'project_members_id');
     }
 
     // Define an accessor to retrieve the user_name from the associated user
     public function getApprovedByNameAttribute()
     {
-        return $this->approver->user->name;
+        if ($this->approver) {
+            if ($this->approver->user) {
+                return $this->approver->user->name;
+            }
+        }
+    
+        return null;
     }
 
     public function wasUpdated()
@@ -46,4 +52,10 @@ class Document extends Model
         // Compare the created_at and updated_at timestamps
         return $this->created_at != $this->updated_at;
     }
+
+    public function versions()
+    {
+        return $this->hasMany(DocumentVersion::class, 'document_id');
+    }
+
 }

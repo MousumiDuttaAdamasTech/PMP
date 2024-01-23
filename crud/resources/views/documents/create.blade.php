@@ -61,7 +61,7 @@
 
             <div class="form-group">
                 <label for="version">Version</label>
-                <input type="text" name="version" id="version" class="form-control" value="{{ old('version') }}" required>
+                <input type="text" name="version" id="version" class="form-control" value="{{ old('version') }}">
             </div>
 
             <div class="form-group">
@@ -71,10 +71,10 @@
 
             <div class="form-group">
                 <label for="approved_by">Approved By</label>
-                <select name="approved_by" id="approved_by" class="form-control" required>
+                <select name="approved_by" id="approved_by" class="form-control">
                     <option value="" selected>Select Approver</option>
                     @foreach($projectMembers as $projectMember)
-                        <option value="{{ $projectMember->id }}">
+                        <option value="{{ $projectMember->project_members_id }}">
                             {{ $projectMember->user->name }}
                         </option>
                     @endforeach
@@ -83,7 +83,7 @@
 
             <div class="form-group">
                 <label for="approved_on">Approved On</label>
-                <input type="date" name="approved_on" id="approved_on" class="form-control" value="{{ old('approved_on') }}" required>
+                <input type="date" name="approved_on" id="approved_on" class="form-control" value="{{ old('approved_on') }}">
             </div>
 
             <div class="form-group">
@@ -99,7 +99,7 @@
 
             <div class="form-group">
                 <label for="attachments">Attachments</label>
-                <input type="file" name="attachments" id="attachments" class="form-control-file" required>
+                <input type="file" name="attachments" id="attachments" class="form-control-file">
             </div>
 
             <button type="submit" class="btn btn-primary">Save Document</button>

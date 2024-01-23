@@ -146,36 +146,35 @@
 
             <div id="memberCardContainer" class="row">
                 @foreach ($project->projectMembers as $projectMember)
-                @php
-                // Find the pivot data for the current member
-                $pivotData = $projectMember->pivot;
+                    @php
+                        // Find the pivot data for the current member
+                        $pivotData = $projectMember->pivot;
 
-                // Find the corresponding role for this member
-                $role = $project->roles->where('id', $pivotData->project_role_id)->first();
+                        // Find the corresponding role for this member
+                        $role = $project->roles->where('id', $pivotData->project_role_id)->first();
 
-                // Get the role name if found, otherwise an empty string
-                $roleName = $role ? $role->member_role_type : '';
-                
-                @endphp
-                <div class="col-lg-3 col-md-6 d-flex flex-col align-items-center card member-card" data-toggle="modal"
-                    data-target="#memberDetailsModal" data-member-name="{{ $projectMember->profile_name }}"
-                    data-role="{{ $roleName }}" data-engagement-percentage="{{ $pivotData->engagement_percentage }}"
-                    data-start-date="{{ $pivotData->start_date }}" data-end-date="{{ $pivotData->end_date }}"
-                    data-duration="{{ $pivotData->duration }}" data-engagement-mode="{{ $pivotData->engagement_mode }}"
-                    data-is-active="{{ $pivotData->is_active }}" style="width: 225px; height: 250px;">
-                    <div class="card-body mb-2 h-100" style="padding: 0 21px 0 21px;">
-                        <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px">
-                            <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}"
-                                alt="Profile Image" style="height: 140px; width: 140px;">
+                        // Get the role name if found, otherwise an empty string
+                        $roleName = $role ? $role->member_role_type : ''; 
+                    @endphp
+                    <div class="col-lg-3 col-md-6 d-flex flex-col align-items-center card member-card" data-toggle="modal"
+                        data-target="#memberDetailsModal" data-member-name="{{ $projectMember->profile_name }}"
+                        data-role="{{ $roleName }}" data-engagement-percentage="{{ $pivotData->engagement_percentage }}"
+                        data-start-date="{{ $pivotData->start_date }}" data-end-date="{{ $pivotData->end_date }}"
+                        data-duration="{{ $pivotData->duration }}" data-engagement-mode="{{ $pivotData->engagement_mode }}"
+                        data-is-active="{{ $pivotData->is_active }}" style="width: 225px; height: 250px;">
+                        <div class="card-body mb-2 h-100" style="padding: 0 21px 0 21px;">
+                            <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px">
+                                <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}"
+                                    alt="Profile Image" style="height: 140px; width: 140px;">
+                            </div>
+                            <p id="card-title" class="card-title user-name"
+                                style="font-size: 20px !important; font-weight:1000 !important;">{{
+                                $projectMember->profile_name }}</p>
+                            <p class="card-text role"
+                                style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
+                                {{ $roleName }}</p>
                         </div>
-                        <p id="card-title" class="card-title user-name"
-                            style="font-size: 20px !important; font-weight:1000 !important;">{{
-                            $projectMember->profile_name }}</p>
-                        <p class="card-text role"
-                            style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
-                            {{ $roleName }}</p>
                     </div>
-                </div>
                 @endforeach
             </div>
         </div>
@@ -187,11 +186,8 @@
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="memberDetailsModalLabel">Member Details</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header" style=" background-color:#061148; ">
+                <h5 class="modal-title" id="memberDetailsModalLabel" style="color: white;font-weight: bolder;">Member Details</h5>
             </div>
             <div class="modal-body">
                 <div class="member-details">
@@ -216,11 +212,8 @@
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel">Add Member</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header" style=" background-color:#061148; ">
+                <h5 class="modal-title" id="myModalLabel" style="color: white;font-weight: bolder;">Add Member</h5>
             </div>
             <div class="modal-body">
                 <form id="addMemberForm" action="{{ route('project_members.store') }}" method="post">
@@ -310,14 +303,14 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-
-
-                        <div class="col-md-12 mt-3 text-end">
-                            <button type="submit" class="btn" id="addMemberBtn"
-                                style="background-color: #012970; color: white;">Add Member</button>
-                        </div>
                     </div>
-                    <!-- </form> -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn" id="addMemberBtn"
+                            style="background-color: #012970; color: white;">Add Member
+                        </button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
