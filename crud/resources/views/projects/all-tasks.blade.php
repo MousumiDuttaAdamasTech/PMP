@@ -229,7 +229,7 @@
                                         <div class="form-group">
                                             <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
                                             <textarea name="details" id="details_{{ $task->id }}"
-                                                class="form-controlcl shadow-sm" required disabled style="background-color:#e9ecef;">{{ $task->details }}</textarea>
+                                                class="form-controlcl shadow-sm" required disabled style="background-color:#e9ecef;">{{ strip_tags($task->details) }}</textarea>
                                         </div>
                                     </div>
 

@@ -18,6 +18,9 @@
   flex-direction: row;
   justify-content: space-between;
   font-family: sans-serif;
+  width: auto;
+ 
+  
 }
 
 .kanban-heading-text {
@@ -28,7 +31,23 @@
   margin: 1rem;
 }
 
-.kanban-block,
+.backlog-tasks{
+  margin-top:30px;
+}
+
+.kanban-block {
+  min-height: 170px;
+  margin-left: 4px;
+  margin-right: 30px;
+  padding: 0.6rem;
+  margin-top: 20px;
+  border-radius: 0.3rem;
+  width: 164px;
+ 
+  
+  
+}
+
 .create-new-task-block {
   margin-left: 8px;
   margin-right: 54px;
@@ -44,6 +63,7 @@
     radial-gradient(circle at top left, #c781ff, #e57373);
   /* background-color: #fec6d1;*/
   border-top: 5px solid rgb(218, 89, 218);
+ 
 }
 
 #underdiscussion{
@@ -65,12 +85,14 @@
     radial-gradient(circle at top left, #c781ff, #e57373);
   /* background-color: #fec6d1;*/
   border-top: 5px solid rgb(235, 208, 101);
+ 
 }
 
 #underdevelopment {
   background-image: linear-gradient(#f6f8fc, #f6f8fc),
     radial-gradient(circle at top left, #ff9985, lightblue);
   border-top: 5px solid rgb(125, 206, 233);
+
 }
 
 #inprogress {
@@ -96,15 +118,16 @@
   background-color: var(--colorWhite);
   background-color: white;
   /* width: 260px; */
-  width:auto;
+  
   height: auto;
-  margin-top: 30px;
-  /* margin-bottom: 10px; */
+  margin-top: 10px;
+   /* margin-bottom: 10px; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   /* cursor: url(https://ssl.gstatic.com/ui/v1/icons/mail/images/2/openhand.cur), */
     /* default !important; */
+    width: 130px;
 }
 
 .task {
@@ -220,7 +243,6 @@ textarea {
 .material-icons {
   font-family: "Material Icons";
   font-size: 18px;
-  float: right;
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -880,9 +902,11 @@ a {
 
 .backlog-name {
   color: var(--colorName);
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 15px;
+  font-weight: 550;
   float: left;
+
+ 
 }
 
 .backlog-dots {
@@ -908,9 +932,9 @@ a {
   display: flex;
   justify-content: center;
   /* margin: 15px 0 15px 0; */
-  margin-right: 35px;
-  margin-top: 32px;
+  margin: auto;
   color: var(--colorBarW);
+  width: 90px;
 }
 
 .card-wrapper__footer-false {
@@ -1164,16 +1188,17 @@ a {
 .card__header {
   display: flex;
   justify-content: space-between;
+  height: 25px;
 }
 
 .card-container-color {
   border-radius: 3px;
-  height: 20px;
+  height: 17px;
   width: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 10px 0 15px 10px;
+  margin: 5px 40px 5px 5px;
 }
 
 .card-color-low {
@@ -1215,20 +1240,32 @@ a {
 }
  
 .edit-ico {
-  margin-top: 6px;
-  margin-right: 4px;
+  margin-top: 3px;
+  margin-right: 5px;
   color: grey;
+  height: 15px;
 }
+
 
 
 
 .card__details {
   color: var(--colorName);
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
-  margin: 0 10px;
+  margin: 5px 10px;
   word-wrap: break-word;
+  display:flex;
+  flex-direction: column;
+  /* Set a maximum height for the details */
+  height: 60px;
+  overflow: auto;
+ 
+
+
 }
+
+
 
 .card__text {
   color: var(--colorName);
@@ -1236,6 +1273,7 @@ a {
   font-weight: bold;
   margin: 0 10px;
   word-wrap: break-word;
+ 
 }
 
 .card__menu {
@@ -1247,7 +1285,7 @@ a {
 .card__menu-left {
   width: 65px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .comments-wrapper,
@@ -1455,54 +1493,6 @@ a {
   }
 }
 
-/* Kanban css */
-.project-type-dropdown {
-  position: relative;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-.dropdown-btn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-}
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  padding: 12px 16px;
-  z-index: 1;
-}
-.dropdown-content .project-type {
-  padding: 8px 0;
-  cursor: pointer;
-}
-.dropdown-content .project-type:hover {
-  background-color: #f1f1f1;
-}
-/* Additional styles for the down arrow icon */
-.down-arrow-icon {
-  cursor: pointer;
-  color: #adb5bd;
-  transform: rotate(0deg);
-  transition: transform 0.2s;
-}
-.down-arrow-icon:hover {
-  color: #888fdc;
-}
-.down-arrow-icon.rotate {
-  transform: rotate(180deg);
-}
-/* Position the dropdown below the down arrow icon */
-.dropdown-below {
-  top: 100%;
-  left: 9%;
-  margin-top: 70px;
-}
 /* Styles for the "Create" button */
 .add-task {
   cursor: pointer;
@@ -1516,6 +1506,68 @@ a {
   font-size: 20px;
   vertical-align: middle;
 }
+
+/* Styles for the dropdown container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+/* Styles for the dropdown button */
+.dropdown-btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+/* Styles for the dropdown content */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+/* Styles for the dropdown items */
+.dropdown-content .project-type {
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+/* Hover effect for dropdown items */
+.dropdown-content .project-type:hover {
+  background-color: #f1f1f1;
+}
+
+/* Additional styles for the down arrow icon */
+.down-arrow-icon {
+  cursor: pointer;
+  color: #adb5bd;
+  transform: rotate(0deg);
+  transition: transform 0.2s;
+}
+
+.down-arrow-icon:hover {
+  color: #888fdc;
+}
+
+.down-arrow-icon.rotate {
+  transform: rotate(180deg);
+}
+
+/* Position the dropdown below the down arrow icon */
+.dropdown-below {
+  top: 100%;
+  left: 0;
+}
+
+
 
 .modal {
   display: none;
@@ -1664,7 +1716,9 @@ font-family: Roboto, sans-serif !important;
 
 .kanban-board-container {
   display: flex;
-  overflow-x: hidden;
+  
   scroll-behavior: smooth; /* Enable smooth scrolling */
   padding-right: 60px; /* Add padding to make space for the scroll button */
+
+  
 }
