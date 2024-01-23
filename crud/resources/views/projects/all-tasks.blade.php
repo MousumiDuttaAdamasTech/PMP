@@ -555,21 +555,17 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="assigned_to" style="font-size: 15px;">Assigned To</label>
-                                    <select name="assigned_to[]" id="assigned_to" class="assigned_to form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
+                                    <select name="assigned_to[]" id="assigned_to"
+                                        class="assigned_to form-controlcl shadow-sm"
+                                        style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                        required>
                                         <option value="" selected disabled>Select User</option>
                                         @foreach ($project->members as $member)
-                                            @php
-                                                // Check if the current user ID is the same as the sprint's assignee
-                                                $isSelected = (old('assigned_to', optional($currentSprint)->assign_to) == $member->user->id) ? 'selected' : '';
-                                            @endphp
-                                            <option value="{{ $member->user->id }}" {{ $isSelected }}>
-                                                {{ $member->user->name }}
-                                            </option>
+                                        <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-
 
                             <div class="col-md-6">
                                 <div class="form-group allot_task">
