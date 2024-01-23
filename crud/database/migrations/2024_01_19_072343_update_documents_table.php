@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddAttachmentsToDocumentsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,7 @@ class AddAttachmentsToDocumentsTable extends Migration
     public function up(): void
     {
         Schema::table('documents', function (Blueprint $table) {
-            // $table->string('attachments');
-            $table->string('attachments')->nullable()->default(null);
+            $table->dropForeign(['approved_by']);
         });
     }
 
@@ -22,8 +21,6 @@ class AddAttachmentsToDocumentsTable extends Migration
      */
     public function down(): void
     {
-        Schema::table('documents', function (Blueprint $table) {
-            $table->dropColumn('attachments');
-        });
+        //
     }
-}
+};

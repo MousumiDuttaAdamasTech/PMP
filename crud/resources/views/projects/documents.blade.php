@@ -32,7 +32,7 @@
             <th>Sl. No.</th>  
             <th>UUID</th>
             <th>Document Name</th>
-            <th>Document Type</th>
+            <th>Approved On</th>
             <th>Version</th>      
             <th>Actions</th>
         </tr>
@@ -44,17 +44,9 @@
                 <td>{{ $serialNumber++ }}</td>
                 <td>{{ $document->doc_uuid }}</td>
                 <td>{{ $document->doc_name }}</td>
-                <td>{{ $document->doctype->doc_type }}</td>
+                <td>{{ $document->approved_on }}</td>
                 <td>{{ $document->version }}</td>
                 <td>
-                    <!-- <div class="btn-group" role="group">
-                        <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="">
-                            <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
-                        </a>
-                        <a href="#" class="edit-sprint-link" data-toggle="modal" data-placement="top" title="Update" data-target="#editModal_{{ $document->id }}">
-                            <i class="fa-regular fa-pen-to-square text-primary" style="margin-right: 10px"></i>
-                        </a>
-                    </div> -->
 
                     <div class="btn-group" role="group">
                         @if($document->wasUpdated())
@@ -102,9 +94,21 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="attachments" style="font-size: 15px;">Attachments</label>
-                                        @if(isset($document) && !empty($document->attachments))
+                                        <!-- @if(isset($document) && !empty($document->attachments))
                                             <i class="fas fa-paperclip text-primary mr-2"></i>
                                             <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
+                                        @endif -->
+                                        @if($document->versions && $document->versions->isNotEmpty())
+                                            @foreach($document->versions as $version)
+                                                @if(!empty($version->attachments))
+                                                    <div>
+                                                        <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                        <a href="{{ asset('storage/attachments/' . $version->attachments) }}" target="_blank">{{ $version->attachments }}</a>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        @else
+                                            <span>No attachments available</span>
                                         @endif
                                     </div>
                                 </div>
@@ -162,14 +166,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="editDocName" style="font-size: 15px;">Document Name</label>
-                                        <input type="text" name="doc_name" id="editDocName" class="form-control shadow-sm" required value="{{ old('doc_name', $document->doc_name) }}">
+                                        <input type="text" name="doc_name" id="editDocName" class="form-control shadow-sm" value="{{ old('doc_name', $document->doc_name) }}" required readonly>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="editDocType" style="font-size: 15px;">Document Type</label>
-                                        <select name="doc_type_id" id="editDocType" class="form-control shadow-sm" required>
+                                        <select name="doc_type_id" id="editDocType" class="form-control shadow-sm" required readonly>
                                             @foreach($docTypes as $docType)
                                                 <option value="{{ $docType->id }}" {{ old('doc_type_id', $document->doc_type_id) == $docType->id ? 'selected' : '' }}>
                                                     {{ $docType->doc_type }}
@@ -194,7 +198,7 @@
                                         <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
                                     @endif
 
-                                    <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
+                                    <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;" required>
                                 </div>
 
                                 <div class="col-md-6">
@@ -203,7 +207,7 @@
                                         <select name="approved_by" id="editApprovedBy" class="form-control shadow-sm" required>
                                             <!-- Populate options based on project members -->
                                             @foreach($projectMembers as $projectMember)
-                                                <option value="{{ $projectMember->id }}" {{ old('approved_by', $document->approved_by) == $projectMember->id ? 'selected' : '' }}>
+                                                <option value="{{ $projectMember->project_members_id }}" {{ old('approved_by', $document->approved_by) == $projectMember->project_members_id  ? 'selected' : '' }}>
                                                     {{ $projectMember->user->name }}
                                                 </option>
                                             @endforeach
