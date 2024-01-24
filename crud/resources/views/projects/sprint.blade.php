@@ -148,10 +148,10 @@
                                             </div> --}}
 
                                             <div class="backlog-tasks" id="{{ strtolower(str_replace(' ', '', $status)) }}-tasks" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
-                                            <div class="custom-card-container" style="overflow-x:auto;max-height: 140px;margin-bottom:5px">
+                                            <div class="custom-card-container" style="overflow-x:auto;max-height: 140px;margin-bottom:5px;width:135px;">
                                             @foreach($tasks as $task)
                                             @if ($task->project_task_status_id === $statusId) <!-- Check if task status matches the current status block -->
-                                            <div class="card shadow" id="task{{ $task->id }}" draggable="true" ondragstart="drag(event)" style="margin-bottom: 15px; height:110px;max-height:120px;overflow-x:auto;" >
+                                            <div class="card shadow" id="task{{ $task->id }}" draggable="true" ondragstart="drag(event)" style="margin-bottom: 15px; height:110px;max-height:120px;overflow-x:auto; width:120px;" >
                                                 <div class="card__header" >
                                                     <div class="card-container-color {{ $task->priority }}" >
                                                         @if(strtolower($task->priority) == 'low priority')
@@ -167,7 +167,7 @@
                                                     
                                                     <div class="edit-ico">
                                                         <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_{{ $task->id }}">
-                                                            <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                                            <i class="fas fa-edit" style="margin-right: 10px;color: rgba(0, 0, 0, 0.5);"></i>
                                                         </a>
                                                 </div>
 
@@ -200,15 +200,12 @@
                                                 @endforeach
                                             </div>
                                         </div> --}}
-                                        <div class="add-task" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal">Create
-                                       
-
-                                    </div>
+                                        <div class="add-task" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal">Create</div>
 
 
 
                                     </div>
-                                        </div>
+                                 </div>
                                     @endforeach
                                 </div>
                             </div>
@@ -586,20 +583,20 @@
                         <table id="sprintTable"  class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                             <thead>
                                 <tr>
-                                    <th style="width: 20%;">ID</th>
-                                    <th style="width: 20%;">Sprint Name</th>
-                                    <th style="width: 20%;">Sprint Status</th>
-                                    <th style="width: 20%;">Current Date</th>
-                                    <th style="width: 20%;">Actions</th>
+                                    <th style="width: 25%;">ID</th>
+                                    <th style="width: 25%;">Sprint Name</th>
+                                    <th style="width: 25%;">Sprint Status</th>
+                                    <th style="width: 25%;">Current Date</th>
+                                    <th style="width: 25%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <!-- Loop through your sprint records and create a row for each record -->
                                 @foreach($sprints as $sprint)
                                     <tr class="shadow" style="border-radius:15px;">
-                                        <td style="width: 20%;">{{ $sprint->id }}</td>
-                                        <td style="width: 20%;">{{ $sprint->sprint_name }}</td>
-                                        <td style="width: 20%;">
+                                        <td style="width: 25%;">{{ $sprint->id }}</td>
+                                        <td style="width: 25%;">{{ $sprint->sprint_name }}</td>
+                                        <td style="width: 25%;">
                                             @if($sprint->sprint_status == 'Under discussion')
                                                 <div class="badge badge-success-light text-white font-weight-bold" style="background-color: #79c57f;">{{ $sprint->sprint_status }}</div>
                                             @elseif($sprint->sprint_status == 'Delay')
@@ -614,8 +611,8 @@
                                                 <div class="badge badge-danger-light text-white font-weight-bold" style="background-color: #f07f8c; margin-left:12px;">{{ $sprint->sprint_status }}</div>
                                             @endif
                                         </td>
-                                        <td style="width: 20%;">{{ $sprint->current_date }}</td> 
-                                        <td style="width: 20%;">
+                                        <td style="width: 25%;">{{ $sprint->current_date }}</td> 
+                                        <td style="width: 25%;">
                                             <div class="btn-group" role="group">
                                                 <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showModal_{{ $sprint->id }}">
                                                     <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
@@ -934,26 +931,31 @@
                         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                             <thead>
                                 <tr>
-                                    <th style="width: 20%;">ID</th>
-                                    <th style="width: 20%;">Title</th>
-                                    <th style="width: 20%;">Priority</th>
-                                    <th style="width: 20%;">Estimated Time</th>
+                                    <th style="width: 25%;">ID</th>
+                                    <th style="width: 25%;">Title</th>
+                                    <th style="width: 25%;">Priority</th>
+                                    <th style="width: 25%;">Estimated Time</th>
                                     <!-- <th>Details</th> -->
                                     <!-- <th>Assigned To</th> -->
-                                    <th style="width: 20%;">Actions</th>
+                                    <th style="width: 25%;">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($tasks as $task)
+                                @php
+                               // Sort the tasks collection based on the 'id' attribute
+                               $sortedTasks = $tasks->sortByDesc('id');
+                                @endphp
+                                @foreach($sortedTasks as $task)
+                             
                                 <tr class="shadow" style="border-radius:15px;">
-                                    <td style="font-size: 15px; width:20%;">{{ $task->uuid }}</td>
-                                    <td style="font-size: 15px; width:20%;">{{ $task->title }}</td>
-                                    <td style="font-size: 14px; width:20%;">{{ $task->priority }}</td>
+                                    <td style="font-size: 15px; width:25%;">{{ $task->uuid }}</td>
+                                    <td style="font-size: 15px; width:25%;">{{ $task->title }}</td>
+                                    <td style="font-size: 14px; width:25%;">{{ $task->priority }}</td>
                                     <td style="width: 20%;">{{ $task->estimated_time }}</td>
                                     {{-- <!-- <td>{{ $task->details }}</td> --> --}}
                                     
 
-                                    <td class="d-flex align-items-center" style="font-size: 15px;width:20%;">
+                                    <td class="d-flex align-items-center" style="font-size: 15px;width:25%;">
                                         <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showModal_{{ $task->id }}">
                                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                         </a>
