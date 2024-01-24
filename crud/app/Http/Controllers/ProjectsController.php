@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bugs;
+use App\Models\BugType;
+use App\Models\QA;
+use App\Models\QAStatus;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Project;
@@ -520,7 +524,40 @@ class ProjectsController extends Controller
 
     public function qa(Project $project)
     {
-        return view('projects.qa', compact('project'));
+        $projectId = $project->id;
+        $tasks = Task::where('project_id', $project->id)->get();
+        $taskStatuses = TaskStatus::all();
+        $users = User::all();
+        $sprints = Sprint::where('projects_id', $project->id)->get();
+        $projects = Project::all(['id', 'project_name']);
+        $project = Project::with('members.user')->find($projectId);
+        $profiles = Profile::all();
+        $projectMembers = ProjectMember::with('user')->get();
+        $qastatuses = QAStatus::all();
+        $qarounds = QA::all();
+        $bugtypess = BugType::all();
+        $bugs = Bugs::all();
+
+        // Fetch task statuses for the current project
+        $taskStatusesWithIds = DB::table('project_task_status')
+            ->join('task_status', 'project_task_status.task_status_id', '=', 'task_status.id')
+            ->join('project', 'project_task_status.project_id', '=', 'project.id')
+            ->select('project_task_status.id as project_task_status_id', 'task_status.status')
+            ->where('project.id', $projectId) // Use $project->id instead of $projectId
+            ->distinct()
+            ->get();
+
+        // Fetch project types for the current project
+        $projectTypes = DB::table('project_task_types')
+            ->join('task_types', 'project_task_types.task_type_id', '=', 'task_types.id')
+            ->join('project', 'project_task_types.project_id', '=', 'project.id')
+            ->select('task_types.type_name')
+            ->where('project.id', $projectId)
+            ->distinct()
+            ->pluck('type_name')
+            ->toArray();
+
+        return view('projects.qa', compact('bugs', 'bugtypess', 'qarounds', 'qastatuses', 'project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
     }
 
     public function meetings(Project $project)
@@ -543,9 +580,9 @@ class ProjectsController extends Controller
 
 
     public function release_management(Project $project)
-    {   
+    {
 
-        
+
         $members = ProjectMember::all();
         $stakeholders = Stakeholder::all();
         $stakeholderRoles = StakeholderRole::all();
@@ -553,7 +590,7 @@ class ProjectsController extends Controller
         //dd($stakeholders);
 
         $images = DB::table('release_management as RM')
-            ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name','ST.id as stakeholder_id')
+            ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name', 'ST.id as stakeholder_id')
             ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
             ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
             ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'ST.stakeholder_role_id')
@@ -565,9 +602,9 @@ class ProjectsController extends Controller
         // ->distinct()
         // ->get();
 
-        
-    
-// $images is now a collection containing distinct profile images
+
+
+        // $images is now a collection containing distinct profile images
 
 
 
@@ -578,7 +615,7 @@ class ProjectsController extends Controller
         if (request()->isMethod('get')) {
             $releaseManagements = ReleaseManagement::where('project_id', $project->id)->get();
 
-            return view('projects.release_management', compact('project', 'releaseManagements','members','stakeholders', 'images','stakeholderRoles'));
+            return view('projects.release_management', compact('project', 'releaseManagements', 'members', 'stakeholders', 'images', 'stakeholderRoles'));
         } elseif (request()->isMethod('post')) {
             // Handle form submissions, e.g., store, update, delete
             // Check for specific form actions and delegate to the appropriate methods in ReleaseManagementController
@@ -595,18 +632,18 @@ class ProjectsController extends Controller
 
         $release_management_id = $request->id;
 
-        
-        
+
+
         $images = DB::table('release_management as RM')
-        ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name','ST.id as stakeholder_id')
-        ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
-        ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
-        ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'ST.stakeholder_role_id')
-        ->where('RM.id', '=', $release_management_id)
-        ->get();
-        
+            ->select('pr.image', 'pr.profile_name', 'sr.stakeholder_role_name', 'ST.id as stakeholder_id')
+            ->leftJoin('stakeholders as ST', 'ST.release_management_id', '=', 'RM.id')
+            ->leftJoin('profiles as pr', 'pr.id', '=', 'ST.member_id')
+            ->leftJoin('stakeholder_roles as sr', 'sr.id', '=', 'ST.stakeholder_role_id')
+            ->where('RM.id', '=', $release_management_id)
+            ->get();
+
         //dd($images);
-        
+
         return response()->json($images);
     }
 
@@ -626,7 +663,7 @@ class ProjectsController extends Controller
         $project = Project::with('members.user')->find($projectId);
         $profiles = Profile::all();
         $projectMembers = ProjectMember::with('user')->get();
-        
+
 
         // Fetch task statuses for the current project
         $taskStatusesWithIds = DB::table('project_task_status')

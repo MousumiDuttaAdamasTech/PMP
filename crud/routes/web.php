@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BugController;
+use App\Http\Controllers\RoundController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectsController;
 use App\Http\Controllers\VerticalController;
@@ -173,7 +175,7 @@ Route::middleware([
 
 //Microsoft Authentication Route
 
-Route::controller(MicrosoftController::class, '')->group(function () {
+Route::controller(MicrosoftController::class)->group(function () {
 
     Route::get('auth/microsoft', 'redirectToProvider')->name('auth.microsoft');
 
@@ -182,3 +184,13 @@ Route::controller(MicrosoftController::class, '')->group(function () {
 });
 
 Route::post('/dailyEntry', [DailyEntryController::class, 'dailyEntry'])->name("dailyEntry");
+
+Route::post('/createRound', [RoundController::class, 'createRound'])->name('createRound');
+
+Route::post('/editRound', [RoundController::class, 'editRound'])->name('editRound');
+
+Route::post('/createBug', [BugController::class, 'createBug'])->name('createBug');
+
+Route::post('/editBug', [BugController::class, 'editBug'])->name('editBug');
+
+Route::get('/deleteBug/{bugId}', [BugController::class, 'deleteBug'])->name('deleteBug');
