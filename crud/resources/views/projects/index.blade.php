@@ -38,19 +38,20 @@
             <table id="projectTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                 <thead>
                     <tr>
-                        <th style="width: 150px; padding-left: 37px;">ID</th>
-                        <th style="width: 380px;">Project Name</th>
-                        <th style="width: 182px;">Status</th>
-                        <th style="width: 113px;">Actions</th>
+                        <th style="width:20%">ID</th>
+                        <th style="width:20%">Project Name</th>
+                        <th style="width:20%">Status</th>
+                        <th style="width:20%">Created At</th>
+                        <th style="width:20%">Updated At</th>
+                        <th style="width:20%">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($projects as $project)
                     <tr class="shadow" style="border-radius:15px;">
-                        <!-- <td>{{ $project->short_uuid }}</td> -->
-                        <td style="padding-left:37px;">{{ $project->uuid }}</td>
-                        <td>{{ $project->project_name }}</td>
-                        <td>
+                        <td style="width:20%" >{{ $project->uuid }}</td>
+                        <td style="width:20%">{{ $project->project_name }}</td>
+                        <td style="width:20%">
                             @if($project->project_status == 'Not Started')
                                 <div class="badge badge-success-light text-white font-weight-bold" style="background-color: #ed5768; ">{{ $project->project_status }}</div>
                             @elseif($project->project_status == 'Delay')
@@ -63,15 +64,17 @@
                                 <div class="badge badge-info-light text-white font-weight-bold" style="background-color: #17b85d">{{ $project->project_status }}</div>
                             @endif
                         </td>
+                        <td style="width:20%">{{$project->created_at}}</td>
+                        <td style="width:20%">{{$project->updated_at}}</td>
                         
-                        <td>
-                            <div class="btn-group" role="group">
-                            <a href="{{ route('sprints.index', ['sprints' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Sprints">
+                        <td style="width:20%">
+                             <div class="btn-group" role="group">
+                            <!--<a href="{{ route('sprints.index', ['sprints' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Sprints">
                                 <i class="fa-solid fa-people-roof text-warning" style="margin-right: 10px"></i>
                             </a>
                             <a href="{{ route('kanban', ['projectId' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Tasks">
                                 <i class="bi bi-kanban" style="margin-right: 10px; color: blueviolet;"></i>
-                            </a>
+                            </a> -->
                             <a href="{{ route('projects.cost', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Cost">
                                 <i class="bi bi-exclamation-octagon" style="margin-right: 10px; color:red;"></i>
                             </a>

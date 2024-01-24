@@ -31,7 +31,7 @@
 @section('content')
     <main class="container">
         <section>
-            <div class="titlebar">Project Name: {{ $project->project_name }}</div>
+            <div class="titlebar"><h2>Project Name: {{ $project->project_name }}</h2></div>
                 
                 <table id="projectTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                     <thead>
@@ -44,7 +44,6 @@
                             <th>Duration</th>
                             <th>Active</th>
                             <th>Member Price</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,11 +57,6 @@
                                 <td>{{ $member->pivot->duration }}</td>
                                 <td>{{ $member->pivot->is_active ? 'Yes' : 'No' }}</td>
                                 <td>₹{{ number_format($memberCosts[$member->id], 2) }}</td>
-                                <td>
-                                    <a href="#" class="edit-member" data-member-id="{{ $member->id }}">
-                                        <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                                    </a>
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>

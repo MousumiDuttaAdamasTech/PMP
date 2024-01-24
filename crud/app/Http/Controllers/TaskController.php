@@ -10,6 +10,7 @@ use App\Models\ProjectMember;
 use App\Models\Project;
 use App\Models\Sprint;
 use App\Models\TaskUser;
+use App\Models\TaskAttachment;
 
 use Illuminate\Support\Str;
 
@@ -50,6 +51,7 @@ class TaskController extends Controller
             'allotted_to' => 'required',
             'project_id' => 'required',
             'sprint_id' => 'required',
+            'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png',
         ]);
 
         $projectId = $request->input('project_id');
@@ -78,6 +80,23 @@ class TaskController extends Controller
                 'assigned_to' => $allottedTo[$index], // Set 'assigned_to' based on the corresponding index in the allotted_to array
             ]);
             $taskUser->save();
+        }
+
+        // Process and store the task attachments
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $attachment) {
+                // Set the file name to the original name
+                $fileName = $attachment->getClientOriginalName();
+
+                // Store the attachment in the storage/app/public/task_attachments directory with the same name
+                $path = $attachment->storeAs('task_attachments', $fileName, 'public');
+
+                // Create TaskAttachment and associate it with the task
+                TaskAttachment::create([
+                    'task_id' => $task->id,
+                    'file_path' => $path,
+                ]);
+            }
         }
 
         return back()->with('success', 'Task created successfully.');
@@ -109,6 +128,7 @@ class TaskController extends Controller
             'allotted_to' => 'required',
             'project_id' => 'required',
             'sprint_id' => 'required',
+            'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png', //validation for multiple files
         ]);
 
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);
@@ -135,6 +155,7 @@ class TaskController extends Controller
             ]);
             $taskUser->save();
         }
+
         return back()->with('success', 'Updated successfully.');
     }
 
