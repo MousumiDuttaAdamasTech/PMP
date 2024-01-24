@@ -92,21 +92,25 @@
     <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Title</th>
-                <th>Priority</th>
-                <th>Estimated Hours</th>
-                <th>Actions</th>
+                <th style="width:25%;">ID</th>
+                <th style="width:25%;">Title</th>
+                <th style="width:25%;">Priority</th>
+                <th style="width:25%;">Estimated Hours</th>
+                <th style="width:25%;">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($tasks as $task)
+            @php
+                // Sort the tasks collection based on the 'id' attribute
+                $sortedTasks = $tasks->sortByDesc('id');
+            @endphp
+            @foreach($sortedTasks as $task)
                 <tr class="shadow" style="border-radius:15px;">
-                    <td style="font-size: 15px;">{{ $task->uuid }}</td>
-                    <td style="font-size: 15px;">{{ $task->title }}</td>
-                    <td style="font-size: 15px;">{{ $task->priority }}</td>
-                    <td style="font-size: 15px;">{{ $task->estimated_time }}</td>
-                    <td class="d-flex align-items-center" style="font-size: 15px;">
+                    <td style="font-size: 15px; width:25%;">{{ $task->uuid }}</td>
+                    <td style="font-size: 15px; width:25%;">{{ $task->title }}</td>
+                    <td style="font-size: 15px; width:25%;">{{ $task->priority }}</td>
+                    <td style="font-size: 15px; width:25%;">{{ $task->estimated_time }}</td>
+                    <td class="d-flex align-items-center" style="font-size: 15px; width:25%;">
                         <a href="#" data-toggle="modal" data-placement="top" title="Show"
                             data-target="#showModal_{{ $task->id }}" class="p-1">
                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
@@ -229,9 +233,13 @@
                                         <div class="form-group">
                                             <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
                                             <textarea name="details" id="details_{{ $task->id }}"
-                                                class="form-controlcl shadow-sm" required disabled style="background-color:#e9ecef;">{{ $task->details }}</textarea>
+                                                class="form-controlcl shadow-sm" required disabled style="background-color:#e9ecef;">
+                                                {{ strip_tags($task->details) }}
+                                            </textarea>
                                         </div>
                                     </div>
+
+
 
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -364,12 +372,16 @@
                                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                         required>
                                                         <option value="" selected disabled>Select Task Status</option>
-                                                        @foreach ($taskStatuses as $taskStatus)
-                                                        <option value="{{ $taskStatus->id }}" {{ old('project_task_status_id',
-                                                            optional($task)->project_task_status_id) == $taskStatus->id ? 'selected' :
-                                                            '' }}>
-                                                            {{ $taskStatus->status }}
-                                                        </option>
+                                                        @foreach($taskStatusesWithIds as $statusObject)
+                                                            @php
+                                                                $status = $statusObject->status;
+                                                                $statusId = $statusObject->project_task_status_id;
+                                                            @endphp
+                                                            <option value="{{ $statusId }}" {{ old('project_task_status_id',
+                                                                optional($task)->project_task_status_id) == $statusId ? 'selected' :
+                                                                '' }}>
+                                                                {{ $status }}
+                                                            </option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -518,9 +530,14 @@
                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                         required>
                                         <option value="" selected disabled>Select Task Status</option>
-                                        @foreach ($taskStatuses as $taskStatus)
-                                        <option value="{{ $taskStatus->id }}">{{ $taskStatus->status }}</option>
-                                        @endforeach
+                                            @foreach($taskStatusesWithIds as $statusObject)
+                                                @php
+                                                    $status = $statusObject->status; // Access the 'status' property of the object
+                                                    $statusId = $statusObject->project_task_status_id; // Access the 'project_task_status_id'
+                                                @endphp
+                                                <option value="{{  $statusId  }}">{{ $status }}</option>
+
+                                            @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -564,8 +581,6 @@
                                 </div>
                             </div>
 
-
-
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-primary">Create</button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</a>
@@ -575,8 +590,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    
+    </div>    
 </div>
 @endsection

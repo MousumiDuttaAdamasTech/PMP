@@ -76,7 +76,7 @@
                                 <i class="bi bi-exclamation-octagon" style="margin-right: 10px; color:red;"></i>
                             </a>
                             <a href="{{ route('projects.overview', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Project Details">
-                                <i class="fa fa-exclamation-circle" style="margin-right: 10px; color:blue;"></i>
+                                <i class="fa-solid fa-book-open" style="margin-right: 10px; color:blue;"></i> 
                             </a>
                             <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">
                                 <i class="fa-solid fa-gear text-secondary" style="margin-right: 10px"></i>

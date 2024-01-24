@@ -117,6 +117,8 @@ Route::middleware([
         Route::delete('/{vertical}', [VerticalController::class, 'destroy'])->name('verticals.destroy');
     });
 
+    Route::delete('documents/{version}/delete', 'DocumentController@deleteVersion')->name('documents.delete');
+
     Route::resource('documents', DocumentController::class);
 
     Route::resource('highest-education-values', HighestEducationValueController::class);
@@ -154,7 +156,6 @@ Route::middleware([
     Route::resource('task_status', TaskStatusController::class);
 
     Route::get('/kanban/{projectId}', [KanbanController::class, 'showKanban'])->name('kanban');
-
 
     Route::prefix('tasks')->group(function () {
         Route::post('/store', [TaskController::class, 'store'])->name('tasks.store');
