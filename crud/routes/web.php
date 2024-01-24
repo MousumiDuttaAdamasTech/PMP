@@ -195,3 +195,7 @@ Route::post('/createBug', [BugController::class, 'createBug'])->name('createBug'
 Route::post('/editBug', [BugController::class, 'editBug'])->name('editBug');
 
 Route::get('/deleteBug/{bugId}', [BugController::class, 'deleteBug'])->name('deleteBug');
+
+Route::get('/findSprintDetailsWithId/{sprintId}', [BugController::class, 'findSprintDetailsWithId'])->name('findSprintDetailsWithId');
+
+Route::post('/createTaskFromBug', [BugController::class, 'createTaskFromBug'])->name('createTaskFromBug');

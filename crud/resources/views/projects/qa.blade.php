@@ -16,20 +16,29 @@
 <!-- Include necessary scripts here -->
 
 @section('project_js')
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{{ asset('js/side_highlight.js') }}"></script>
     <script src="{{ asset('js/project.js') }}"></script>    
 @endsection
 
 @section('main_content')
 
-<script type="text/javascript">
+<script>
     $(document).ready(function () {
         $('.ckeditor').ckeditor();
     });
+
+    @foreach($bugs as $bug)
+        $(document).ready(function () {
+            $('.allot_user_{{$bug->id}}').select2({
+                dropdownParent: $('.allot_{{$bug->id}}'),
+                placeholder: "Select a user"
+            });
+        });
+    @endforeach
 </script>
 
 <script>
@@ -63,6 +72,18 @@
                         });
                 }
             });
+        }
+
+        var sprintSelector = document.querySelector(".sprint_dropdown");
+        var assignedToInput1 = document.querySelector(".assigned_to");
+        var assignedToInput2 = document.querySelector(".assigned_too");
+        if(sprintSelector){
+            sprintSelector.addEventListener('change',async ()=>{
+                var response = await fetch(`/findSprintDetailsWithId/${sprintSelector.value}`);
+                var user = await response.json();
+                assignedToInput1.value = user.id;
+                assignedToInput2.value = user.name;
+            })
         }
     });
 </script>
@@ -190,8 +211,8 @@
                                             </div>
                                             <div style="width: 50%">
                                                 <label class="form-label">Tester</label>
-                                                <select class="form-control" required style="font-size:14px;" name="tester">
-                                                    <option value="" selected disabled>Select Tester</option>
+                                                <select class="form-control" id="tester"  required style="font-size:14px;width:100%;" name="tester">
+                                                    <option value="">Select Tester</option>
                                                     @foreach($project->projectMembers as $projectMember)
                                                         <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
                                                     @endforeach
@@ -350,7 +371,7 @@
                     </div>
 
                     {{-- CREATE TASKS FROM BUGS --}}
-                    <div id="createTasksFromBugsModal_{{$bug->id}}" class="modal">
+                    <div id="createTasksFromBugsModal_{{$bug->id}}" class="modal allot_{{$bug->id}}">
                         <div class="modal-dialog">
                             <div class="modal-content">
 
@@ -359,44 +380,30 @@
                                     <h4 class="modal-title" style="color: white;font-weight: bolder;">Create Task</h4>
                                 </div>
                             
-                                <form method="post" action="{{route('editBug')}}">
+                                <form method="post" action="{{route('createTaskFromBug')}}">
                                     {{csrf_field()}}
                                     <!-- Modal Body -->
                                     <input type="hidden" value="{{$bug->id}}" name="bug_id"/>
+                                    <input type="hidden" value="{{$project->id}}" name="project_id"/>
+                                    <input type="hidden" value="" class="assigned_to" name="assigned_to"/>
                                     <div class="modal-body"> 
-                                        <div class="d-flex justify-content-between gap-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Task Title</label>
-                                                <input type="text" class="form-control" name="task_title"/>
-                                            </div>
+                                        <div>
+                                            <label class="form-label">Task Title</label>
+                                            <input type="text" class="form-control" name="task_title"/>
+                                        </div>
+                                        <div class="d-flex justify-content-between gap-3 mt-3">
                                             <div style="width: 50%">
                                                 <label class="form-label">Sprint</label>
-                                                <select class="form-control" required style="font-size:14px;" name="sprint_id">
+                                                <select class="form-control sprint_dropdown" required style="font-size:14px;" name="sprint_id">
                                                     <option value="" selected disabled>Select Sprint</option>
                                                     @foreach($sprints as $sprint)
                                                         <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
                                             <div style="width: 50%">
-                                                <label class="form-label">Bug Type</label>
-                                                <select class="form-control" required style="font-size:14px;" name="type">
-                                                    <option value="" selected disabled>Select Bug Type</option>
-                                                    @foreach($bugtypess as $bugtype)
-                                                    <option value="{{$bugtype->id}}">{{$bugtype->type}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Bug Status</label>
-                                                <select class="form-control" required style="font-size:14px;" name="status">
-                                                    <option value="" selected disabled>Select Bug Status</option>
-                                                    <option value="status 1">status 1</option>
-                                                    <option value="status 2">status 2</option>
-                                                    <option value="status 3">status 3</option>
-                                                </select>
+                                                <label class="form-label">Estimated Hours</label>
+                                                <input type="number" class="form-control" required style="font-size:14px;" name="estimated_hours">
                                             </div>
                                         </div>
                                         <div class="d-flex justify-content-between gap-3 mt-3">
@@ -404,29 +411,45 @@
                                                 <label class="form-label">Priority</label>
                                                 <select class="form-control" required style="font-size:14px;" name="priority">
                                                     <option value="" selected disabled>Select Priority</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
+                                                    @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
+                                                        <option value="{{ $value }}">{{ $label }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div style="width: 50%">
-                                                <label class="form-label">Severity</label>
-                                                <select class="form-control" required style="font-size:14px;" name="severity">
-                                                    <option value="" selected disabled>Select Severity</option>
-                                                    <option value="low">Low</option>
-                                                    <option value="medium">Medium</option>
-                                                    <option value="high">High</option>
+                                                <label class="form-label">Task Status</label>
+                                                <select class="form-control" required style="font-size:14px;" name="status">
+                                                    <option value="" selected disabled>Select Task Status</option>
+                                                    @foreach($taskStatusesWithIds as $statusObject)
+                                                        @php
+                                                            $status = $statusObject->status;
+                                                            $statusId = $statusObject->project_task_status_id;
+                                                        @endphp
+                                                        <option value="{{  $statusId  }}">{{ $status }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between gap-3 mt-3">
+                                            <div style="width: 50%">
+                                                <label class="form-label">Assigned To</label>
+                                                <input type="text" class="form-control assigned_too" style="font-size:14px;" disabled>
+                                            </div>
+                                            <div style="width: 50%">
+                                                <label class="form-label">Alloted To</label>
+                                                <select class="form-control allot_user_{{$bug->id}}" required style="font-size:14px;width:100%;" name="alloted_to[]" multiple>
+                                                    @foreach($project->projectMembers as $projectMember)
+                                                        <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="mt-3">
                                             <label class="form-label">Description</label>
-                                            <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
+                                            <textarea class="ckeditor form-control" name="desc"></textarea>
                                         </div>
                                         <div class="d-flex justify-content-end mt-4 gap-3">
-                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="submit" class="btn btn-primary">Create</button>
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                         </div>
                                     </div>       
