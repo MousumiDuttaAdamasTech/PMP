@@ -13,10 +13,9 @@ return new class extends Migration
     {
         Schema::create('task_attachments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tasks_id');
-            $table->foreign('tasks_id')->references('id')->on('tasks')->onDelete('cascade');
-            $table->string('attachments');
-            $table->string('file_size');
+            $table->unsignedBigInteger('task_id');
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->string('file_path');
             $table->timestamps();
         });
     }

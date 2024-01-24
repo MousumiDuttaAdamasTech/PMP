@@ -10,11 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('bug_documents', function (Blueprint $table) {
+        Schema::create('qa', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('bug_id');
-            $table->string('document_path');
-            $table->string('document_type');
+            $table->string('round');
+            $table->string('module');
+            $table->string('description');
+            $table->unsignedBigInteger('qa_status_id');
+            $table->unsignedBigInteger('sprint_id');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('bug_documents');
+        Schema::dropIfExists('qa');
     }
 };

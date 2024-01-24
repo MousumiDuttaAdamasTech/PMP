@@ -149,7 +149,6 @@ class ReleaseManagementController extends Controller
             ->with('success', 'Stakeholder added successfully');
     }
 
-
     public function destroy(Project $project, ReleaseManagement $releaseManagement)
     {
         // Delete the documents associated with the release management entry
@@ -166,6 +165,4 @@ class ReleaseManagementController extends Controller
 
         return redirect()->route('projects.release_management', $project)->with('success', 'Release Management entry deleted successfully!');
     }
-
-
 }

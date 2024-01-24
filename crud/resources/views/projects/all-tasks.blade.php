@@ -275,6 +275,25 @@
                                         </div>
                                     </div>
 
+                                        @if($task->attachments && $task->attachments->count() > 0)
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="documents">Documents</label>
+                                                    <ul>
+                                                        @foreach ($task->attachments as $attachment)
+                                                            <li class="list-group-item">
+                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                                <a href="{{($attachment->file_path) }}"
+                                                                    target="_blank">
+                                                                    {{ $attachment->file_path }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach 
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        @endif
+                                            
                                             <!-- Add other form fields with unique identifiers -->
 
                                     <div class="form-actions">
@@ -484,7 +503,7 @@
                                     <label for="parent_task" style="font-size: 15px;">Parent Task</label>
                                     <select name="parent_task" id="parent_task" class="form-controlcl shadow-sm"
                                         style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                        <option value="" selected disabled>No Parent Task</option>
+                                        <option value="" selected>No Parent Task</option>
                                         @foreach ($tasks as $taskOption)
                                             <option value="{{ $taskOption->id }}">
                                                 {{ $taskOption->title }}
@@ -578,6 +597,14 @@
                                         <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="attachments">Attachments</label>
+                                    <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                    <small class="text-muted">You can upload multiple files.</small>
                                 </div>
                             </div>
 

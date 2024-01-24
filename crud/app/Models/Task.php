@@ -70,4 +70,9 @@ class Task extends Model
     {
         return array_combine(self::PRIORITIES, array_map('strtolower', self::PRIORITIES));
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(TaskAttachment::class, 'task_id');
+    }
 }
