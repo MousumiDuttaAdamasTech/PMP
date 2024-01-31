@@ -403,8 +403,8 @@
                         <div class="modal fade modal-lg" id="addStakeholderModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="addStakeholderModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addStakeholderModalLabel{{ $releaseManagement->id }}">Stakeholders</h5>
+                                    <div class="modal-header" style="background-color:#061148;">
+                                        <h5 class="modal-title" id="addStakeholderModalLabel{{ $releaseManagement->id }}" style="color: white;font-weight: bolder;">Stakeholders</h5>
                                     </div>
                                     <div class="modal-body">
                                         <!-- Stakeholder addition form goes here -->

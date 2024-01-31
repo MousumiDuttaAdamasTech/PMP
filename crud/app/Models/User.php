@@ -74,4 +74,15 @@ class User extends Authenticatable
     {
         return $this->belongsTo(UserTechnology::class, 'user_technology_id');
     }
+
+    public function isProjectMember($projectId)
+    {
+        // Implement logic to check if the user is a project member for the given project
+        return $this->projectMembers()->where('project_id', $projectId)->exists();
+    }
+
+    public function projectMembers()
+    {
+        return $this->hasMany(ProjectMember::class, 'project_members_id');
+    }
 }

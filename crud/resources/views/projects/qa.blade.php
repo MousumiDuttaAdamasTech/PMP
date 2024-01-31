@@ -263,7 +263,7 @@
                                         </div>
                                         <div class="mt-3">
                                             <label class="form-label">Attach Files</label>
-                                            <input type="file" class="form-control" name="bug_files"></input>
+                                            <input type="file" class="form-control" name="bug_files" multiple></input>
                                         </div>
                                         <div class="mt-3">
                                             <label class="form-label">Description</label>
@@ -298,18 +298,24 @@
                                             <div style="width: 50%">
                                                 <label class="form-label">Round</label>
                                                 <select class="form-control" required style="font-size:14px;" name="round">
-                                                    <option value="">Select Round</option>
                                                     @foreach($qarounds as $qaround)
-                                                        <option value="{{$qaround->id}}">{{$qaround->round}}</option>
+                                                        @if($bug->qa_id == $qaround->id)
+                                                            <option value="{{$qaround->id}}" selected>{{$qaround->round}}</option>
+                                                        @else
+                                                            <option value="{{$qaround->id}}">{{$qaround->round}}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div style="width: 50%">
                                                 <label class="form-label">Tester</label>
                                                 <select class="form-control" required style="font-size:14px;" name="tester">
-                                                    <option value="" selected disabled>Select Tester</option>
                                                     @foreach($project->projectMembers as $projectMember)
-                                                        <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                        @if($bug->tester_id == $projectMember->id)
+                                                            <option value="{{$projectMember->id}}" selected>{{$projectMember->profile_name}}</option>
+                                                        @else
+                                                            <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -318,16 +324,27 @@
                                             <div style="width: 50%">
                                                 <label class="form-label">Bug Type</label>
                                                 <select class="form-control" required style="font-size:14px;" name="type">
-                                                    <option value="" selected disabled>Select Bug Type</option>
                                                     @foreach($bugtypess as $bugtype)
-                                                    <option value="{{$bugtype->id}}">{{$bugtype->type}}</option>
+                                                        @if($bug->bugType == $bugtype->id)
+                                                            <option value="{{$bugtype->id}}" selected>{{$bugtype->type}}</option>
+                                                        @else    
+                                                            <option value="{{$bugtype->id}}">{{$bugtype->type}}</option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
                                             </div>
                                             <div style="width: 50%">
                                                 <label class="form-label">Bug Status</label>
                                                 <select class="form-control" required style="font-size:14px;" name="status">
-                                                    <option value="" selected disabled>Select Bug Status</option>
+                                                    @if($bug->bugStatus == "status 1")
+                                                        <option value="status 1" selected>status 1</option>
+                                                    @endif
+                                                    @if($bug->bugStatus == "status 2")
+                                                        <option value="status 2" selected>status 2</option>
+                                                    @endif
+                                                    @if($bug->bugStatus == "status 3")
+                                                        <option value="status 3" selected>status 3</option>
+                                                    @endif
                                                     <option value="status 1">status 1</option>
                                                     <option value="status 2">status 2</option>
                                                     <option value="status 3">status 3</option>
@@ -338,7 +355,21 @@
                                             <div style="width: 50%">
                                                 <label class="form-label">Priority</label>
                                                 <select class="form-control" required style="font-size:14px;" name="priority">
-                                                    <option value="" selected disabled>Select Priority</option>
+                                                    @if($bug->priority == "1")
+                                                        <option value="1" selected>1</option>
+                                                    @endif
+                                                    @if($bug->priority == "2")
+                                                        <option value="2" selected>2</option>
+                                                    @endif
+                                                    @if($bug->priority == "3")
+                                                        <option value="3" selected>3</option>
+                                                    @endif
+                                                    @if($bug->priority == "4")
+                                                        <option value="4" selected>4</option>
+                                                    @endif
+                                                    @if($bug->priority == "5")
+                                                        <option value="5" selected>5</option>
+                                                    @endif
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -349,7 +380,15 @@
                                             <div style="width: 50%">
                                                 <label class="form-label">Severity</label>
                                                 <select class="form-control" required style="font-size:14px;" name="severity">
-                                                    <option value="" selected disabled>Select Severity</option>
+                                                    @if($bug->severity == "low")
+                                                        <option value="low" selected>Low</option>
+                                                    @endif
+                                                    @if($bug->severity == "medium")
+                                                        <option value="medium" selected>Medium</option>
+                                                    @endif
+                                                    @if($bug->severity == "high")
+                                                        <option value="high" selected>High</option>
+                                                    @endif
                                                     <option value="low">Low</option>
                                                     <option value="medium">Medium</option>
                                                     <option value="high">High</option>
@@ -593,18 +632,24 @@
                                         <div style="width: 50%">
                                             <label class="form-label">Status</label>
                                             <select class="form-control" required style="font-size:14px;" name="status">
-                                                <option value="" selected disabled>Select Status</option>
                                                 @foreach($qastatuses as $qastatus)
+                                                @if($qastatus->id == $qaround->qa_status_id)
+                                                <option value="{{$qastatus->id}}" selected>{{$qastatus->type}}</option>
+                                                @else
                                                 <option value="{{$qastatus->id}}">{{$qastatus->type}}</option>
+                                                @endif
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div style="width: 50%">
                                             <label class="form-label">Sprint</label>
                                             <select class="form-control" required style="font-size:14px;" name="sprint">
-                                                <option value="" selected disabled>Select Sprint</option>
                                                 @foreach($sprints as $sprint)
+                                                @if($sprint->id == $qaround->sprint_id)
+                                                <option value="{{$sprint->id}}" selected>{{$sprint->sprint_name}}</option>
+                                                @else
                                                 <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
+                                                @endif
                                                 @endforeach
                                             </select>
                                         </div>

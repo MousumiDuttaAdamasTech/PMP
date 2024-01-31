@@ -21,7 +21,6 @@ use App\Http\Controllers\UserTechnologyController;
 use App\Http\Controllers\Auth\MicrosoftController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\TaskController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\TaskTypeController;
 use App\Http\Controllers\TaskStatusController;
 use App\Http\Controllers\KanbanController;
@@ -32,6 +31,7 @@ use App\Http\Controllers\ReleaseManagementController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DailyEntryController;
 use App\Http\Controllers\StakeholderController;
+use App\Http\Controllers\TaskCommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,6 +99,7 @@ Route::middleware([
        
         Route::post('/update-task-status', [ProjectsController::class, 'updateTaskStatus'])->name('update-task-status');
         Route::get('/get-documents/{project}', [ProjectsController::class, 'getDocuments'])->name('getDocuments');
+
         // Route::get('/project/{project}/documents', [ProjectsController::class, 'documents'])->name('projects.documents');
 
     });
@@ -109,6 +110,8 @@ Route::middleware([
     Route::post('/project/{project}/release_management/{releaseManagement}/add-stakeholder', [ReleaseManagementController::class, 'addStakeholder'])->name('projects.release_management.addStakeholder');
 
     Route::resource('stakeholders', StakeholderController::class);
+
+    Route::resource('comments', TaskCommentController::class);
 
     Route::group(['prefix' => 'vertical'], function () {
         Route::get('/', [VerticalController::class, 'index'])->name('verticals.index');
@@ -149,7 +152,6 @@ Route::middleware([
     Route::get('/exports', [SprintController::class, 'export'])->name('sprints.export');
     Route::resource('project_item_statuses', ProjectItemStatusController::class);
     Route::resource('project-items', ProjectItemController::class);
-    Route::resource('comments', CommentController::class);
     Route::resource('user_technologies', UserTechnologyController::class);
 
     Route::get('/get-profile-email/{id}', 'ProfileController@getProfileEmail');
@@ -169,12 +171,6 @@ Route::middleware([
         Route::put('/{task}', [TaskController::class, 'update'])->name('tasks.update');
         Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     });
-
-    // Route::resource('tasks', TaskController::class)->except([
-    // 'store' // Exclude the store route from the resource routes
-    // ]);
-
-    // Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
 });
 
 //Microsoft Authentication Route
