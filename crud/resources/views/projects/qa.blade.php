@@ -263,7 +263,7 @@
                                         </div>
                                         <div class="mt-3">
                                             <label class="form-label">Attach Files</label>
-                                            <input type="file" class="form-control" name="bug_files"></input>
+                                            <input type="file" class="form-control" name="bug_files" multiple></input>
                                         </div>
                                         <div class="mt-3">
                                             <label class="form-label">Description</label>

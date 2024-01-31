@@ -75,4 +75,10 @@ class Task extends Model
     {
         return $this->hasMany(TaskAttachment::class, 'task_id');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(TaskComment::class);
+    }
+
 }

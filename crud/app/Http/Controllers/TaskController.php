@@ -16,10 +16,10 @@ use Illuminate\Support\Str;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Get the project ID from the request, assuming it's included in the URL as a parameter
-        $projectId = $project->id;
+        $projectId = $request->id;
 
         // Assuming you have a 'project_id' column in your tasks table
         $tasks = Task::where('project_id', $projectId)->get();
