@@ -597,7 +597,7 @@
 
                 <div class="tab-pane fade manageContent" id="manageContent" style="margin-bottom: 54px;">
                     <div id="manageContentSprint">
-                        <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -30px;">
+                        <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -20px;">
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createSprintModal" style="margin-right: 10px;"> 
                             <i class="fa-solid fa-plus"></i> Add New 
                         </button>
@@ -946,7 +946,7 @@
                     </div>
                 
                     <div id="manageContentTaskAssign" style="display:none; margin-bottom: 101px;">
-                        <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -37px;">
+                        <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -20px;">
                             <button type="button" class="btn btn-primary" id="backToSprintButton" style="margin-right: 84%;">
                                 <i class="fa-solid fa-arrow-left"></i>     
                             </button>    
