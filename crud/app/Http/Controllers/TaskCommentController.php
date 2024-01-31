@@ -47,6 +47,7 @@ class TaskCommentController extends Controller
 
     public function update(Request $request, TaskComment $comment)
     {
+        // die($request->all());
         $request->validate([
             'comment' => 'required|string',
         ]);
