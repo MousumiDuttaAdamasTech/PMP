@@ -84,7 +84,7 @@
 
     <div class="form-container">
         <div class="titlebar"
-            style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -37px;">
+            style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px;">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal"
                 style="margin-right: 10px;">
                 <i class="fa-solid fa-plus"></i> Add New
@@ -498,19 +498,50 @@
                                             @if(isset($task->comments))
                                                 @foreach($task->comments as $comment)
                                                     <div class="comment" id="comment_{{ $comment->id }}">
-                                                        <strong>{{ $comment->user->name }}</strong>: <span class="comment-text">{{ $comment->comment }}</span>
-                                                        @if(Auth::id() == $comment->member_id)
-                                                            <div class="btn-group">
-                                                                <button type="button" class="btn btn-sm edit-comment" data-comment="{{ $comment->id }}"><i class="fas fa-edit text-primary"></i></button>
-                                                                <form action="{{ route('comments.destroy', $comment->id) }}" method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="btn btn-sm"><i class="fas fa-trash-alt text-danger"></i></button>
-                                                                </form>
-                                                            </div>
+                                                        <strong>{{ $comment->user->name }}</strong>:
+                                                        <!-- Displaying comment text or edit form based on the edit mode -->
+                                                        @if($comment->edit_mode)
+                                                            <form action="{{ route('comments.update') }}" method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                                <textarea name="comment" rows="2" cols="50">{{ $comment->comment }}</textarea>
+                                                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                                                <button type="button" class="btn btn-danger btn-sm cancel-edit" data-comment="{{ $comment->id }}">Cancel</button>
+                                                            </form>
+                                                        @else
+                                                            <span class="comment-text">{{ $comment->comment }}</span>
+                                                            @if(Auth::id() == $comment->member_id)
+                                                                <div class="btn-group">
+                                                                    <button type="button" class="btn btn-sm edit-comment" data-comment="{{ $comment->id }}"><i class="fas fa-edit text-primary"></i></button>
+                                                                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="btn btn-sm"><i class="fas fa-trash-alt text-danger"></i></button>
+                                                                    </form>
+                                                                </div>
+                                                            @endif
                                                         @endif
                                                         <br>
                                                         <span class="comment-time" style="font-size:smaller; font-style: italic; color:#858585">{{ $comment->created_at->format('M d, Y H:i:s') }}</span>
+                                                        <form action="{{ route('comments.store', ['task_id' => $task->id]) }}" method="POST" onsubmit="logFormData(this)">
+                                                            @csrf
+                                                            <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                            <input type="hidden" name="parent_comment" value="{{ $comment->id }}">
+                                                            <textarea name="comment" rows="1" cols="50" placeholder="Reply to this comment"></textarea>
+                                                            <button type="submit" class="btn btn-primary btn-sm">Reply</button>
+                                                        </form>
+                                                        <!-- Displaying replies -->
+                                                        @if($comment->replies->isNotEmpty())
+                                                            <div class="replies">
+                                                                @foreach($comment->replies as $reply)
+                                                                    <div class="reply">
+                                                                        <strong>{{ $reply->user->name }}</strong>: {{ $reply->comment }}
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                        <hr>
                                                     </div>
                                                 @endforeach
                                             @endif
@@ -677,4 +708,55 @@
             </div>
         </div>    
     </div>
+
+
+    <script>
+        // JavaScript to handle editing comments
+        document.addEventListener('DOMContentLoaded', function () {
+            const editButtons = document.querySelectorAll('.edit-comment');
+            
+            editButtons.forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const commentId = this.getAttribute('data-comment');
+                    const commentText = document.querySelector(`#comment_${commentId} .comment-text`);
+                    const editForm = document.createElement('form');
+                    const textarea = document.createElement('textarea');
+                    const saveButton = document.createElement('button');
+                    const cancelButton = document.createElement('button');
+                    
+                    textarea.name = 'edited_comment';
+                    textarea.rows = '2';
+                    textarea.cols = '50';
+                    textarea.value = commentText.textContent.trim();
+                    
+                    saveButton.type = 'submit';
+                    saveButton.className = 'btn btn-primary btn-sm';
+                    saveButton.textContent = 'Save';
+                    
+                    cancelButton.type = 'button';
+                    cancelButton.className = 'btn btn-secondary btn-sm cancel-edit';
+                    cancelButton.dataset.comment = commentId;
+                    cancelButton.textContent = 'Cancel';
+                    
+                    editForm.appendChild(textarea);
+                    editForm.appendChild(saveButton);
+                    editForm.appendChild(cancelButton);
+                    
+                    // Replace comment text with edit form
+                    commentText.replaceWith(editForm);
+                    
+                    // Disable edit button while editing
+                    this.disabled = true;
+                    
+                    // Add event listener to cancel editing
+                    cancelButton.addEventListener('click', function () {
+                        editForm.replaceWith(commentText);
+                        button.disabled = false;
+                    });
+                });
+            });
+        });
+    </script>
+    
+    
 @endsection
