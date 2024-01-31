@@ -26,6 +26,7 @@
     
     <script>
         $(document).ready(function () {
+           
             
         });
     </script>
@@ -177,11 +178,16 @@
                                                 
                                                 </div> --}}
 
-                                               
+                                                
 
-                                                <div class="card__text" >{{ $task->title }}</div>
+                                               
                                                 {{-- <div class="card__details">{{ \Illuminate\Support\Str::limit(strip_tags($task->details), 20, $end='...') }}</div> --}}
-                                                <div class="card__details">{{ strip_tags($task->details) }}</div>
+                                                <div class="card__text__details__wrapper">
+                                                    <p class="card_text">{{ $task->title }}</p>
+                                                  <p class="card_details" >{{ strip_tags($task->details) }}</p>  
+                                                  </div>
+                                                  
+                                                  
 
                                                 <div class="card__menu" style="width:100%;margin:auto;margin-top:5px;">
                                                     <!-----comment and attach part------ -->
@@ -1227,6 +1233,7 @@ $('#sprint-dropdown').change(function () {
 
             // Check if there are tasks for the current status
             if (tasks && tasks.length > 0) {
+                console.log('Task:', tasks);
                 // Append new tasks to the custom card container
                 tasks.forEach(task => {
                     // Create HTML for the card with the status and its associated tasks
@@ -1236,8 +1243,10 @@ $('#sprint-dropdown').change(function () {
                         '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                         '</a>' +
                         '</div>' +
-                        '<div class="card__text" style="margin-top:15px;">' + task.title + '</div>' +
-                        '<div class="card__details">' + task.details + '</div>' +
+                        '<div class="card__text__details" style=" color: var(--colorName);width:100px; margin-left:7px;">' +
+                            '<div class="card_text" style="margin-top:15px; font-weight: bold; ">' + task.title + '</div>' +
+                            '<div class="card_details">' + task.details + '</div>' +
+                        '</div>' +
                         '</div>';
 
                     // Append the card HTML to the custom card container
@@ -1269,6 +1278,7 @@ $('#sprint-dropdown').change(function () {
         console.error('Fetch error:', error);
     });
 });
+
 
             
         });

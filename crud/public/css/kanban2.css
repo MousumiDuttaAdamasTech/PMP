@@ -19,8 +19,8 @@
   justify-content: space-between;
   font-family: sans-serif;
   width: auto;
- 
-  
+
+
 }
 
 .kanban-heading-text {
@@ -31,8 +31,8 @@
   margin: 1rem;
 }
 
-.backlog-tasks{
-  margin-top:30px;
+.backlog-tasks {
+  margin-top: 30px;
 }
 
 .kanban-block {
@@ -43,9 +43,10 @@
   margin-top: 20px;
   border-radius: 0.3rem;
   width: 154px;
- 
-  
-  
+  max-height: 250px;
+
+
+
 }
 
 .create-new-task-block {
@@ -63,29 +64,29 @@
     radial-gradient(circle at top left, #c781ff, #e57373);
   /* background-color: #fec6d1;*/
   border-top: 5px solid rgb(218, 89, 218);
- 
+
 }
 
-#underdiscussion{
+#underdiscussion {
   background-image: linear-gradient(#f6f8fc, #f6f8fc),
     radial-gradient(circle at top left, #c781ff, #e57373);
   /* background-color: #fec6d1;*/
   border-top: 5px solid rgb(89, 201, 218);
 }
 
-#underdesign{
+#underdesign {
   background-image: linear-gradient(#f6f8fc, #f6f8fc),
     radial-gradient(circle at top left, #c781ff, #e57373);
   /* background-color: #fec6d1;*/
   border-top: 5px solid rgb(89, 218, 162);
 }
 
-#inqueue{
+#inqueue {
   background-image: linear-gradient(#f6f8fc, #f6f8fc),
     radial-gradient(circle at top left, #c781ff, #e57373);
   /* background-color: #fec6d1;*/
   border-top: 5px solid rgb(235, 208, 101);
- 
+
 }
 
 #underdevelopment {
@@ -105,29 +106,29 @@
 #done {
   background-image: linear-gradient(#f6f8fc, #f6f8fc),
     radial-gradient(circle at top left, #9ea7fc, #6eb4f7);
-    border-top: 5px solid #6eb4f7;
+  border-top: 5px solid #6eb4f7;
 
 
   /* display: none; */
 }
 
-.card{
+.card {
   border-radius: 5px;
   border: 1px dashed var(--colorWhite);
   /* border: 0.1rem solid black; */
   background-color: var(--colorWhite);
   background-color: white;
   /* width: 260px; */
-  
+
   height: auto;
   margin-top: 10px;
-   /* margin-bottom: 10px; */
+  /* margin-bottom: 10px; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   /* cursor: url(https://ssl.gstatic.com/ui/v1/icons/mail/images/2/openhand.cur), */
-    /* default !important; */
-    width: 130px;
+  /* default !important; */
+  width: 130px;
 }
 
 .task {
@@ -236,8 +237,7 @@ textarea {
   font-family: "Material Icons";
   font-style: normal;
   font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/materialicons/v38/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2)
-    format("woff2");
+  src: url(https://fonts.gstatic.com/s/materialicons/v38/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format("woff2");
 }
 
 .material-icons {
@@ -560,7 +560,7 @@ a {
   margin-top: 5px;
 }
 
-.modal-design{
+.modal-design {
   /* width: 900px; */
   padding: 15px;
   margin-top: 15px;
@@ -906,7 +906,7 @@ a {
   font-weight: 550;
   float: left;
 
- 
+
 }
 
 .backlog-dots {
@@ -975,7 +975,7 @@ a {
   background: var(--colorBar);
 }
 
-.form__low-pr input[type="radio"]:checked + .form__label {
+.form__low-pr input[type="radio"]:checked+.form__label {
   background: linear-gradient(90deg, #9ea7fc 17%, #6eb4f7 83%);
 }
 
@@ -1014,7 +1014,7 @@ a {
   background: var(--colorBar);
 }
 
-.form__med-pr input[type="radio"]:checked + .form__label {
+.form__med-pr input[type="radio"]:checked+.form__label {
   background: linear-gradient(138.6789deg, #81d5ee 17%, #7ed492 83%);
 }
 
@@ -1031,7 +1031,7 @@ a {
   cursor: pointer;
 }
 
-.form__high-pr input[type="radio"]:checked + .form__label {
+.form__high-pr input[type="radio"]:checked+.form__label {
   background: linear-gradient(138.6789deg, #c781ff 17%, #e57373 83%);
 }
 
@@ -1165,23 +1165,19 @@ a {
 
 .card-dragging {
   border: 1px dashed var(--colorBarW);
-  background: repeating-linear-gradient(
-    45deg,
-    white,
-    white 5px,
-    var(--colorNav) 5px,
-    var(--colorNav) 10px
-  );
+  background: repeating-linear-gradient(45deg,
+      white,
+      white 5px,
+      var(--colorNav) 5px,
+      var(--colorNav) 10px);
 }
 
 .cards-dropping {
-  background: repeating-linear-gradient(
-    45deg,
-    white,
-    white 5px,
-    var(--colorNav) 5px,
-    var(--colorNav) 10px
-  );
+  background: repeating-linear-gradient(45deg,
+      white,
+      white 5px,
+      var(--colorNav) 5px,
+      var(--colorNav) 10px);
   background-clip: content-box, border-box;
 }
 
@@ -1238,7 +1234,7 @@ a {
 
   display: flex;
 }
- 
+
 .edit-ico {
   margin-top: 3px;
   margin-right: 5px;
@@ -1246,9 +1242,32 @@ a {
   height: 15px;
 }
 
+.card__text__details__wrapper {
+  color: var(--colorName);
+  margin: 0 10px;
+  margin-top: 5px;
+  word-wrap: break-word;
+  height: auto;
+}
+
+.card_text {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 2px;
+  /* Adjust the margin bottom as needed */
+}
+
+.card_details {
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 2px;
+  margin-bottom: 0;
+  /* Adjust the margin bottom to reduce the gap */
+  /* Adjust the value as needed, e.g., line-height: 1.2; */
+}
 
 
-
+/* 
 .card__details {
   color: var(--colorName);
   font-size: 12px;
@@ -1258,23 +1277,25 @@ a {
   display:flex;
   flex-direction: column;
   /* Set a maximum height for the details */
-  height: 80px;
+/* height: 100px;
   overflow: auto;
- 
+  */
 
 
-}
+/* }  */
 
 
 
-.card__text {
+/* .card__text {
   color: var(--colorName);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   margin: 0 10px;
   word-wrap: break-word;
+  height: 90px;
+  overflow: auto;
  
-}
+} */
 
 .card__menu {
   display: flex;
@@ -1575,11 +1596,12 @@ a {
   z-index: 1;
   left: 0;
   top: 0;
-  width: 100%; 
+  width: 100%;
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.4);
 }
+
 .modal-content {
   background-color: #fefefe;
   margin: 1% auto;
@@ -1587,31 +1609,35 @@ a {
   border: 1px solid #888;
   width: 70%;
 }
+
 .close {
   color: #aaa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
+
 .close:hover,
 .close:focus {
   color: black;
   text-decoration: none;
   cursor: pointer;
 }
+
 .add-card-form {
   display: none;
   flex-direction: column;
   padding: 0 0 10px 0;
-  width: 100% !important; 
+  width: 100% !important;
 }
-.add-card-form__main{
+
+.add-card-form__main {
   border: 1px solid #ddd;
 }
 
 .select2-container .select2-search--inline .select2-search__field {
-font-size: 14px !important;
-font-family: Roboto, sans-serif !important; 
+  font-size: 14px !important;
+  font-family: Roboto, sans-serif !important;
 }
 
 .user-avatar {
@@ -1671,8 +1697,10 @@ font-family: Roboto, sans-serif !important;
   height: 0;
   right: 6px;
   margin-left: -4px;
-  margin-top: -2px;top: 50%;
-  width: 0;cursor: pointer
+  margin-top: -2px;
+  top: 50%;
+  width: 0;
+  cursor: pointer
 }
 
 .select2-container--open .select2-selection--multiple:before {
@@ -1685,8 +1713,10 @@ font-family: Roboto, sans-serif !important;
   height: 0;
   right: 6px;
   margin-left: -4px;
-  margin-top: -2px;top: 50%;
-  width: 0;cursor: pointer
+  margin-top: -2px;
+  top: 50%;
+  width: 0;
+  cursor: pointer
 }
 
 .scroll-button {
@@ -1696,15 +1726,18 @@ font-family: Roboto, sans-serif !important;
   transform: translateY(-50%);
   background-color: transparent;
   border: none;
-  width: 40px; /* Set width and height for a circular button */
+  width: 40px;
+  /* Set width and height for a circular button */
   height: 40px;
-  border-radius: 50%; /* Create a circular shape */
+  border-radius: 50%;
+  /* Create a circular shape */
   font-size: 24px;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  /* Add a subtle shadow */
 }
 
 .scroll-button i {
@@ -1716,9 +1749,11 @@ font-family: Roboto, sans-serif !important;
 
 .kanban-board-container {
   display: flex;
-  
-  scroll-behavior: smooth; /* Enable smooth scrolling */
-  padding-right: 60px; /* Add padding to make space for the scroll button */
 
-  
+  scroll-behavior: smooth;
+  /* Enable smooth scrolling */
+  padding-right: 60px;
+  /* Add padding to make space for the scroll button */
+
+
 }
