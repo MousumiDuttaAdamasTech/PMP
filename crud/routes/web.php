@@ -71,6 +71,9 @@ Route::middleware([
     Route::group(['prefix' => 'project'], function () {
         Route::get('/', [ProjectsController::class, 'index'])->name('projects.index');
         Route::get('/create', [ProjectsController::class, 'create'])->name('projects.create');
+        Route::get('/get-sprints', [ProjectsController::class, 'getSprints'])->name('getSprints');
+        Route::get('/getTasksWithStatus', [ProjectsController::class, 'getTasksWithStatus'])->name('getTasksWithStatus');
+
         Route::post('/', [ProjectsController::class, 'store'])->name('projects.store');
         Route::get('/{project}', [ProjectsController::class, 'show'])->name('projects.show');
         Route::get('/{project}/edit', [ProjectsController::class, 'edit'])->name('projects.edit');
@@ -92,8 +95,8 @@ Route::middleware([
         Route::get('/{project}/release_management', [ProjectsController::class, 'release_management'])->name('projects.release_management');
         Route::get('/{project}/reports', [ProjectsController::class, 'reports'])->name('projects.reports');
         Route::any('/profile/get_images', [ProjectsController::class, 'getImages'])->name('projects.getImages');
-        Route::get('/get-sprints', [ProjectsController::class, 'getSprints'])->name('getSprints');
-        Route::get('/getTasks', [ProjectsController::class, 'getTasks'])->name('getTasks');
+       
+       
         Route::post('/update-task-status', [ProjectsController::class, 'updateTaskStatus'])->name('update-task-status');
         Route::get('/get-documents/{project}', [ProjectsController::class, 'getDocuments'])->name('getDocuments');
 

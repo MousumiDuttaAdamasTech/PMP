@@ -165,7 +165,7 @@
         </ul>
     </div>
     <!-- Main content area -->
-    <div class="col">
+    <div class="col" style="overflow-y:auto;">
         <!-- Your main content goes here -->
         @yield('main_content')
     </div>
