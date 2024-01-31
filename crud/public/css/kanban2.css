@@ -1258,7 +1258,7 @@ a {
   display:flex;
   flex-direction: column;
   /* Set a maximum height for the details */
-  height: 60px;
+  height: 80px;
   overflow: auto;
  
 
@@ -1308,7 +1308,7 @@ a {
 .comments-ico,
 .attach-ico,
 .user-ico {
-  font-size: 13px;
+  font-size: 9px;
 }
 
 .comments-num,

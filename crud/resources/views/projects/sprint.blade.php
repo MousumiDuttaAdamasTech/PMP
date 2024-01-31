@@ -151,7 +151,7 @@
                                             <div class="custom-card-container" style="overflow-x:auto;max-height: 140px;margin-bottom:5px;width:135px;">
                                             @foreach($tasks as $task)
                                             @if ($task->project_task_status_id === $statusId) <!-- Check if task status matches the current status block -->
-                                            <div class="card shadow" id="task{{ $task->id }}" draggable="true" ondragstart="drag(event)" style="margin-bottom: 15px; height:110px;max-height:120px;overflow-x:auto; width:120px;" >
+                                            <div class="card shadow" id="task{{ $task->id }}" draggable="true" ondragstart="drag(event)" style="margin-bottom: 15px; height:130px;max-height:120px;overflow-x:auto; width:120px;" >
                                                 <div class="card__header" >
                                                     <div class="card-container-color {{ $task->priority }}" >
                                                         @if(strtolower($task->priority) == 'low priority')
@@ -183,8 +183,29 @@
                                                 {{-- <div class="card__details">{{ \Illuminate\Support\Str::limit(strip_tags($task->details), 20, $end='...') }}</div> --}}
                                                 <div class="card__details">{{ strip_tags($task->details) }}</div>
 
-
-                                            </div>
+                                                <div class="card__menu" style="width:100%;margin:auto;margin-top:5px;">
+                                                    <!-----comment and attach part------ -->
+                                                
+                                                    <div class="card__menu-left" style="margin:auto;">
+                                                        <div class="comments-wrapper">
+                                                            <div class="comments-ico" ><i class="material-icons">comment</i></div>
+                                                            <div class="comments-num">1</div>
+                                                        </div>
+                                                        <div class="attach-wrapper">
+                                                            <div class="attach-ico"><i class="material-icons">attach_file</i></div>
+                                                            <div class="attach-num">2</div>
+                                                        </div>
+                                                        <div class="user-wrapper">
+                                                            <div class="user-ico"><i class="material-icons">person</i></div>
+                                                            <div class="user-num" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ implode(', ', $task->taskUsers->pluck('user.name')->toArray()) }}">
+                                                                {{ $task->taskUsers->count() }}
+                                                            </div>
+                                                        </div>
+            
+                                                    </div>
+            
+                                                </div>
+                                                </div>
                                          @endif
                                         @endforeach
                                             </div>
@@ -1164,41 +1185,94 @@
                 $('#manageContentSprint').show();
             }); 
 
-            $('#sprint-dropdown').change(function () {
-                console.log('Dropdown changed');
-                var selectedSprint = $(this).val();
+// Your JavaScript code
+$('#sprint-dropdown').change(function () {
+    console.log('Dropdown changed');
 
-                // Make an AJAX request to fetch tasks for the selected sprint
-                $.ajax({
-                    url: '{{ route("getTasks") }}',
-                    type: 'GET',
-                    data: {
-                        project_id: '{{ $project->id }}',
-                        sprint_id: selectedSprint
-                    },
-                    success: function (tasks) {
-                        // Clear existing tasks from the Kanban board
-                        $('.kanban-board').empty();
+    var projectId = '{{ $project->id }}';
+    var selectedSprint = $(this).val();
+    console.log('{{ route("getTasksWithStatus") }}?project_id=' + projectId + '&sprint_id=' + selectedSprint);
 
-                        // Append new tasks to the Kanban board
-                        tasks.forEach(function (task) {
-                            // Create HTML for each task and append it to the Kanban board
-                            var taskHtml = '<div class="card shadow" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
-                                // Task content goes here...
-                                '</div>';
-                            $('.kanban-board').append(taskHtml);
-                        });
-                    },
-                    error: function (error) {
-                        console.log(error);
-                    }
+    fetch('{{ route("getTasksWithStatus") }}?project_id=' + projectId + '&sprint_id=' + selectedSprint, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(tasksByStatus => {
+        console.log(tasksByStatus);
+        // Clear existing tasks from the Kanban board
+        $('.kanban-board').empty();
+
+        // Append new tasks to the Kanban board
+        Object.keys(tasksByStatus).forEach(statusId => {
+            var { status, tasks } = tasksByStatus[statusId];
+            var statusIdFormatted = status.toLowerCase().replace(/\s/g, '');
+
+            // Create HTML for the kanban-block
+            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height:130px;max-height: 220px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
+
+            // Create HTML for the status at the top
+            var statusHtml = '<div class="backlog-name" style="margin-top:-6px;">' + status + '</div>';
+            kanbanBlockHtml += statusHtml;
+
+            // Create HTML for custom card container
+            var customCardContainer = '<div class="custom-card-container" style="overflow-x: auto; max-height: 140px; margin-bottom: 5px; width: 135px; margin-top: 20px;">';
+
+            // Check if there are tasks for the current status
+            if (tasks && tasks.length > 0) {
+                // Append new tasks to the custom card container
+                tasks.forEach(task => {
+                    // Create HTML for the card with the status and its associated tasks
+                    var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
+                        '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
+                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_' + task.id + '">' +
+                        '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
+                        '</a>' +
+                        '</div>' +
+                        '<div class="card__text" style="margin-top:15px;">' + task.title + '</div>' +
+                        '<div class="card__details">' + task.details + '</div>' +
+                        '</div>';
+
+                    // Append the card HTML to the custom card container
+                    customCardContainer += taskHtml;
                 });
-            });
+            }
 
-           
+            // Close the custom card container HTML
+            customCardContainer += '</div>';
+
+            // Append the custom card container HTML to the kanban-block
+            kanbanBlockHtml += customCardContainer;
+
+            // Add the footer section
+            var footerHtml = '<div class="card-wrapper__footer" style=" margin: auto; display: flex; justify-content: center;align-items:center;">' +
+                '<div class="add-task" style="font-size: 16px; color: var(--colorBarW); text-align: center;" data-toggle="modal" data-target="#createTaskModal">Create</div>' +
+                '</div>';
+
+            kanbanBlockHtml += footerHtml;
+
+            // Close the kanban-block HTML
+            kanbanBlockHtml += '</div>';
+
+            // Append the kanban-block HTML to the Kanban board
+            $('.kanban-board').append(kanbanBlockHtml);
+        });
+    })
+    .catch(error => {
+        console.error('Fetch error:', error);
+    });
+});
+
             
         });
-    </script>
+</script>
 
 <script>
     $(document).ready(function () {
