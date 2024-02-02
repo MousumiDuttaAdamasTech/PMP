@@ -84,4 +84,27 @@ class TaskCommentController extends Controller
         // Allow deleting a comment only if the authenticated user is the member
         return Auth::id() === $comment->member_id;
     }
+
+    public function reply(Request $request, $task, TaskComment $comment)
+{
+    // Validation and authorization logic similar to the store method
+
+    $reply = new TaskComment([
+        'task_id' => $request->input('task_id'),
+        'comment' => $request->input('comment'),
+        'parent_comment' => $comment->id,
+    ]);
+
+    $reply->member_id = Auth::id();
+
+    // Authorization logic for store action
+    if (!$this->canStore($reply)) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    $reply->save();
+
+    return redirect()->back()->with('success', 'Reply added successfully!');
+}
+
 }

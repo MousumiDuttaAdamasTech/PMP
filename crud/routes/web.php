@@ -174,6 +174,7 @@ Route::middleware([
         Route::post('/{task}/comments', [TaskCommentController::class, 'store'])->name('task.comments.store');
         Route::put('/comments/{comment}', [TaskCommentController::class, 'update'])->name('task.comments.update');
         Route::delete('/comments/{comment}', [TaskCommentController::class, 'destroy'])->name('task.comments.destroy');
+        Route::post('/{task}/comments/{comment}/reply', [TaskCommentController::class, 'reply'])->name('task.comments.reply');
     });
     
 });
