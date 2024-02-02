@@ -136,21 +136,6 @@
                                                         <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
                                                     </button>
                                                 </form>
-
-                                                <!-- Reply button and form -->
-                                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}"><i class="bi bi-reply" style="font-size: 1rem;"></i></button>
-                                                <div class="collapse" id="replyForm{{ $comment->id }}">
-                                                    <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $comment->id]) }}" method="post">
-                                                        @csrf
-                                                        <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                        <div class="form-group">
-                                                            <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
-                                                            <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
-                                                        </div>
-                                                        <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
-                                                    </form>
-                                                </div>
-                                                
                                             </div>
                     
                                             <!-- Edit Comment Modal -->
@@ -179,7 +164,21 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        
+                                        <!-- Reply button and form -->
+                                        <div class="reply-container">
+                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}"><i class="bi bi-reply" style="font-size: 1rem;"></i></button>
+                                            <div class="collapse" id="replyForm{{ $comment->id }}">
+                                                <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $comment->id]) }}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                    <div class="form-group">
+                                                        <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
+                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
+                                                </form>
+                                            </div>
+                                        </div>
                                         <!-- Display replies indented under the parent comment -->
                                         @foreach($task->comments as $reply)
                                             @if($reply->parent_comment == $comment->id)
@@ -237,22 +236,7 @@
 
                                                         <!-- Reply button and form for reply -->
                                                         <div class="reply-container">
-                                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $reply->id }}"><!-- Reply button and form -->
-                                                                <div class="reply-container">
-                                                                    <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}"><i class="bi bi-reply" style="font-size: 1rem;"></i></button>
-                                                                    <div class="collapse" id="replyForm{{ $comment->id }}">
-                                                                        <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $comment->id]) }}" method="post">
-                                                                            @csrf
-                                                                            <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                                            <div class="form-group">
-                                                                                <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
-                                                                                <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
-                                                                            </div>
-                                                                            <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
-                                                                        </form>
-                                                                    </div>
-                                                                </div>
-                                                            </button>
+                                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $reply->id }}">Reply</button>
                                                             <div class="collapse" id="replyForm{{ $reply->id }}">
                                                                 <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $reply->id]) }}" method="post">
                                                                     @csrf
