@@ -163,22 +163,24 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        @endif
-                                        <!-- Reply button and form -->
-                                        <div class="reply-container">
-                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}"><i class="bi bi-reply" style="font-size: 1rem;"></i></button>
-                                            <div class="collapse" id="replyForm{{ $comment->id }}">
-                                                <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $comment->id]) }}" method="post">
-                                                    @csrf
-                                                    <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                    <div class="form-group">
-                                                        <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
-                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
-                                                </form>
+
+                                            <!-- Reply button and form -->
+                                            <div class="reply-container">
+                                                <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}"><i class="bi bi-reply" style="font-size: 1rem;"></i></button>
+                                                <div class="collapse" id="replyForm{{ $comment->id }}">
+                                                    <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $comment->id]) }}" method="post">
+                                                        @csrf
+                                                        <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                        <div class="form-group">
+                                                            <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
+                                                            <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
+                                                    </form>
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
+                                        
                                         <!-- Display replies indented under the parent comment -->
                                         @foreach($task->comments as $reply)
                                             @if($reply->parent_comment == $comment->id)
@@ -244,7 +246,7 @@
                                                                     <input type="hidden" name="parent_comment" value="{{ $reply->id }}">
                                                                     <div class="form-group">
                                                                         <label for="replyComment" @required(true)>Reply to {{ $reply->user->name }}:</label>
-                                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required>@ {{ $reply->user->name }}</textarea>
                                                                     </div>
                                                                     <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
                                                                 </form>
@@ -264,14 +266,9 @@
                                                                     </div>
                                                                     <div class="comment-content" style="font-size: 0.9rem;">
                                                                         @if($subReply->parentComment)
-                                                                            @php
-                                                                                $parentCommentUser = $subReply->parentComment->user->name;
-                                                                            @endphp
-                                                                            @if($parentCommentUser)
-                                                                                <span class="text-muted">@ {{ $parentCommentUser }}</span> {{ $subReply->comment }}
-                                                                            @else
+                                                                            
                                                                                 {{ $subReply->comment }}
-                                                                            @endif
+                                                                        
                                                                         @endif
                                                                     </div>
 
