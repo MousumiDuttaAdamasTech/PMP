@@ -90,6 +90,106 @@
                 <i class="fa-solid fa-plus"></i> Add New
             </button>
         </div>
+        @php
+        // Sort the tasks collection based on the 'id' attribute
+         $sortedTasks = $tasks->sortByDesc('id');
+         @endphp
+    
+      @foreach($sortedTasks as $task)
+        <!-- Modal for comments -->
+        <div class="modal fade" id="commentModal{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentModalLabel">Comments for {{ $task->title }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="max-height: 80vh;">
+                        <!-- Comment container div with max-height and overflow-y styling -->
+                        <div class="comment-container" style="max-height: 40vh; overflow-y: auto;">
+                            <!-- Display existing comments here -->
+                            @foreach($task->comments as $comment)
+                                <div class="mb-3">
+                                    <div class="comment-header">
+                                        <strong>{{ $comment->user->name }}</strong>
+                                        <span class="text-muted" style="font-size: 0.8rem;"><em>{{ $comment->created_at->format('M j, Y \a\t g:i a') }}</em></span>
+                                    </div>
+                                    <div class="comment-content" style="font-size: 0.9rem;">
+                                        {{ $comment->comment }}
+                                    </div>
+                                    <!-- Edit and Delete Comment icons with custom colors -->
+                                    @if(Auth::user()->isProjectMember($task->project_id))
+                                    <div class="comment-actions">
+                                        <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editCommentModal_{{ $comment->id }}">
+                                            <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
+                                        </button>
+                                    
+                                        <form action="{{ route('task.comments.destroy', ['comment' => $comment->id]) }}" method="post" style="display: inline;">
+                                            @csrf
+                                            @method('delete')
+                                            <button type="submit" style="margin-right: 5px; background: none; border: none;">
+                                                <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+    
+                                        <!-- Edit Comment Modal -->
+                                        <div class="modal fade" id="editCommentModal_{{ $comment->id }}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel_{{ $comment->id }}" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editCommentModalLabel_{{ $comment->id }}">Edit Comment</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('task.comments.update', ['comment' => $comment->id]) }}" method="post">
+                                                            @csrf
+                                                            @method('put')
+                                                            <!-- Update comment form fields -->
+                                                            <div class="form-group">
+                                                                <label for="updateComment">Edit your comment:</label>
+                                                                <textarea name="comment" class="form-control" id="updateComment" rows="3" placeholder="Edit your comment here">{{ $comment->comment }}</textarea>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+    
+                        <!-- Add a form for adding new comments -->
+                        @if(Auth::user()->isProjectMember($task->project_id))
+                            <form action="{{ route('task.comments.store', ['task' => $task->id]) }}" method="post">
+                                @csrf
+                                <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                <!-- Other comment form fields -->
+                                <div class="form-group">
+                                    <label for="comment">Add a comment:</label>
+                                    <textarea name="comment" class="form-control" id="comment" rows="3" placeholder="Type your comment here"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+                            </form>
+                        @else
+                            <div class="alert alert-info">
+                                You are not a project member and cannot comment.
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
+    
+
 
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
@@ -102,10 +202,7 @@
                 </tr>
             </thead>
             <tbody>
-                @php
-                    // Sort the tasks collection based on the 'id' attribute
-                    $sortedTasks = $tasks->sortByDesc('id');
-                @endphp
+                
                 @foreach($sortedTasks as $task)
                     <tr class="shadow" style="border-radius:15px;">
                         <td style="font-size: 15px; width:25%;">{{ $task->uuid }}</td>
@@ -121,10 +218,10 @@
                                 data-target="#editModal_{{ $task->id }}" class="p-1">
                                 <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                             </a>
-                            <a href="#" data-toggle="modal" data-placement="top" title="Comments"
-                                data-target="#commentModal_{{ $task->id }}" class="p-1">
-                                <i class="fa-solid fa-comment" style="margin-right: 10px"></i>
+                            <a href="#" data-toggle="modal" data-target="#commentModal{{ $task->id }}">
+                                <i class="fas fa-comment text-info" style="margin-right: 10px"></i>
                             </a>
+                            
 
                             <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                                 @method('delete')
@@ -475,86 +572,8 @@
                         </div>
                     @endforeach
 
-                    <!--Comments Modal -->
-                    @foreach($tasks as $task)
-                        <div class="modal fade" id="commentModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel_{{ $task->id }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header" style="background-color:#061148;">
-                                        <h5 class="modal-title" id="commentModalLabel_{{ $task->id }}" style="color: white;font-weight: bolder;">Comments</h5>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!-- Form to add a new comment -->
-                                        <form action="{{ route('comments.store', ['task_id' => $task->id])}}" method="POST" onsubmit="logFormData(this)">
-                                            @csrf
-                                            <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                            <textarea name="comment" rows="2" cols="50" {{ Auth::user()->isProjectMember($task->project_id) ? '' : 'disabled' }}>{{ Auth::user()->isProjectMember($task->project_id) ? '' : 'You are not a project member and cannot comment.' }}</textarea>
-                                            <button type="submit" class="btn btn-primary" {{ Auth::user()->isProjectMember($task->project_id) ? '' : 'disabled' }}>Add Comment</button>
-                                        </form>
-
-                                        <hr>
-                                        <!-- Section to display existing comments -->
-                                        <div class="existing-comments">
-                                            @if(isset($task->comments))
-                                                @foreach($task->comments as $comment)
-                                                    <div class="comment" id="comment_{{ $comment->id }}">
-                                                        <strong>{{ $comment->user->name }}</strong>:
-                                                        <!-- Displaying comment text or edit form based on the edit mode -->
-                                                        @if($comment->edit_mode)
-                                                            <form action="{{ route('comments.update') }}" method="POST">
-                                                                @csrf
-                                                                @method('PUT')
-                                                                <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                                <textarea name="comment" rows="2" cols="50">{{ $comment->comment }}</textarea>
-                                                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
-                                                                <button type="button" class="btn btn-danger btn-sm cancel-edit" data-comment="{{ $comment->id }}">Cancel</button>
-                                                            </form>
-                                                        @else
-                                                            <span class="comment-text">{{ $comment->comment }}</span>
-                                                            @if(Auth::id() == $comment->member_id)
-                                                                <div class="btn-group">
-                                                                    <button type="button" class="btn btn-sm edit-comment" data-comment="{{ $comment->id }}"><i class="fas fa-edit text-primary"></i></button>
-                                                                    <form action="{{ route('comments.destroy', $comment->id) }}" method="POST">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="btn btn-sm"><i class="fas fa-trash-alt text-danger"></i></button>
-                                                                    </form>
-                                                                </div>
-                                                            @endif
-                                                        @endif
-                                                        <br>
-                                                        <span class="comment-time" style="font-size:smaller; font-style: italic; color:#858585">{{ $comment->created_at->format('M d, Y H:i:s') }}</span>
-                                                        <form action="{{ route('comments.store', ['task_id' => $task->id]) }}" method="POST" onsubmit="logFormData(this)">
-                                                            @csrf
-                                                            <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                            <input type="hidden" name="parent_comment" value="{{ $comment->id }}">
-                                                            <textarea name="comment" rows="1" cols="50" placeholder="Reply to this comment"></textarea>
-                                                            <button type="submit" class="btn btn-primary btn-sm">Reply</button>
-                                                        </form>
-                                                        <!-- Displaying replies -->
-                                                        @if($comment->replies->isNotEmpty())
-                                                            <div class="replies">
-                                                                @foreach($comment->replies as $reply)
-                                                                    <div class="reply">
-                                                                        <strong>{{ $reply->user->name }}</strong>: {{ $reply->comment }}
-                                                                    </div>
-                                                                @endforeach
-                                                            </div>
-                                                        @endif
-                                                        <hr>
-                                                    </div>
-                                                @endforeach
-                                            @endif
-                                        </div>
-                                        
-                                        <div class="form-actions">
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
+                  
+                   
 
                 @endforeach
             </tbody>

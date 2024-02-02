@@ -41,7 +41,7 @@ class SprintController extends Controller
             'actual_hrs' => 'required|numeric',
             'sprint_status' => 'required',
             'current_date' => 'required|date',
-            'assign_to' => 'required|exists:project_members,id',
+            'assign_to' => 'required|exists:project_members,project_members_id',
             // 'task_status_id' => 'required|exists:task_status,id',
             'projects_id' => 'required|exists:project,id', // Update the field name to match your schema
             'is_active' => 'required|boolean',

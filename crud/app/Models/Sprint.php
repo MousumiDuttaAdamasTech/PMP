@@ -19,7 +19,7 @@ class Sprint extends Model
 
     public function projectMember()
     {
-        return $this->belongsTo(ProjectMember::class, 'assign_to');
+        return $this->belongsTo(ProjectMember::class, 'assign_to','project_members_id');
     }
 
     public function taskStatus()

@@ -3,56 +3,47 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
-
-use App\Models\ProjectMember;
-use App\Models\User;
-use App\Models\Project;
-use App\Models\Task;
 use App\Models\TaskComment;
 use Illuminate\Http\Request;
 
 class TaskCommentController extends Controller
 {
-    public function store(Request $request)
-    {   
-        // die($request);
-        //Validate the request data
+    public function store(Request $request, $task)
+    {
         $request->validate([
             'comment' => 'required|string',
             'parent_comment' => 'nullable|exists:task_comments,id',
+            'task_id' => 'required|exists:tasks,id',
         ]);
 
-        //Check if the authenticated user is a project member
-        // if (!Auth::user()->isProjectMember($request->input('task_id'))) {
-        //     return redirect()->back()->with('error', 'Only project members can post comments.');
-        // }
-
-        // Create a new TaskComment instance
         $comment = new TaskComment([
             'task_id' => $request->input('task_id'),
             'comment' => $request->input('comment'),
             'parent_comment' => $request->input('parent_comment'),
         ]);
-        
-        // Set the member_id based on the authenticated user
+
         $comment->member_id = Auth::id();
 
-        // Save the comment
+        // Authorization logic for store action
+        if (!$this->canStore($comment)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $comment->save();
 
-        // Redirect back with a success message
         return redirect()->back()->with('success', 'Comment added successfully!');
     }
 
-
     public function update(Request $request, TaskComment $comment)
     {
-        // die($request->all());
+        // Authorization logic for update action
+        if (!$this->canUpdate($comment)) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'comment' => 'required|string',
         ]);
-
-        // Check if the user is authorized to update the comment (if needed)
 
         $comment->update([
             'comment' => $request->input('comment'),
@@ -63,10 +54,34 @@ class TaskCommentController extends Controller
 
     public function destroy(TaskComment $comment)
     {
-        // Check if the user is authorized to delete the comment (if needed)
+        // Authorization logic for delete action
+        if (!$this->canDelete($comment)) {
+            abort(403, 'Unauthorized action.');
+        }
 
         $comment->delete();
 
         return redirect()->back()->with('success', 'Comment deleted successfully!');
+    }
+
+    // Authorization logic for store action
+    private function canStore(TaskComment $comment)
+    {
+        // Allow storing a comment only if the authenticated user is the member
+        return Auth::id() === $comment->member_id;
+    }
+
+    // Authorization logic for update action
+    private function canUpdate(TaskComment $comment)
+    {
+        // Allow updating a comment only if the authenticated user is the member
+        return Auth::id() === $comment->member_id;
+    }
+
+    // Authorization logic for delete action
+    private function canDelete(TaskComment $comment)
+    {
+        // Allow deleting a comment only if the authenticated user is the member
+        return Auth::id() === $comment->member_id;
     }
 }

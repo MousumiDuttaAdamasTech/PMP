@@ -111,7 +111,7 @@ Route::middleware([
 
     Route::resource('stakeholders', StakeholderController::class);
 
-    Route::resource('comments', TaskCommentController::class);
+    // Route::resource('comments', TaskCommentController::class);
 
     Route::group(['prefix' => 'vertical'], function () {
         Route::get('/', [VerticalController::class, 'index'])->name('verticals.index');
@@ -170,7 +170,12 @@ Route::middleware([
         Route::get('/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit'); // Note the {task} parameter here
         Route::put('/{task}', [TaskController::class, 'update'])->name('tasks.update');
         Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    
+        Route::post('/{task}/comments', [TaskCommentController::class, 'store'])->name('task.comments.store');
+        Route::put('/comments/{comment}', [TaskCommentController::class, 'update'])->name('task.comments.update');
+        Route::delete('/comments/{comment}', [TaskCommentController::class, 'destroy'])->name('task.comments.destroy');
     });
+    
 });
 
 //Microsoft Authentication Route
