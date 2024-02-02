@@ -117,27 +117,27 @@
                                             <span class="text-muted" style="font-size: 0.8rem;"><em>{{ $comment->created_at->format('M j, Y \a\t g:i a') }}</em></span>
                                             @if($comment->updated_at != $comment->created_at)
                                                 <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
-                                            @endif                                    </div>
+                                            @endif                                    
+                                        </div>
                                         <div class="comment-content" style="font-size: 0.9rem;">
                                             {{ $comment->comment }}
                                         </div>
                                         <!-- Edit and Delete Comment icons with custom colors -->
                                         @if(Auth::user()->isProjectMember($task->project_id))
-                                        <div class="comment-actions">
-                                            <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editCommentModal_{{ $comment->id }}">
-                                                <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
-                                            </button>
-                                        
-                                            <form action="{{ route('task.comments.destroy', ['comment' => $comment->id]) }}" method="post" style="display: inline;">
-                                                @csrf
-                                                @method('delete')
-                                                <button type="submit" style="margin-right: 5px; background: none; border: none;">
-                                                    <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                            <div class="comment-actions">
+                                                <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editCommentModal_{{ $comment->id }}">
+                                                    <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
                                                 </button>
-                                            </form>
-                                        </div>
-                                        
-        
+
+                                                <form action="{{ route('task.comments.destroy', ['comment' => $comment->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $comment->id }}">
+                                                    @csrf
+                                                    @method('delete')
+                                                    <button type="button" onclick="confirmDelete('{{ $comment->id }}')" style="margin-right: 5px; background: none; border: none;">
+                                                        <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                    
                                             <!-- Edit Comment Modal -->
                                             <div class="modal fade" id="editCommentModal_{{ $comment->id }}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel_{{ $comment->id }}" aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
@@ -173,7 +173,7 @@
                                                     <input type="hidden" name="task_id" value="{{ $task->id }}">
                                                     <div class="form-group">
                                                         <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
-                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here"></textarea>
+                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
                                                     </div>
                                                     <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
                                                 </form>
@@ -193,12 +193,90 @@
                                                     <div class="comment-content" style="font-size: 0.9rem;">
                                                         {{ $reply->comment }}
                                                     </div>
-                                                    <!-- Edit and Delete Comment icons -->
+                                                    <!-- Edit and Delete Comment icons with custom colors -->
+                                                    @if(Auth::user()->isProjectMember($task->project_id))
+                                                        <!-- Edit Comment Button -->
+                                                        <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editReplyModal_{{ $reply->id }}">
+                                                            <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
+                                                        </button>
 
-                                                    <!-- ... (your existing edit and delete comment code) ... -->
+                                                        <form action="{{ route('task.comments.destroy', ['comment' => $reply->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $reply->id }}">
+                                                            @csrf
+                                                            @method('delete')
+                                                            <button type="button" onclick="confirmDelete('{{ $reply->id }}')" style="margin-right: 5px; background: none; border: none;">
+                                                                <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                            </button>
+                                                        </form>
+
+                                                        <!-- Edit Comment Modal -->
+                                                        <div class="modal fade" id="editReplyModal_{{ $reply->id }}" tabindex="-1" role="dialog" aria-labelledby="editReplyModalLabel_{{ $reply->id }}" aria-hidden="true">
+                                                            <div class="modal-dialog" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="editReplyModalLabel_{{ $reply->id }}">Edit Reply</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <form action="{{ route('task.comments.update', ['comment' => $reply->id]) }}" method="post">
+                                                                            @csrf
+                                                                            @method('put')
+                                                                            <!-- Update comment form fields -->
+                                                                            <div class="form-group">
+                                                                                <label for="updateReply">Edit your reply:</label>
+                                                                                <textarea name="comment" class="form-control" id="updateReply" rows="3" placeholder="Edit your reply here">{{ $reply->comment }}</textarea>
+                                                                            </div>
+                                                                            <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        @foreach($task->comments as $subReply)
+                                                            @if($subReply->parent_comment == $reply->id)
+                                                                <!-- Display sub-reply to the reply -->
+                                                                <div class="mb-3 ml-6">
+                                                                    <div class="comment-header">
+                                                                        <strong>{{ $subReply->user->name }}</strong>
+                                                                        <span class="text-muted" style="font-size: 0.8rem;"><em>{{ $subReply->created_at->format('M j, Y \a\t g:i a') }}</em></span>
+                                                                        @if($subReply->updated_at != $subReply->created_at)
+                                                                            <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
+                                                                        @endif
+                                                                    </div>
+                                                                    <div class="comment-content" style="font-size: 0.9rem;">
+                                                                        @if($subReply->parentComment)
+                                                                            <span class="text-muted">@{{ $subReply->parentComment->user->name }}</span>: 
+                                                                        @endif
+                                                                        {{ $subReply->comment }}
+                                                                    </div>
+                                                                    <!-- Edit and Delete Comment icons with custom colors -->
+                                                                    <!-- ... (your existing edit and delete sub-reply code) ... -->
+                                                                </div>
+                                                            @endif
+                                                        @endforeach
+                                                    @endif
+                                                    <!-- Reply button and form for reply -->
+                                                    <div class="reply-container">
+                                                        <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $reply->id }}">Reply</button>
+                                                        <div class="collapse" id="replyForm{{ $reply->id }}">
+                                                            <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $reply->id]) }}" method="post">
+                                                                @csrf
+                                                                <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                                <input type="hidden" name="parent_comment" value="{{ $reply->id }}">
+                                                                <div class="form-group">
+                                                                    <label for="replyComment" @required(true)>Reply to {{ $reply->user->name }}:</label>
+                                                                    <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                                </div>
+                                                                <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             @endif
                                         @endforeach
+                                        
                                     </div>
                                 @endforeach
                             </div>
@@ -226,8 +304,6 @@
             </div>
         @endforeach
     
-
-
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
                 <tr>
@@ -764,55 +840,13 @@
             </div>
         </div>    
     </div>
-
-
+    
     <script>
-        // JavaScript to handle editing comments
-        document.addEventListener('DOMContentLoaded', function () {
-            const editButtons = document.querySelectorAll('.edit-comment');
-            
-            editButtons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                    const commentId = this.getAttribute('data-comment');
-                    const commentText = document.querySelector(`#comment_${commentId} .comment-text`);
-                    const editForm = document.createElement('form');
-                    const textarea = document.createElement('textarea');
-                    const saveButton = document.createElement('button');
-                    const cancelButton = document.createElement('button');
-                    
-                    textarea.name = 'edited_comment';
-                    textarea.rows = '2';
-                    textarea.cols = '50';
-                    textarea.value = commentText.textContent.trim();
-                    
-                    saveButton.type = 'submit';
-                    saveButton.className = 'btn btn-primary btn-sm';
-                    saveButton.textContent = 'Save';
-                    
-                    cancelButton.type = 'button';
-                    cancelButton.className = 'btn btn-secondary btn-sm cancel-edit';
-                    cancelButton.dataset.comment = commentId;
-                    cancelButton.textContent = 'Cancel';
-                    
-                    editForm.appendChild(textarea);
-                    editForm.appendChild(saveButton);
-                    editForm.appendChild(cancelButton);
-                    
-                    // Replace comment text with edit form
-                    commentText.replaceWith(editForm);
-                    
-                    // Disable edit button while editing
-                    this.disabled = true;
-                    
-                    // Add event listener to cancel editing
-                    cancelButton.addEventListener('click', function () {
-                        editForm.replaceWith(commentText);
-                        button.disabled = false;
-                    });
-                });
-            });
-        });
-    </script>
-    
-    
+    function confirmDelete(commentId) {
+        if (confirm("Are you sure you want to delete this comment?")) {
+            document.getElementById('deleteForm' + commentId).submit();
+        }
+    }
+</script>
+
 @endsection
