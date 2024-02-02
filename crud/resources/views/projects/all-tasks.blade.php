@@ -166,7 +166,7 @@
                                         @endif
                                         <!-- Reply button and form -->
                                         <div class="reply-container">
-                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}">Reply</button>
+                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $comment->id }}"><i class="bi bi-reply" style="font-size: 1rem;"></i></button>
                                             <div class="collapse" id="replyForm{{ $comment->id }}">
                                                 <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $comment->id]) }}" method="post">
                                                     @csrf
@@ -234,6 +234,23 @@
                                                             </div>
                                                         </div>
 
+                                                        <!-- Reply button and form for reply -->
+                                                        <div class="reply-container">
+                                                            <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $reply->id }}">Reply</button>
+                                                            <div class="collapse" id="replyForm{{ $reply->id }}">
+                                                                <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $reply->id]) }}" method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                                    <input type="hidden" name="parent_comment" value="{{ $reply->id }}">
+                                                                    <div class="form-group">
+                                                                        <label for="replyComment" @required(true)>Reply to {{ $reply->user->name }}:</label>
+                                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+
                                                         @foreach($task->comments as $subReply)
                                                             @if($subReply->parent_comment == $reply->id)
                                                                 <!-- Display sub-reply to the reply -->
@@ -247,32 +264,76 @@
                                                                     </div>
                                                                     <div class="comment-content" style="font-size: 0.9rem;">
                                                                         @if($subReply->parentComment)
-                                                                            <span class="text-muted">@{{ $subReply->parentComment->user->name }}</span>: 
+                                                                            @php
+                                                                                $parentCommentUser = $subReply->parentComment->user->name;
+                                                                            @endphp
+                                                                            @if($parentCommentUser)
+                                                                                <span class="text-muted">@ {{ $parentCommentUser }}</span> {{ $subReply->comment }}
+                                                                            @else
+                                                                                {{ $subReply->comment }}
+                                                                            @endif
                                                                         @endif
-                                                                        {{ $subReply->comment }}
                                                                     </div>
-                                                                    <!-- Edit and Delete Comment icons with custom colors -->
-                                                                    <!-- ... (your existing edit and delete sub-reply code) ... -->
+
+                                                                    <!-- Edit Comment Button -->
+                                                                    <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editSubReplyModal_{{ $subReply->id }}">
+                                                                        <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
+                                                                    </button>
+
+                                                                    <form action="{{ route('task.comments.destroy', ['comment' => $subReply->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $subReply->id }}">
+                                                                        @csrf
+                                                                        @method('delete')
+                                                                        <button type="button" onclick="confirmDelete('{{ $subReply->id }}')" style="margin-right: 5px; background: none; border: none;">
+                                                                            <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                                        </button>
+                                                                    </form>
+
+                                                                    <!-- Edit Comment Modal -->
+                                                                    <div class="modal fade" id="editSubReplyModal_{{ $subReply->id }}" tabindex="-1" role="dialog" aria-labelledby="editSubReplyModalLabel_{{ $subReply->id }}" aria-hidden="true">
+                                                                        <div class="modal-dialog" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title" id="editSubReplyModalLabel_{{ $subReply->id }}">Edit Reply</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <form action="{{ route('task.comments.update', ['comment' => $subReply->id]) }}" method="post">
+                                                                                        @csrf
+                                                                                        @method('put')
+                                                                                        <!-- Update comment form fields -->
+                                                                                        <div class="form-group">
+                                                                                            <label for="updateSubReply">Edit your reply:</label>
+                                                                                            <textarea name="comment" class="form-control" id="updateSubReply" rows="3" placeholder="Edit your reply here">{{ $subReply->comment }}</textarea>
+                                                                                        </div>
+                                                                                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Reply button and form for reply -->
+                                                                    {{-- <div class="reply-container">
+                                                                        <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $subReply->id }}">Reply</button>
+                                                                        <div class="collapse" id="replyForm{{ $subReply->id }}">
+                                                                            <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $subReply->id]) }}" method="post">
+                                                                                @csrf
+                                                                                <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                                                <input type="hidden" name="parent_comment" value="{{ $subReply->id }}">
+                                                                                <div class="form-group">
+                                                                                    <label for="subreplyComment" @required(true)>Reply to {{ $subReply->user->name }}:</label>
+                                                                                    <textarea name="comment" class="form-control" id="subreplyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                                                </div>
+                                                                                <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div> --}}
                                                                 </div>
                                                             @endif
                                                         @endforeach
                                                     @endif
-                                                    <!-- Reply button and form for reply -->
-                                                    <div class="reply-container">
-                                                        <button type="button" class="btn btn-link" data-toggle="collapse" data-target="#replyForm{{ $reply->id }}">Reply</button>
-                                                        <div class="collapse" id="replyForm{{ $reply->id }}">
-                                                            <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $reply->id]) }}" method="post">
-                                                                @csrf
-                                                                <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                                <input type="hidden" name="parent_comment" value="{{ $reply->id }}">
-                                                                <div class="form-group">
-                                                                    <label for="replyComment" @required(true)>Reply to {{ $reply->user->name }}:</label>
-                                                                    <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
-                                                                </div>
-                                                                <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             @endif
                                         @endforeach
