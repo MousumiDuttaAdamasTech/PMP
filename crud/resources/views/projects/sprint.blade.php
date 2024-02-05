@@ -189,18 +189,21 @@
                                                   
                                                   
 
-                                                <div class="card__menu" style="width:100%;margin:auto;margin-top:5px;">
+                                                <div class="card__menu" style="width:90%;margin:auto;margin-top:5px;">
                                                     <!-----comment and attach part------ -->
                                                 
                                                     <div class="card__menu-left" style="margin:auto;">
                                                         <div class="comments-wrapper">
-                                                            <div class="comments-ico" ><i class="material-icons">comment</i></div>
-                                                            <div class="comments-num">1</div>
+                                                            <div class="comments-ico"><i class="material-icons">comment</i></div>
+                                                            <div class="comments-num">{{ $task->comments->count() }}</div>
                                                         </div>
+                                                        
                                                         <div class="attach-wrapper">
                                                             <div class="attach-ico"><i class="material-icons">attach_file</i></div>
-                                                            <div class="attach-num">2</div>
+                                                            <div class="attach-num">{{ $task->attachments->count() }}</div>
                                                         </div>
+                           
+                                                      
                                                         <div class="user-wrapper">
                                                             <div class="user-ico"><i class="material-icons">person</i></div>
                                                             <div class="user-num" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ implode(', ', $task->taskUsers->pluck('user.name')->toArray()) }}">
@@ -393,6 +396,13 @@
                                                </select>
                                            </div>
                                        </div>
+                                       <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="attachments">Attachments</label>
+                                            <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                            <small class="text-muted">You can upload multiple files.</small>
+                                        </div>
+                                    </div>
            
            
            
@@ -407,7 +417,7 @@
                    </div>
 
 
-               </div>
+                   </div>
 
 
                {{-- modal end --}}
@@ -961,11 +971,9 @@
                         $sortedTasks = $tasks->sortByDesc('id');
                     @endphp
                     
-                    
-                
                  
                 
-                @foreach($sortedTasks as $task)
+                    @foreach($sortedTasks as $task)
                     <!-- Main Comment Modal -->
                     <div class="modal fade" id="commentModal{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="commentModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg" role="document">
@@ -1039,68 +1047,66 @@
                                                 @endif
                 
                                                 <!-- Display replies indented under the parent comment -->
-                                                @foreach($task->comments as $reply)
-                                                    @if($reply->parent_comment == $comment->id)
-                                                        <div class="mb-3 ml-3">
-                                                            <div class="comment-header">
-                                                                <strong>{{ $reply->user->name }}</strong>
-                                                                <span class="text-muted" style="font-size: 0.8rem;">
-                                                                    <em>{{ $reply->created_at->format('M j, Y \a\t g:i a') }}</em>
-                                                                </span>
-                                                            </div>
-                                                            <div class="comment-content" style="font-size: 0.9rem;">
-                                                                {{ $reply->comment }}
-                                                            </div>
-                
-                                                            <!-- Actions for Reply -->
-                                                            @if(Auth::user()->isProjectMember($task->project_id))
-                                                                <!-- Edit and Delete Reply icons with custom colors -->
-                                                                <div class="comment-actions">
-                                                                    <button type="button" class="btn btn-link edit-comment-btn" data-comment-id="{{ $reply->id }}">
-                                                                        <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i> 
-                                                                    </button>
-                                                                    <button type="button" class="btn btn-link reply-comment-btn" data-comment-id="{{ $reply->id }}">
-                                                                        <i class="bi bi-reply" style="color: #28a745; font-size: 1rem;"></i> 
-                                                                    </button>
-                                                                    <form action="{{ route('task.comments.destroy', ['comment' => $reply->id]) }}" method="post" style="display: inline;">
-                                                                        @csrf
-                                                                        @method('delete')
-                                                                        <button type="submit" class="btn btn-link">
-                                                                            <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i> 
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
-                
-                                                                <!-- Edit Comment Form -->
-                                                                <div class="edit-comment-form" data-comment-id="{{ $reply->id }}" style="display: none;">
-                                                                    <form action="{{ route('task.comments.update', ['comment' => $reply->id]) }}" method="post">
-                                                                        @csrf
-                                                                        @method('put')
-                                                                        <!-- Update comment form fields -->
-                                                                        <div class="form-group">
-                                                                            <label for="updateReply">Edit your reply:</label>
-                                                                            <textarea name="comment" class="form-control" id="updateReply" rows="3" placeholder="Edit your reply here">{{ $reply->comment }}</textarea>
-                                                                        </div>
-                                                                        <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
-                                                                    </form>
-                                                                </div>
-                
-                                                                <!-- Reply Form -->
-                                                                <div class="reply-form" data-comment-id="{{ $reply->id }}" style="display: none;">
-                                                                    <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $reply->id]) }}" method="post">
-                                                                        @csrf
-                                                                        <input type="hidden" name="task_id" value="{{ $task->id }}">
-                                                                        <input type="hidden" name="parent_comment" value="{{ $reply->id }}">
-                                                                        <div class="form-group">
-                                                                            <label for="replyComment">Reply to {{ $reply->user->name }}:</label>
-                                                                            <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
-                                                                        </div>
-                                                                        <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
-                                                                    </form>
-                                                                </div>
-                                                            @endif
+                                                @foreach($comment->replies as $reply)
+                                                    <div class="mb-3 ml-3">
+                                                        <div class="comment-header">
+                                                            <strong>{{ $reply->user->name }}</strong>
+                                                            <span class="text-muted" style="font-size: 0.8rem;">
+                                                                <em>{{ $reply->created_at->format('M j, Y \a\t g:i a') }}</em>
+                                                            </span>
                                                         </div>
-                                                    @endif
+                                                        <div class="comment-content" style="font-size: 0.9rem;">
+                                                            {{ $reply->comment }}
+                                                        </div>
+                
+                                                        <!-- Actions for Reply -->
+                                                        @if(Auth::user()->isProjectMember($task->project_id))
+                                                            <!-- Edit and Delete Reply icons with custom colors -->
+                                                            <div class="comment-actions">
+                                                                <button type="button" class="btn btn-link edit-comment-btn" data-comment-id="{{ $reply->id }}">
+                                                                    <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i> 
+                                                                </button>
+                                                                <button type="button" class="btn btn-link reply-comment-btn" data-comment-id="{{ $reply->id }}">
+                                                                    <i class="bi bi-reply" style="color: #28a745; font-size: 1rem;"></i> 
+                                                                </button>
+                                                                <form action="{{ route('task.comments.destroy', ['comment' => $reply->id]) }}" method="post" style="display: inline;">
+                                                                    @csrf
+                                                                    @method('delete')
+                                                                    <button type="submit" class="btn btn-link">
+                                                                        <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i> 
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                
+                                                            <!-- Edit Comment Form -->
+                                                            <div class="edit-comment-form" data-comment-id="{{ $reply->id }}" style="display: none;">
+                                                                <form action="{{ route('task.comments.update', ['comment' => $reply->id]) }}" method="post">
+                                                                    @csrf
+                                                                    @method('put')
+                                                                    <!-- Update comment form fields -->
+                                                                    <div class="form-group">
+                                                                        <label for="updateReply">Edit your reply:</label>
+                                                                        <textarea name="comment" class="form-control" id="updateReply" rows="3" placeholder="Edit your reply here">{{ $reply->comment }}</textarea>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-check"></i></button>
+                                                                </form>
+                                                            </div>
+                
+                                                            <!-- Reply Form -->
+                                                            <div class="reply-form" data-comment-id="{{ $reply->id }}" style="display: none;">
+                                                                <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $reply->id]) }}" method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                                    <input type="hidden" name="parent_comment" value="{{ $reply->id }}">
+                                                                    <div class="form-group">
+                                                                        <label for="replyComment">Reply to {{ $reply->user->name }}:</label>
+                                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                                    </div>
+                                                                    <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-reply"></i></button>
+                                                                </form>
+                                                            </div>
+                                                        @endif
+                                                    </div>
                                                 @endforeach
                                             </div>
                                         @endforeach
@@ -1114,7 +1120,7 @@
                                                 <label for="comment">Add a comment:</label>
                                                 <textarea name="comment" class="form-control" id="comment" rows="3" placeholder="Type your comment here"></textarea>
                                             </div>
-                                            <button type="submit" class="btn btn-primary btn-sm">Add Comment</button>
+                                            <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-chat-right"></i></button>
                                         </form>
                                     @else
                                         <div class="alert alert-info">
@@ -1126,7 +1132,7 @@
                         </div>
                     </div>
                 @endforeach
-                      
+                
 
                     <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
@@ -1417,7 +1423,7 @@ $('#sprint-dropdown').change(function () {
             var statusIdFormatted = status.toLowerCase().replace(/\s/g, '');
 
             // Create HTML for the kanban-block
-            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height:130px;max-height: 220px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
+            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height:130px;max-height: 230px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
 
             // Create HTML for the status at the top
             var statusHtml = '<div class="backlog-name" style="margin-top:-6px;">' + status + '</div>';
@@ -1442,7 +1448,28 @@ $('#sprint-dropdown').change(function () {
                             '<div class="card_text" style="margin-top:15px; font-weight: bold; ">' + task.title + '</div>' +
                             '<div class="card_details">' + task.details + '</div>' +
                         '</div>' +
-                        '</div>';
+
+                        // Include dynamic counts for comments, attachments, and taskUsers
+                        '<div class="card__menu" style="width:70%;margin:auto;margin-top:5px;margin-bottom:5px;margin-left:10px;">' +
+                            '<div class="comments-wrapper">' +
+                                '<div class="comments-ico"><i class="material-icons">comment</i></div>' +
+                                '<div class="comments-num">' + (task.comments_count ? task.comments_count : 0) + '</div>' +
+                            '</div>' +
+
+                            '<div class="attach-wrapper">' +
+                                '<div class="attach-ico"><i class="material-icons">attach_file</i></div>' +
+                                '<div class="attach-num">' + (task.attachments_count ? task.attachments_count : 0) + '</div>' +
+                            '</div>' +
+
+                            '<div class="user-wrapper">' +
+                                '<div class="user-ico"><i class="material-icons">person</i></div>' +
+                                '<div class="user-num" data-bs-toggle="tooltip" data-bs-placement="top" title="' + (task.task_users_count ? task.task_users_count : 0) + '">' +
+                                    (task.task_users_count ? task.task_users_count : 0) +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+
+                    '</div>';
 
                     // Append the card HTML to the custom card container
                     customCardContainer += taskHtml;

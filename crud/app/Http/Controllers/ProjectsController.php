@@ -724,7 +724,12 @@ class ProjectsController extends Controller
         }
     
         // Fetch tasks based on both project_id and sprint_id with eager loading
-        $tasks = Task::with(['projectTaskStatus.taskStatus'])
+        $tasks = Task::with([
+            'projectTaskStatus.taskStatus',
+            'comments',
+            'taskUsers',
+            'attachments', // Include attachments relationship
+        ])
             ->where('project_id', $projectId)
             ->where('sprint_id', $sprintId)
             ->get();
@@ -736,14 +741,16 @@ class ProjectsController extends Controller
                 'id' => $task->id,
                 'title' => $task->title,
                 'details' => $task->details,
+                'comments_count' => $task->comments->count(),
+                'task_users_count' => $task->taskUsers->count(),
+                'attachments_count' => $task->attachments->count(), // Count of attachments
             ];
         }
     
         return response()->json($tasksByStatus);
     }
     
-
-   
+    
 
     
 }
