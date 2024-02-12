@@ -74,12 +74,12 @@
 
                 <div class="col-md-6 mb-3">
                     <label for="project_startDate" class="mb-1" class="form-label" style="font-size: 15px;">Project Start Date</label>
-                    <input type="date" id="project_startDate" class="shadow-sm" name="project_startDate" value="{{ $project->project_startDate }}" required="required" style="color: #858585; font-size: 14px;">
+                    <input type="date" id="project_startDate" class="shadow-sm" name="project_startDate" value="{{ $project->project_startDate }}"  style="color: #858585; font-size: 14px;">
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="project_endtDate" class="mb-1" class="form-label" style="font-size: 15px;">Project End Date</label>
-                    <input type="date" id="project_endDate" class="shadow-sm" name="project_endDate" value="{{ $project->project_endDate }}" required="required" style="color: #858585; font-size: 14px;">
+                    <input type="date" id="project_endDate" class="shadow-sm" name="project_endDate" value="{{ $project->project_endDate }}" style="color: #858585; font-size: 14px;">
                 </div>
 
                 <div class="col-md-6">

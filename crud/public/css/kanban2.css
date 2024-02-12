@@ -112,7 +112,7 @@
   /* display: none; */
 }
 
-.card {
+.card{
   border-radius: 5px;
   border: 1px dashed var(--colorWhite);
   /* border: 0.1rem solid black; */

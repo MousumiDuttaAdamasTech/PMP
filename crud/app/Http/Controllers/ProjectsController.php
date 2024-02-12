@@ -66,8 +66,8 @@ class ProjectsController extends Controller
             'project_type' => 'required',
             'project_description' => 'required',
             'project_manager_id' => 'required',
-            'project_startDate' => 'required|date',
-            'project_endDate' => 'required|date',
+            'project_startDate' => 'date',
+            'project_endDate' => 'date',
             'project_status' => 'required',
             'client_spoc_name' => 'required',
             'client_spoc_email' => 'required|email',
@@ -198,8 +198,8 @@ class ProjectsController extends Controller
             'project_type' => 'required',
             'project_description' => 'required',
             'project_manager_id' => 'required',
-            'project_startDate' => 'required|date',
-            'project_endDate' => 'required|date',
+            'project_startDate' => 'date',
+            'project_endDate' => 'date',
             'project_status' => 'required',
             'client_spoc_name' => 'required',
             'client_spoc_email' => 'required|email',
@@ -724,7 +724,12 @@ class ProjectsController extends Controller
         }
     
         // Fetch tasks based on both project_id and sprint_id with eager loading
-        $tasks = Task::with(['projectTaskStatus.taskStatus'])
+        $tasks = Task::with([
+            'projectTaskStatus.taskStatus',
+            'comments',
+            'taskUsers',
+            'attachments', // Include attachments relationship
+        ])
             ->where('project_id', $projectId)
             ->where('sprint_id', $sprintId)
             ->get();
@@ -736,14 +741,16 @@ class ProjectsController extends Controller
                 'id' => $task->id,
                 'title' => $task->title,
                 'details' => $task->details,
+                'comments_count' => $task->comments->count(),
+                'task_users_count' => $task->taskUsers->count(),
+                'attachments_count' => $task->attachments->count(), // Count of attachments
             ];
         }
     
         return response()->json($tasksByStatus);
     }
     
-
-   
+    
 
     
 }
