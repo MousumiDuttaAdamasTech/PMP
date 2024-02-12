@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-
     public const PRIORITIES = [
         'p0 (critical)', 'p1 (high)', 'p2 (medium)', 'p3 (low)',
+    ];
+
+    public const TASK_TYPES = [
+        'Adhoc', 'New Req',
     ];
 
     protected $fillable = [
@@ -22,6 +25,10 @@ class Task extends Model
         'project_id',
         'parent_task',
         'sprint_id',
+        'actual_hours',
+        'task_type',
+        'epic', 
+        'story',
     ];
 
     public function taskUsers()
@@ -71,6 +78,11 @@ class Task extends Model
         return array_combine(self::PRIORITIES, array_map('strtolower', self::PRIORITIES));
     }
 
+    public static function getTaskTypeOptions()
+    {
+        return array_combine(self::TASK_TYPES, self::TASK_TYPES);
+    }
+
     public function attachments()
     {
         return $this->hasMany(TaskAttachment::class, 'task_id');
@@ -80,5 +92,4 @@ class Task extends Model
     {
         return $this->hasMany(TaskComment::class);
     }
-
 }

@@ -11,6 +11,11 @@ class Sprint extends Model
         'estimated_hrs',
         'actual_hrs',
         'sprint_status',
+        'sprint_taskDiscuss',
+        'sprint_startDate', 
+        'sprint_endDate',  
+        'sprint_demoDate', 
+        'sprint_planningDate', 
         'current_date',
         'assign_to',
         'projects_id',
@@ -31,5 +36,4 @@ class Sprint extends Model
     {
         return $this->belongsTo(Project::class);
     }
-
 }
