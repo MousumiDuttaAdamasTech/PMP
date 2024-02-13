@@ -18,17 +18,17 @@ class ProjectMemberController extends Controller
         // Pass the project members to the view
         return view('project_members.index', compact('projectMembers'));
     }
-    
+
     public function create($projectId)
     {
         $project = Project::findOrFail($projectId);
         $projectMembers = ProjectMember::all();
         $users = User::all();
         $projectRoles = ProjectRole::all();
-    
+
         return view('projects.team', compact('projects', 'projectMembers', 'projectRoles', 'users'));
     }
-    
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -74,7 +74,7 @@ class ProjectMemberController extends Controller
         return view('projects.team', compact('projectMember', 'users', 'projectRoles'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validatedData = $request->validate([
             'project_member_id' => 'required|exists:project_members,id',
@@ -88,7 +88,7 @@ class ProjectMemberController extends Controller
         ]);
 
         // Find the project member by ID
-        $projectMember = ProjectMember::findOrFail($id);
+        $projectMember = ProjectMember::findOrFail($request->project_members_id);
 
         // Update the project member with validated data
         $projectMember->update([
@@ -108,16 +108,26 @@ class ProjectMemberController extends Controller
 
     public function destroy($id)
     {
-        // Find the project member by ID
-        $projectMember = ProjectMember::findOrFail($id);
+        try {
+            // Find the project member by ID
+            $projectMember = ProjectMember::findOrFail($id);
 
-        // Get the project ID before deleting the project member
-        $projectId = $projectMember->project_id;
+            // Get the project ID before deleting the project member
+            $projectId = $projectMember->project_id;
 
-        // Delete the project member
-        $projectMember->delete();
+            // Delete the project member
+            $projectMember->delete();
 
-        return redirect()->route('projects.team', ['project' => $projectId])
-            ->with('success', 'Project member deleted successfully');
+            return redirect()->route('projects.team', ['project' => $projectId])
+                ->with('success', 'Project member deleted successfully');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1451) { // 1451 is the error code for foreign key constraint violation
+                return redirect()->back()->with('error', 'Cannot delete this project member. It is associated with other records.');
+            }
+            // For other database errors, you can handle them as needed
+            return redirect()->back()->with('error', 'An error occurred while deleting the project member.');
+        }
     }
+
 }

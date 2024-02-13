@@ -129,6 +129,11 @@
 
 <div class="form-container">
     <div class="row">
+        @if (session('error'))
+            <div class=" col-md-6 mx-auto alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="col-md-12 mb-3">
             <div class="titlebar d-flex flex-column flex-md-row justify-content-md-between align-items-center gap-3"
                 style="margin-top: 18px; margin-bottom: 30px; padding: 2px 30px;">
@@ -156,14 +161,21 @@
                         // Get the role name if found, otherwise an empty string
                         $roleName = $role ? $role->member_role_type : ''; 
                     @endphp
-                    <div class="col-lg-3 col-md-6 d-flex flex-col align-items-center card member-card" data-toggle="modal"
-                        data-target="#memberDetailsModal" data-member-name="{{ $projectMember->profile_name }}"
+                    <div class="col-lg-3 col-md-6 d-flex flex-col align-items-center card member-card" data-member-name="{{ $projectMember->profile_name }}"
                         data-role="{{ $roleName }}" data-engagement-percentage="{{ $pivotData->engagement_percentage }}"
                         data-start-date="{{ $pivotData->start_date }}" data-end-date="{{ $pivotData->end_date }}"
                         data-duration="{{ $pivotData->duration }}" data-engagement-mode="{{ $pivotData->engagement_mode }}"
                         data-is-active="{{ $pivotData->is_active }}" style="width: 225px; height: 250px;">
                         <div class="card-body mb-2 h-100" style="padding: 0 21px 0 21px;">
-                            <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px">
+                            <div class="d-flex justify-content-end gap-3 mt-2">
+                                <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
+                                    <i class="fas fa-edit text-primary"></i>
+                                </a> 
+                                <a href="/deleteProjectMember/{{$projectMember->id}}" data-placement="top" title="Delete">
+                                    <i class="fas fa-trash-alt text-danger"></i>
+                                </a> 
+                            </div>
+                            <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px" data-toggle="modal" data-target="#memberDetailsModal">
                                 <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}"
                                     alt="Profile Image" style="height: 140px; width: 140px;">
                             </div>
@@ -173,6 +185,114 @@
                             <p class="card-text role"
                                 style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
                                 {{ $roleName }}</p>
+                        </div>
+                    </div>
+                    <!--Edit Modal -->
+                    <div class="modal fade" id="editDetailsModal_{{$projectMember->id}}" tabindex="-1" role="dialog" aria-labelledby="editDetailsModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" style=" background-color:#061148; ">
+                                    <h5 class="modal-title" id="memberDetailsModalLabel" style="color: white;font-weight: bolder;">Edit Member</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="addMemberForm" action="{{ route('project_members.store') }}" method="post">
+                                        @csrf
+                                        <div class="row">
+                                            <input type="hidden" name="project_id" value="{{ $project->id }}">
+                                            <div class="col-md-6">
+                                                <label for="fieldName" class="form-label mb-3">Member Name</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6" style="font-size:14px;">
+                                                <select id="project_members_id" name="project_members_id" class="addmember" required
+                                                    style="width:100%;">
+                                                    <option value="{{ $projectMember->id }}" selected>{{ $projectMember->profile_name }}</option>
+                                                </select>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="project_role_id" class="form-label mb-3">Role</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <select id="project_role_id" name="project_role_id[]" class="form-control" required>
+                                                    <option value="">Select Role</option>
+                                                    <option value="" disabled selected>{{ $roleName }}</option>
+                                                    @foreach ($projectRoles as $projectRole)
+                                                    <option value="{{ $projectRole->id }}">{{ $projectRole->member_role_type }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="engagement_percentage" class="form-label mb-3">Engagement Percentage</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <input type="number" id="engagement_percentage" name="engagement_percentage[]"
+                                                    class="form-control" required value="{{ $pivotData->engagement_percentage }}">
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="start_date" class="form-label mb-3">Start Date</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <input type="date" id="start_date" name="start_date[]" class="form-control" required value="{{ $pivotData->start_date }}">
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="end_date" class="form-label mb-3">End Date</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <input value="{{ $pivotData->end_date }}" type="date" id="end_date" name="end_date[]" class="form-control" required onchange=handleEndDateChange()>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="duration" class="form-label mb-3">Duration</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <input value="{{ $pivotData->duration }}" type="number" id="duration" name="duration[]" class="form-control" required oninput="handleDuration(this.value)">
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="engagement_mode" class="form-label mb-3">Engagement Mode</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <select id="engagement_mode" name="engagement_mode[]" class="form-control" required>
+                                                    <option value="" selected disabled>{{ $pivotData->engagement_mode }}</option>
+                                                    <option value="daily">Daily</option>
+                                                    <option value="weekly">Weekly</option>
+                                                    <option value="monthly">Monthly</option>
+                                                    <option value="yearly">Yearly</option>
+                                                </select>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <label for="is_active" class="form-label mb-3">Is Active</label>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                <select id="is_active" name="is_active[]" class="form-control" required>
+                                                    <option value="" selected disabled>{{ $pivotData->is_active }}</option>
+                                                    <option value="1">Yes</option>{{ $pivotData->is_active }}
+                                                    <option value="0">No</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-actions">
+                                            <button type="submit" class="btn" id="addMemberBtn"
+                                                style="background-color: #012970; color: white;">Save
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endforeach
@@ -365,15 +485,16 @@
         var memberDetailsModal = document.getElementById('memberDetailsModal');
 
         memberCards.forEach(function (card) {
-            card.addEventListener('click', function () {
-                var memberName = this.getAttribute('data-member-name');
-                var role = this.getAttribute('data-role');
-                var engagementPercentage = this.getAttribute('data-engagement-percentage');
-                var startDate = this.getAttribute('data-start-date');
-                var endDate = this.getAttribute('data-end-date');
-                var duration = this.getAttribute('data-duration');
-                var engagementMode = this.getAttribute('data-engagement-mode');
-                var isActive = this.getAttribute('data-is-active');
+            var avatar = card.querySelector('.avatar');
+            avatar.addEventListener('click', function () {
+                var memberName = card.getAttribute('data-member-name');
+                var role = card.getAttribute('data-role');
+                var engagementPercentage = card.getAttribute('data-engagement-percentage');
+                var startDate = card.getAttribute('data-start-date');
+                var endDate = card.getAttribute('data-end-date');
+                var duration = card.getAttribute('data-duration');
+                var engagementMode = card.getAttribute('data-engagement-mode');
+                var isActive = card.getAttribute('data-is-active');
 
                 // Update modal content with member details
                 modalMemberName.textContent = memberName;

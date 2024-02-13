@@ -199,3 +199,9 @@ Route::get('/deleteBug/{bugId}', [BugController::class, 'deleteBug'])->name('del
 Route::get('/findSprintDetailsWithId/{sprintId}', [BugController::class, 'findSprintDetailsWithId'])->name('findSprintDetailsWithId');
 
 Route::post('/createTaskFromBug', [BugController::class, 'createTaskFromBug'])->name('createTaskFromBug');
+
+Route::post('/createTaskFromMultipleBug', [BugController::class, 'createTaskFromMultipleBug'])->name('createTaskFromMultipleBug');
+
+Route::get('/deleteBugDocuments/{id}', [BugController::class, 'deleteBugDocuments'])->name('deleteBugDocuments');
+
+Route::get('/deleteProjectMember/{id}', [ProjectMemberController::class, 'destroy'])->name('deleteProjectMember');
