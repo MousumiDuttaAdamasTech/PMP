@@ -18,6 +18,7 @@ use App\Models\ProjectRole;
 use App\Models\Profile;
 use App\Models\taskType;
 use App\Models\TaskStatus;
+use App\Models\ProjectTaskStatus;
 use App\Models\RolePrice;
 use App\Models\WorkerPrice;
 use App\Models\Task;
@@ -31,6 +32,7 @@ use App\Models\StakeholderRole;
 use App\Models\Stakeholder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+
 
 class ProjectsController extends Controller
 {
@@ -65,8 +67,8 @@ class ProjectsController extends Controller
             'project_type' => 'required',
             'project_description' => 'required',
             'project_manager_id' => 'required',
-            'project_startDate' => 'required|date',
-            'project_endDate' => 'required|date',
+            'project_startDate' => 'date',
+            'project_endDate' => 'date',
             'project_status' => 'required',
             'client_spoc_name' => 'required',
             'client_spoc_email' => 'required|email',
@@ -197,8 +199,8 @@ class ProjectsController extends Controller
             'project_type' => 'required',
             'project_description' => 'required',
             'project_manager_id' => 'required',
-            'project_startDate' => 'required|date',
-            'project_endDate' => 'required|date',
+            'project_startDate' => 'date',
+            'project_endDate' => 'date',
             'project_status' => 'required',
             'client_spoc_name' => 'required',
             'client_spoc_email' => 'required|email',
@@ -702,16 +704,55 @@ class ProjectsController extends Controller
         return response()->json(['message' => 'Task status updated successfully']);
     }
 
-    public function getTasks(Request $request)
+    public function getTasksWithStatus(Request $request)
     {
         $projectId = $request->input('project_id');
         $sprintId = $request->input('sprint_id');
-
-        // Fetch tasks based on project_id and sprint_id
-        $tasks = Task::where('project_id', $projectId)
+    
+        // Fetch task statuses associated with the project
+        $projectTaskStatuses = ProjectTaskStatus::where('project_id', $projectId)->get();
+    
+        // Organize tasks by status
+        $tasksByStatus = [];
+    
+        // Iterate over task statuses and add them to the array
+        foreach ($projectTaskStatuses as $projectTaskStatus) {
+            $status = $projectTaskStatus->taskStatus->status;
+            $statusIdFormatted = strtolower(str_replace(' ', '', $status));
+            $tasksByStatus[$statusIdFormatted] = [
+                'status' => $status,
+                'tasks' => [],
+            ];
+        }
+    
+        // Fetch tasks based on both project_id and sprint_id with eager loading
+        $tasks = Task::with([
+            'projectTaskStatus.taskStatus',
+            'comments',
+            'taskUsers',
+            'attachments', // Include attachments relationship
+        ])
+            ->where('project_id', $projectId)
             ->where('sprint_id', $sprintId)
             ->get();
-
-        return response()->json($tasks);
+    
+        // Iterate over the fetched tasks and add them to the corresponding status
+        foreach ($tasks as $task) {
+            $statusIdFormatted = strtolower(str_replace(' ', '', optional($task->projectTaskStatus->taskStatus)->status));
+            $tasksByStatus[$statusIdFormatted]['tasks'][] = [
+                'id' => $task->id,
+                'title' => $task->title,
+                'details' => $task->details,
+                'comments_count' => $task->comments->count(),
+                'task_users_count' => $task->taskUsers->count(),
+                'attachments_count' => $task->attachments->count(), // Count of attachments
+            ];
+        }
+    
+        return response()->json($tasksByStatus);
     }
+    
+    
+
+    
 }

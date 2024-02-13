@@ -22,6 +22,8 @@
         width: 200px;
         /* Adjust the width of each card as needed */
         margin-right: 10px;
+        max-height: 450px;
+        
     }
 </style>
 @endsection
@@ -165,7 +167,7 @@
         </ul>
     </div>
     <!-- Main content area -->
-    <div class="col">
+    <div class="col" style="overflow-y:auto;">
         <!-- Your main content goes here -->
         @yield('main_content')
     </div>

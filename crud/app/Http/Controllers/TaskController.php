@@ -16,10 +16,10 @@ use Illuminate\Support\Str;
 
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Get the project ID from the request, assuming it's included in the URL as a parameter
-        $projectId = $project->id;
+        $projectId = $request->id;
 
         // Assuming you have a 'project_id' column in your tasks table
         $tasks = Task::where('project_id', $projectId)->get();
@@ -45,6 +45,10 @@ class TaskController extends Controller
             'title' => 'required',
             'priority' => 'required',
             'estimated_time' => 'required|numeric',
+            'actual_hours' => 'nullable|numeric', // Add this for actual_hours
+            'task_type' => 'required|in:' . implode(',', Task::getTaskTypeOptions()), // Add this for task_type
+            'epic' => 'nullable|string', // Add this for epic
+            'story' => 'nullable|string', // Add this for story
             'details' => 'required',
             'project_task_status_id' => 'required',
             'assigned_to' => 'required',
@@ -53,14 +57,16 @@ class TaskController extends Controller
             'sprint_id' => 'required',
             'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png',
         ]);
-
+    
         $projectId = $request->input('project_id');
-
         $task = new Task();
         $task->uuid = substr(Str::uuid()->toString(), 0, 8);
         $task->title = $request->title;
         $task->priority = $request->priority;
         $task->estimated_time = $request->estimated_time;
+        $task->actual_hours = $request->actual_hours; 
+        $task->epic = $request->epic;
+        $task->story = $request->story;
         $task->details = $request->details;
         $task->parent_task = $request->input('parent_task');
         $task->assigned_to = implode(',', $request->assigned_to);
@@ -68,7 +74,9 @@ class TaskController extends Controller
         $task->project_task_status_id = $request->project_task_status_id;
         $task->project_id = $projectId;
         $task->sprint_id = $request->sprint_id;
+        $task->task_type = $request->input('task_type'); // Add this for task_type
         $task->save();
+    
 
         $assignedTo = $request->assigned_to;
         $allottedTo = $request->allotted_to;
@@ -116,49 +124,60 @@ class TaskController extends Controller
         return back()->with(compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
     }
 
-    public function update(Request $request, Task $task)
-    {
-        $request->validate([
-            'title' => 'required',
-            'priority' => 'required',
-            'estimated_time' => 'required|numeric',
-            'details' => 'required',
-            'project_task_status_id' => 'required',
-            'assigned_to' => 'required',
-            'allotted_to' => 'required',
-            'project_id' => 'required',
-            'sprint_id' => 'required',
-            'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png', //validation for multiple files
+   public function update(Request $request, Task $task)
+{
+    $request->validate([
+        'title' => 'required',
+        'priority' => 'required',
+        'estimated_time' => 'required|numeric',
+        'actual_hours' => 'nullable|numeric', // Add this for actual_hours
+        'task_type' => 'required|in:' . implode(',', Task::getTaskTypeOptions()), // Add this for task_type
+        'epic' => 'nullable|string',
+        'story' => 'nullable|string',
+        'details' => 'required',
+        'project_task_status_id' => 'required',
+        'assigned_to' => 'required',
+        'allotted_to' => 'required',
+        'project_id' => 'required',
+        'sprint_id' => 'required',
+        'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png', //validation for multiple files
+    ]);
+
+    $task->uuid = substr(Str::uuid()->toString(), 0, 8);
+    $task->title = $request->title;
+    $task->priority = $request->priority;
+    $task->estimated_time = $request->estimated_time;
+    $task->actual_hours = $request->actual_hours; // Store exactly as entered
+    $task->epic = $request->epic;
+    $task->story = $request->story;
+    $task->details = $request->details;
+    $task->parent_task = $request->input('parent_task');
+    $task->assigned_to = implode(',', $request->assigned_to);
+    $task->allotted_to = implode(',', $request->allotted_to);
+    $task->project_task_status_id = $request->project_task_status_id;
+    $task->sprint_id = $request->sprint_id;
+    $task->task_type = $request->input('task_type'); // Add this for task_type
+
+    $task->save();
+
+    $task->taskUsers()->delete();
+
+    $assignedTo = $request->assigned_to;
+    $allottedTo = $request->allotted_to;
+
+    
+
+    foreach ($allottedTo as $index => $userId) {
+        $taskUser = new TaskUser([
+            'task_id' => $task->id,
+            'allotted_to' => $userId,
+            'assigned_to' => $allottedTo[$index], // Set 'assigned_to' based on the corresponding index in the allotted_to array
         ]);
-
-        $task->uuid = substr(Str::uuid()->toString(), 0, 8);
-        $task->title = $request->title;
-        $task->priority = $request->priority;
-        $task->estimated_time = $request->estimated_time;
-        $task->details = $request->details;
-        $task->parent_task = $request->input('parent_task');
-        $task->assigned_to = implode(',', $request->assigned_to);
-        $task->allotted_to = implode(',', $request->allotted_to);
-        $task->project_task_status_id = $request->project_task_status_id;
-        $task->sprint_id = $request->sprint_id;
-
-        $task->save();
-
-        $assignedTo = $request->assigned_to;
-        $allottedTo = $request->allotted_to;
-
-        foreach ($allottedTo as $index => $userId) {
-            $taskUser = new TaskUser([
-                'task_id' => $task->id,
-                'allotted_to' => $userId,
-                'assigned_to' => $allottedTo[$index], // Set 'assigned_to' based on the corresponding index in the allotted_to array
-            ]);
-            $taskUser->save();
-        }
-
-        return back()->with('success', 'Updated successfully.');
+        $taskUser->save();
     }
 
+    return back()->with('success', 'Updated successfully.');
+}
     public function destroy(Task $task)
     {
         $task->delete();
