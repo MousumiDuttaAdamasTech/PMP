@@ -31,6 +31,12 @@
         $('.ckeditor').ckeditor();
     });
 
+    $(document).ready(function() {
+        $('.select2').select2({
+            dropdownParent: $('#createTasksFromMultipleBugsModal'),
+        });
+    });
+
     @foreach($bugs as $bug)
         $(document).ready(function () {
             $('.allot_user_{{$bug->id}}').select2({
@@ -43,6 +49,8 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+        // BULK DELETION
         var deleteSelectedButton = document.querySelector('.btn-delete-selected');
         if (deleteSelectedButton) {
             deleteSelectedButton.addEventListener('click', function () {
@@ -74,6 +82,7 @@
             });
         }
 
+        // FIND ASSIGNED TO FROM SPRINT ID
         var sprintSelector = document.querySelector(".sprint_dropdown");
         var assignedToInput1 = document.querySelector(".assigned_to");
         var assignedToInput2 = document.querySelector(".assigned_too");
@@ -85,7 +94,105 @@
                 assignedToInput2.value = user.name;
             })
         }
+
+        var sprintSelector2 = document.querySelector(".sprint_dropdown2");
+        var assignedToInput12 = document.querySelector(".assigned_to2");
+        var assignedToInput22 = document.querySelector(".assigned_too2");
+        if(sprintSelector2){
+            sprintSelector2.addEventListener('change',async ()=>{
+                var response = await fetch(`/findSprintDetailsWithId/${sprintSelector2.value}`);
+                var user = await response.json();
+                assignedToInput12.value = user.id;
+                assignedToInput22.value = user.name;
+            })
+        }
+
+        // BULK TASK CREATION
+        var convertSelectedButton = document.querySelector('.btn-convert-selected');  
+        var multipleBugs = document.querySelector("#multipleBugs"); 
+        var taskTitle = document.getElementById('multiTask'); 
+        if(convertSelectedButton){
+            convertSelectedButton.addEventListener('click',()=>{
+                var checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                var bug_ids = []
+                checkedBoxes.forEach((checkedBox)=>{
+                    bug_ids.push(checkedBox.value);
+                })
+                taskTitle.value = `Multiple Bug Repair - Bug ID(s) (${bug_ids})`;
+                multipleBugs.value = bug_ids;
+            })
+        }
     });
+</script>
+
+<script>
+    function displayUploadedFiles(input) {
+        const filesContainer = document.getElementById('uploadedFilesContainer');
+        filesContainer.innerHTML = ''; 
+
+        const mainDiv = document.createElement('div');
+        mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+
+        Array.from(input.files).forEach(file => {
+
+            const fileElement = document.createElement('div');
+            fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+            fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+
+            const deleteLink = document.createElement('div');
+            deleteLink.className = 'd-flex justify-content-end w-100';
+            deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+
+            const icon = document.createElement('div');
+            icon.className = 'text-center';
+            icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+
+            const fileName = document.createElement('div');
+            fileName.className = 'w-100 text-center';
+            fileName.innerHTML = file.name;
+            fileName.style.color = "white";
+
+            //fileElement.appendChild(deleteLink);
+            fileElement.appendChild(icon);
+            fileElement.appendChild(fileName);
+            mainDiv.appendChild(fileElement);
+            filesContainer.appendChild(mainDiv);
+        });
+    }
+
+    function displayUploadedFiles2(input,bugId){
+        const filesContainer = document.getElementById(`uploadedFilesContainer_${bugId}`);
+        filesContainer.innerHTML = ''; 
+
+        const mainDiv = document.createElement('div');
+        mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+
+        Array.from(input.files).forEach(file => {
+
+            const fileElement = document.createElement('div');
+            fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+            fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+
+            const deleteLink = document.createElement('div');
+            deleteLink.className = 'd-flex justify-content-end w-100';
+            deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+
+            const icon = document.createElement('div');
+            icon.className = 'text-center';
+            icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+
+            const fileName = document.createElement('div');
+            fileName.className = 'w-100 text-center';
+            fileName.innerHTML = file.name;
+            fileName.style.color = "white";
+
+            //fileElement.appendChild(deleteLink);
+            fileElement.appendChild(icon);
+            fileElement.appendChild(fileName);
+            mainDiv.appendChild(fileElement);
+            filesContainer.appendChild(mainDiv);
+        });
+    }
 </script>
 
 <div class="form-container p-4">
@@ -142,7 +249,7 @@
                     </div>
                     <div class="d-flex justify-content-start gap-3 my-5">
                         <button class="btn btn-primary btn-delete-selected">Delete Selected</button>
-                        <button class="btn btn-primary">Convert Selected</button>
+                        <button class="btn btn-primary btn-convert-selected" data-toggle="modal" data-target="#createTasksFromMultipleBugsModal">Convert Selected</button>
                     </div>
                     <table id="bugsTable"  class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
@@ -261,9 +368,10 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="mt-3" id="uploadedFilesContainer"></div>
                                         <div class="mt-3">
                                             <label class="form-label">Attach Files</label>
-                                            <input type="file" class="form-control" name="bug_files" multiple></input>
+                                            <input onchange="displayUploadedFiles(this)" type="file" class="form-control" name="bug_files[]" multiple></input>
                                         </div>
                                         <div class="mt-3">
                                             <label class="form-label">Description</label>
@@ -289,7 +397,7 @@
                                     <h4 class="modal-title" style="color: white;font-weight: bolder;">Edit Bug</h4>
                                 </div>
                             
-                                <form method="post" action="{{route('editBug')}}">
+                                <form method="post" action="{{route('editBug')}}" enctype=multipart/form-data>
                                     {{csrf_field()}}
                                     <!-- Modal Body -->
                                     <input type="hidden" value="{{$bug->id}}" name="bug_id"/>
@@ -395,6 +503,11 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="mt-3" id="uploadedFilesContainer_{{$bug->id}}"></div>
+                                        <div class="mt-3">
+                                            <label class="form-label">Attach Files</label>
+                                            <input onchange="displayUploadedFiles2(this,{{$bug->id}})" type="file" class="form-control" name="bug_files[]" multiple></input>
+                                        </div>
                                         <div class="mt-3">
                                             <label class="form-label">Description</label>
                                             <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
@@ -403,8 +516,27 @@
                                             <button type="submit" class="btn btn-primary">Save</button>
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                                         </div>
+                                        {{-- BUG DOCS --}}
+                                        <div class="row mt-4 gap-2 justify-content-center">
+                                            @forEach($bugDocuments as $bugDocument)
+                                                @if($bug->id == $bugDocument->bug_id)
+                                                    <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                        <div class="d-flex justify-content-end w-100">
+                                                            <a href="/deleteBugDocuments/{{$bugDocument->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                        </div>
+                                                        <div class="w-100 text-center">
+                                                            <a href="{{asset($bugDocument->document_path)}}" style="text-decoration: none;color:white;">{{$bugDocument->document_name}}</a>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     </div>       
                                 </form>
+
                             </div>
                         </div>
                     </div>
@@ -428,7 +560,7 @@
                                     <div class="modal-body"> 
                                         <div>
                                             <label class="form-label">Task Title</label>
-                                            <input type="text" class="form-control" name="task_title"/>
+                                            <input type="text" class="form-control" name="task_title" value="Bug repair - Bug ID ({{$bug->bid}})"/>
                                         </div>
                                         <div class="d-flex justify-content-between gap-3 mt-3">
                                             <div style="width: 50%">
@@ -473,6 +605,103 @@
                                             <div style="width: 50%">
                                                 <label class="form-label">Assigned To</label>
                                                 <input type="text" class="form-control assigned_too" style="font-size:14px;" disabled>
+                                            </div>
+                                            <div style="width: 50%">
+                                                <label class="form-label">Alloted To</label>
+                                                <select class="form-control allot_user_{{$bug->id}}" required style="font-size:14px;width:100%;" name="alloted_to[]" multiple>
+                                                    @foreach($project->projectMembers as $projectMember)
+                                                        <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-4 gap-3">
+                                            <button type="submit" class="btn btn-primary">Create</button>
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>       
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- CREATE TASKS FROM MULTIPLE BUGS --}}
+                    <div id="createTasksFromMultipleBugsModal" class="modal allot_{{$bug->id}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+
+                                <!-- Modal Header -->
+                                <div class="modal-header" style=" background-color:#061148;">
+                                    <h4 class="modal-title" style="color: white;font-weight: bolder;">Create Task</h4>
+                                </div>
+                            
+                                <form method="post" action="{{route('createTaskFromMultipleBug')}}">
+                                    {{csrf_field()}}
+                                    <!-- Modal Body -->
+                                    <input type="hidden" value="" name="bug_ids[]" id="multipleBugs"/>
+                                    <input type="hidden" value="{{$project->id}}" name="project_id"/>
+                                    <input type="hidden" value="" class="assigned_to2" name="assigned_to"/>
+                                    <div class="modal-body"> 
+                                        <div style="width: 100%">
+                                            <label class="form-label">Task Title</label>
+                                            <input id="multiTask" type="text" class="form-control" name="task_title" value=""/>
+                                        </div>
+                                        {{-- <div style="width: 50%">
+                                                <label class="form-label">Parent Task</label>
+                                                <select class="form-control sprint_dropdown select2" required style="font-size:14px;width:100%;" name="parent_task">
+                                                    <option value="" selected disabled>Select Parent Task</option>
+                                                    @foreach($tasks as $task)
+                                                        <option value="{{$task->id}}">{{$task->title}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div> --}}
+                                        <div class="d-flex justify-content-between gap-3 mt-3">
+                                            <div style="width: 50%">
+                                                <label class="form-label">Sprint</label>
+                                                <select class="form-control sprint_dropdown2" required style="font-size:14px;" name="sprint_id">
+                                                    <option value="" selected disabled>Select Sprint</option>
+                                                    @foreach($sprints as $sprint)
+                                                        <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div style="width: 50%">
+                                                <label class="form-label">Estimated Hours</label>
+                                                <input type="number" class="form-control" required style="font-size:14px;" name="estimated_hours">
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between gap-3 mt-3">
+                                            <div style="width: 50%">
+                                                <label class="form-label">Priority</label>
+                                                <select class="form-control" required style="font-size:14px;" name="priority">
+                                                    <option value="" selected disabled>Select Priority</option>
+                                                    @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
+                                                        <option value="{{ $value }}">{{ $label }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div style="width: 50%">
+                                                <label class="form-label">Task Status</label>
+                                                <select class="form-control" required style="font-size:14px;" name="status">
+                                                    <option value="" selected disabled>Select Task Status</option>
+                                                    @foreach($taskStatusesWithIds as $statusObject)
+                                                        @php
+                                                            $status = $statusObject->status;
+                                                            $statusId = $statusObject->project_task_status_id;
+                                                        @endphp
+                                                        <option value="{{  $statusId  }}">{{ $status }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between gap-3 mt-3">
+                                            <div style="width: 50%">
+                                                <label class="form-label">Assigned To</label>
+                                                <input type="text" class="form-control assigned_too2" style="font-size:14px;" disabled>
                                             </div>
                                             <div style="width: 50%">
                                                 <label class="form-label">Alloted To</label>

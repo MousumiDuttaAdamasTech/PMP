@@ -1,0 +1,39 @@
+task creation :- 
+
+sprint name
+task title
+priority
+estimated hours
+task status
+details
+assigned to
+alloted to
+
+what i get from bugs :- 
+
+tester_id(project_member_id)
+qa_id
+bid
+bug type
+bug description
+bug status
+priority
+severity
+
+finally :-
+
+sprint name from bug->round->sprint
+
+task title -> input from user
+
+priority -> input from user
+
+estimated hours -> input from user
+
+task status -> from task status table
+
+details -> input from user
+
+assigned to -> from project members table
+
+alloted to -> from tester id

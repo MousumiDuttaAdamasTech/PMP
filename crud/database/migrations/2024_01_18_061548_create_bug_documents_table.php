@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('bug_documents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('bug_id');
+            $table->string('document_name');
             $table->string('document_path');
             $table->string('document_type');
             $table->timestamps();

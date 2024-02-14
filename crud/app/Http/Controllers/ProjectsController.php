@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BugDocument;
 use App\Models\Bugs;
 use App\Models\BugType;
 use App\Models\QA;
@@ -539,6 +540,7 @@ class ProjectsController extends Controller
         $qarounds = QA::all();
         $bugtypess = BugType::all();
         $bugs = Bugs::all();
+        $bugDocuments = BugDocument::all();
 
         // Fetch task statuses for the current project
         $taskStatusesWithIds = DB::table('project_task_status')
@@ -559,7 +561,7 @@ class ProjectsController extends Controller
             ->pluck('type_name')
             ->toArray();
 
-        return view('projects.qa', compact('bugs', 'bugtypess', 'qarounds', 'qastatuses', 'project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
+        return view('projects.qa', compact('bugDocuments', 'bugs', 'bugtypess', 'qarounds', 'qastatuses', 'project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
     }
 
     public function meetings(Project $project)
