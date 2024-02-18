@@ -76,30 +76,30 @@ class ProjectMemberController extends Controller
 
     public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'project_member_id' => 'required|exists:project_members,id',
-            'project_role_id' => 'required|exists:project_roles,id',
-            'engagement_percentage' => 'required',
-            'start_date' => 'nullable',
-            'end_date' => 'nullable',
-            'duration' => 'nullable',
-            'is_active' => 'required',
-            'engagement_mode' => 'nullable',
-        ]);
+        // $validatedData = $request->validate([
+        //     'project_member_id' => 'required|exists:project_members,id',
+        //     'project_role_id' => 'required|exists:project_roles,id',
+        //     'engagement_percentage' => 'required',
+        //     'start_date' => 'nullable',
+        //     'end_date' => 'nullable',
+        //     'duration' => 'nullable',
+        //     'is_active' => 'required',
+        //     'engagement_mode' => 'nullable',
+        // ]);
 
-        // Find the project member by ID
+        // // Find the project member by ID
         $projectMember = ProjectMember::findOrFail($request->project_members_id);
 
         // Update the project member with validated data
         $projectMember->update([
-            'project_member_id' => $validatedData['project_member_id'],
-            'project_role_id' => $validatedData['project_role_id'],
-            'engagement_percentage' => $validatedData['engagement_percentage'],
-            'start_date' => $validatedData['start_date'],
-            'end_date' => $validatedData['end_date'],
-            'duration' => $validatedData['duration'],
-            'is_active' => $validatedData['is_active'],
-            'engagement_mode' => $validatedData['engagement_mode'],
+            //'project_member_id' => $validatedData['project_member_id'],
+            'project_role_id' => $request->project_role_id,
+            'engagement_percentage' => $request->engagement_percentage,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'duration' => $request->duration,
+            'is_active' => $request->is_active,
+            'engagement_mode' => $request->engagement_mode,
         ]);
 
         return redirect()->route('projects.team', ['project' => $request->project_id])
