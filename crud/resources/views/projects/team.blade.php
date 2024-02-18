@@ -196,7 +196,7 @@
                                     <h5 class="modal-title" id="memberDetailsModalLabel" style="color: white;font-weight: bolder;">Edit Member</h5>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="addMemberForm" action="{{ route('project_members.store') }}" method="post">
+                                    <form id="addMemberForm" action="{{ route('editTeamMember') }}" method="post">
                                         @csrf
                                         <div class="row">
                                             <input type="hidden" name="project_id" value="{{ $project->id }}">
@@ -216,9 +216,9 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <select id="project_role_id" name="project_role_id[]" class="form-control" required>
+                                                <select id="project_role_id" name="project_role_id" class="form-control" required>
                                                     <option value="">Select Role</option>
-                                                    <option value="" disabled selected>{{ $roleName }}</option>
+                                                    <option value="{{$pivotData->project_role_id}}" selected>{{ $roleName }}</option>
                                                     @foreach ($projectRoles as $projectRole)
                                                     <option value="{{ $projectRole->id }}">{{ $projectRole->member_role_type }}</option>
                                                     @endforeach
@@ -230,7 +230,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input type="number" id="engagement_percentage" name="engagement_percentage[]"
+                                                <input type="number" id="engagement_percentage" name="engagement_percentage"
                                                     class="form-control" required value="{{ $pivotData->engagement_percentage }}">
                                             </div>
                                         
@@ -239,7 +239,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input type="date" id="start_date" name="start_date[]" class="form-control" required value="{{ $pivotData->start_date }}">
+                                                <input type="date" id="start_date" name="start_date" class="form-control" required value="{{ $pivotData->start_date }}">
                                             </div>
                                         
                                             <div class="col-md-6">
@@ -247,7 +247,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input value="{{ $pivotData->end_date }}" type="date" id="end_date" name="end_date[]" class="form-control" required onchange=handleEndDateChange()>
+                                                <input value="{{ $pivotData->end_date }}" type="date" id="end_date" name="end_date" class="form-control" required onchange=handleEndDateChange()>
                                             </div>
                                         
                                             <div class="col-md-6">
@@ -255,7 +255,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input value="{{ $pivotData->duration }}" type="number" id="duration" name="duration[]" class="form-control" required oninput="handleDuration(this.value)">
+                                                <input value="{{ $pivotData->duration }}" type="number" id="duration" name="duration" class="form-control" required oninput="handleDuration(this.value)">
                                             </div>
                                         
                                             <div class="col-md-6">
@@ -263,12 +263,12 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <select id="engagement_mode" name="engagement_mode[]" class="form-control" required>
-                                                    <option value="" selected disabled>{{ $pivotData->engagement_mode }}</option>
-                                                    <option value="daily">Daily</option>
-                                                    <option value="weekly">Weekly</option>
-                                                    <option value="monthly">Monthly</option>
-                                                    <option value="yearly">Yearly</option>
+                                                <select id="engagement_mode" name="engagement_mode" class="form-control" required>
+                                                    <option value="{{ $pivotData->engagement_mode }}" selected>{{ $pivotData->engagement_mode }}</option>
+                                                    <option value="Daily">Daily</option>
+                                                    <option value="Weekly">Weekly</option>
+                                                    <option value="Monthly">Monthly</option>
+                                                    <option value="Yearly">Yearly</option>
                                                 </select>
                                             </div>
                                         
@@ -277,9 +277,13 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <select id="is_active" name="is_active[]" class="form-control" required>
-                                                    <option value="" selected disabled>{{ $pivotData->is_active }}</option>
-                                                    <option value="1">Yes</option>{{ $pivotData->is_active }}
+                                                <select id="is_active" name="is_active" class="form-control" required>
+                                                    @if($pivotData->is_active == 1)
+                                                    <option value="{{ $pivotData->is_active }}" selected>Yes</option>
+                                                    @else
+                                                    <option value="{{ $pivotData->is_active }}" selected>No</option>
+                                                    @endif
+                                                    <option value="1">Yes</option>
                                                     <option value="0">No</option>
                                                 </select>
                                             </div>

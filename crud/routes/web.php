@@ -95,8 +95,8 @@ Route::middleware([
         Route::get('/{project}/release_management', [ProjectsController::class, 'release_management'])->name('projects.release_management');
         Route::get('/{project}/reports', [ProjectsController::class, 'reports'])->name('projects.reports');
         Route::any('/profile/get_images', [ProjectsController::class, 'getImages'])->name('projects.getImages');
-       
-       
+
+
         Route::post('/update-task-status', [ProjectsController::class, 'updateTaskStatus'])->name('update-task-status');
         Route::get('/get-documents/{project}', [ProjectsController::class, 'getDocuments'])->name('getDocuments');
 
@@ -170,13 +170,13 @@ Route::middleware([
         Route::get('/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit'); // Note the {task} parameter here
         Route::put('/{task}', [TaskController::class, 'update'])->name('tasks.update');
         Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-    
+
         Route::post('/{task}/comments', [TaskCommentController::class, 'store'])->name('task.comments.store');
         Route::put('/comments/{comment}', [TaskCommentController::class, 'update'])->name('task.comments.update');
         Route::delete('/comments/{comment}', [TaskCommentController::class, 'destroy'])->name('task.comments.destroy');
         Route::post('/{task}/comments/{comment}/reply', [TaskCommentController::class, 'reply'])->name('task.comments.reply');
     });
-    
+
 });
 
 //Microsoft Authentication Route
@@ -210,3 +210,5 @@ Route::post('/createTaskFromMultipleBug', [BugController::class, 'createTaskFrom
 Route::get('/deleteBugDocuments/{id}', [BugController::class, 'deleteBugDocuments'])->name('deleteBugDocuments');
 
 Route::get('/deleteProjectMember/{id}', [ProjectMemberController::class, 'destroy'])->name('deleteProjectMember');
+
+Route::post('/editTeamMember', [ProjectMemberController::class, 'update'])->name('editTeamMember');
