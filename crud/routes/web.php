@@ -209,4 +209,4 @@ Route::post('/createTaskFromMultipleBug', [BugController::class, 'createTaskFrom
 
 Route::get('/deleteBugDocuments/{id}', [BugController::class, 'deleteBugDocuments'])->name('deleteBugDocuments');
 
-Route::get('/deleteProjectMember/{id}', [ProjectMemberController::class, 'destroy'])->name('deleteProjectMember');
+//Route::get('/deleteProjectMember/{id}', [ProjectMemberController::class, 'destroy'])->name('deleteProjectMember');
