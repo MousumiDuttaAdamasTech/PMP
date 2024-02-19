@@ -751,7 +751,7 @@
         </table>
 
         <!-- Create modal -->
-        <div class="modal fade modal-xl" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
+        <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -765,6 +765,7 @@
                             <div class="row">
                                 <input type="hidden" name="project_id" value="{{ $project->id }}">
 
+                                @if(count($tasks) > 0)
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="sprint_id" style="font-size: 15px;">Sprint</label>
@@ -776,8 +777,21 @@
                                         </select>
                                     </div>
                                 </div>
+                                @else
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="sprint_id" style="font-size: 15px;">Sprint</label>
+                                        <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                            <option value="" selected disabled>Select Sprint</option>
+                                            @foreach ($sprints as $sprint)
+                                            <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                @endif
 
-                                @if($tasks)
+                                @if(count($tasks) > 0)
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="parent_task" style="font-size: 15px;">Parent Task</label>
@@ -805,7 +819,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="priority" style="font-size: 15px;">Priority</label>
-                                        <select name="priority" id="priority" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                        <select name="priority" id="priority" class="form-control shadow-sm" style="height:39px; color: #858585; font-size: 13px;">
                                             <option value="" selected disabled>Select Priority</option>
                                             @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
                                                 <option value="{{ $value }}">{{ $label }}</option>
@@ -818,7 +832,7 @@
                                     <div class="form-group">
                                         <label for="estimated_time" style="font-size: 15px;">Estimated Hours</label>
                                         <input type="number" name="estimated_time" id="estimated_time"
-                                            placeholder="Enter the time" class="form-control shadow-sm" required>
+                                            placeholder="Enter the time" class="form-control shadow-sm" required style="font-size: 13px;">
                                     </div>
                                 </div>
 
@@ -826,8 +840,8 @@
                                     <div class="form-group">
                                         <label for="project_task_status_id" style="font-size: 15px;">Task Status</label>
                                         <select name="project_task_status_id" id="project_task_status_id"
-                                            class="form-controlcl shadow-sm"
-                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                            class="form-control shadow-sm"
+                                            style="height:39px; color: #858585; font-size: 13px;"
                                             required>
                                             <option value="" selected disabled>Select Task Status</option>
                                                 @foreach($taskStatusesWithIds as $statusObject)
