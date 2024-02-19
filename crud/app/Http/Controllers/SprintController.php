@@ -37,7 +37,7 @@ class SprintController extends Controller
     {
         $request->validate([
             'sprint_name' => 'required',
-            'estimated_hrs' => 'nullable|numeric',
+            'estimated_hrs' => 'required|numeric',
             'actual_hrs' => 'nullable|numeric',
             'sprint_status' => 'required',
             'sprint_taskDiscuss'=>'nullable|date',
