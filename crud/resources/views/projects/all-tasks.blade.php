@@ -71,6 +71,23 @@
         @endforeach
     </script>
 
+    <script>
+        function createTasks(e){
+            e.preventDefault();
+            const sprint = document.getElementById("sprint_id").value;
+            const parent_task = document.getElementById("parent_task").value;
+            const title = document.getElementById("title").value;
+            const priority = document.getElementById("priority").value;
+            const estimated_time = document.getElementById("estimated_time").value;
+            const project_task_status_id = document.getElementById("project_task_status_id").value;
+            const details = document.getElementById("details").value;
+            const assigned_to = document.getElementById("assigned_to").value;
+            const allotted_to = document.getElementById("allotted_to").value;
+            const attachments = document.getElementById("attachments").value;
+            //alert(attachments);
+        }
+    </script>    
+
     @if ($errors->any())
         <div class="error-messages">
             <strong>Validation Errors:</strong>
@@ -760,7 +777,8 @@
                     </div>
                     <div class="modal-body">
                         <!-- Your form goes here -->
-                        <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data">
+                        {{-- <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data"> --}}
+                        <form onsubmit="createTasks(event)">
                             @csrf
                             <div class="row">
                                 <input type="hidden" name="project_id" value="{{ $project->id }}">
@@ -812,7 +830,7 @@
                                     <div class="form-group">
                                         <label for="title">Title</label>
                                         <input type="text" name="title" id="title" placeholder="Enter the task title"
-                                            class="form-control shadow-sm" required>
+                                            class="form-control shadow-sm">
                                     </div>
                                 </div>
 
@@ -832,7 +850,7 @@
                                     <div class="form-group">
                                         <label for="estimated_time" style="font-size: 15px;">Estimated Hours</label>
                                         <input type="number" name="estimated_time" id="estimated_time"
-                                            placeholder="Enter the time" class="form-control shadow-sm" required style="font-size: 13px;">
+                                            placeholder="Enter the time" class="form-control shadow-sm" style="font-size: 13px;">
                                     </div>
                                 </div>
 
@@ -841,8 +859,7 @@
                                         <label for="project_task_status_id" style="font-size: 15px;">Task Status</label>
                                         <select name="project_task_status_id" id="project_task_status_id"
                                             class="form-control shadow-sm"
-                                            style="height:39px; color: #858585; font-size: 13px;"
-                                            required>
+                                            style="height:39px; color: #858585; font-size: 13px;">
                                             <option value="" selected disabled>Select Task Status</option>
                                                 @foreach($taskStatusesWithIds as $statusObject)
                                                     @php
@@ -861,8 +878,7 @@
                                         <label for="details" style="font-size: 15px;">Details</label>
                                         <textarea name="details" id="details" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                             placeholder="Enter the details"
-                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                            required></textarea>
+                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"></textarea>
                                     </div>
                                 </div>
 
@@ -872,7 +888,7 @@
                                         <select name="assigned_to[]" id="assigned_to"
                                             class="assigned_to form-controlcl shadow-sm"
                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                            required>
+                                            >
                                             <option value="" selected disabled>Select User</option>
                                             @foreach ($project->members as $member)
                                             <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
@@ -887,7 +903,7 @@
                                         <select name="allotted_to[]" id="allotted_to"
                                             class="allotted_to_task form-controlcl shadow-sm"
                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
-                                            required multiple>
+                                             multiple>
                                             @foreach ($project->members as $member)
                                             <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
                                             @endforeach
