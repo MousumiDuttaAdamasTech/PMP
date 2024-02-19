@@ -108,7 +108,7 @@ class ProjectMemberController extends Controller
 
     public function destroy($id)
     {
-        // try {
+        try {
             // Find the project member by ID
             $projectMember = ProjectMember::findOrFail($id);
 
@@ -120,14 +120,14 @@ class ProjectMemberController extends Controller
 
             return redirect()->route('projects.team', ['project' => $projectId])
                 ->with('success', 'Project member deleted successfully');
-        // } catch (\Illuminate\Database\QueryException $e) {
-        //     $errorCode = $e->errorInfo[1];
-        //     if ($errorCode == 1451) { // 1451 is the error code for foreign key constraint violation
-        //         return redirect()->back()->with('error', 'Cannot delete this project member. It is associated with other records.');
-        //     }
-        //     // For other database errors, you can handle them as needed
-        //     return redirect()->back()->with('error', 'An error occurred while deleting the project member.');
-        // }
+        } catch (\Illuminate\Database\QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1451) { // 1451 is the error code for foreign key constraint violation
+                return redirect()->back()->with('error', 'Cannot delete this project member. It is associated with other records.');
+            }
+            // For other database errors, you can handle them as needed
+            return redirect()->back()->with('error', 'An error occurred while deleting the project member.');
+        }
     }
 
 }
