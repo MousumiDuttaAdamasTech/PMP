@@ -16,13 +16,13 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_to');
 
             // Add foreign key constraint for assigned_to column
-            $table->foreign('assigned_to')->references('id')->on('project_members');
+            //$table->foreign('assigned_to')->references('id')->on('project_members');
 
             // Add allotted_to column
             $table->unsignedBigInteger('allotted_to');
 
             // Add foreign key constraint for allotted_to column
-            $table->foreign('allotted_to')->references('id')->on('project_members');
+            //$table->foreign('allotted_to')->references('id')->on('project_members');
         });
     }
 
