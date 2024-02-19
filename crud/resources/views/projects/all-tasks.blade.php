@@ -24,6 +24,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script src="{{ asset('js/side_highlight.js') }}"></script>
 <script src="{{ asset('js/project.js') }}"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <script>
     $(document).ready(function () {
@@ -110,7 +111,8 @@
             {
                 const error_box = document.querySelector(".error_msg");
                 error_box.style.display = "none";
-                alert("Form Success");
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                document.querySelector('.createTask').submit();
             }
             else {
                 const error_box = document.querySelector(".error_msg");
@@ -854,8 +856,7 @@
                     </div>
                     <div class="modal-body">
                         <!-- Your form goes here -->
-                        {{-- <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data"> --}}
-                        <form onsubmit="createTasks(event)">
+                        <form onsubmit="createTasks(event)" action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="createTask">
                             @csrf
                             <div class="row">
                                 <input type="hidden" name="project_id" value="{{ $project->id }}">
