@@ -21,6 +21,16 @@ class Sprint extends Model
         'projects_id',
         'is_active',
     ];
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'sprint_id');
+    }
+
+    public function hasTasks()
+    {
+        // Check if there are associated tasks
+        return $this->tasks()->exists();
+    }
 
     public function projectMember()
     {

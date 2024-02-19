@@ -67,8 +67,11 @@ class SprintController extends Controller
         $sprint->projects_id = $request->projects_id;
         $sprint->is_active = $request->is_active;
         $sprint->save();
+      
 
+      
         return redirect()->route('projects.sprint', ['project' => $request->projects_id])->with('success', 'Sprint created successfully.');
+
     }
 
 
@@ -121,7 +124,7 @@ class SprintController extends Controller
     $sprint->is_active = $request->is_active;
     $sprint->save();
 
-    return back()->with('success', 'Sprint settings updated successfully.');
+    return back()->with('success', 'Sprint updated successfully.');
 }
 
 

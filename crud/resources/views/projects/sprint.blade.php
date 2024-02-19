@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/project.css') }}"> 
     <link rel="stylesheet" href="{{ asset('css/form.css') }}"> 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="{{ asset('css/kanban2.css') }}">
     {{-- <link rel="stylesheet" href="{{ asset('css/table.css') }}"> --}}
 @endsection  
@@ -20,7 +21,7 @@
     <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="{{ asset('js/side_highlight.js') }}"></script>
     <script src="{{ asset('js/project.js') }}"></script>
     
@@ -78,6 +79,8 @@
             }
             }); 
   </script>
+
+
     
 @endsection
 
@@ -92,6 +95,19 @@
             </ul>
         </div>
     @endif
+    @if(Session::has('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ Session::get('success') }}',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        });
+    </script>
+@endif
 
     <div class="form-container overflow-auto">
         @if(Session::get('success'))
@@ -747,20 +763,29 @@
                                                             <div class="modal-content">
                                                                 <div class="modal-header flex-column">
                                                                     <div class="icon-box text-center">
-                                                                        <i class="material-icons" >&#xE5CD;</i>
+                                                                        <i class="material-icons">&#xE5CD;</i>
                                                                     </div>
                                                                     <h3 class="modal-title w-100">Are you sure?</h3>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                    <p>Do you really want to delete these record?</p>
+                                                                    @if($sprint->hasTasks())
+                                                                        <p>Tasks are present. Cannot delete the sprint.</p>
+                                                                    @else
+                                                                         
+                                                                        <p>Do you really want to delete these records?</p>
+                                                                    @endif
                                                                 </div>
                                                                 <div class="modal-footer justify-content-center">
                                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                    @unless($sprint->hasTasks())
+                                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                                    @endunless
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
+                                                    
                                                     <!-- Delete Modal end-->
                                                 </form>
                                             </div>
@@ -1435,25 +1460,39 @@
                                                 <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                             </button>
                                             <!-- Delete Modal start -->
-                                            <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header flex-column">
-                                                            <div class="icon-box">
-                                                                <i class="material-icons">&#xE5CD;</i>
+                                                <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header flex-column">
+                                                                <div class="icon-box">
+                                                                    <i class="material-icons">&#xE5CD;</i>
+                                                                </div>
+                                                                <h3 class="modal-title w-100">Are you sure?</h3>
                                                             </div>
-                                                            <h3 class="modal-title w-100">Are you sure?</h3>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Do you really want to delete these records?</p>
-                                                        </div>
-                                                        <div class="modal-footer justify-content-center">
-                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                            <div class="modal-body">
+                                                                @if($task->isParentTask())
+                                                                    <p>This is a parent task and cannot be deleted as it has child tasks.</p>
+                                                                @else
+                                                                    
+                                                                    <p>Do you really want to delete this record?</p>
+                                                                @endif
+                                                            </div>
+                                                            <div class="modal-footer justify-content-center">
+                                                                @if($task->isParentTask())
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                @else
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                                @endif
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+
+
+
+
+
                                             <!-- Delete Modal end-->
                                         </form>
                                     </td>

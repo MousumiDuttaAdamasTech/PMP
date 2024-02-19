@@ -92,4 +92,12 @@ class Task extends Model
     {
         return $this->hasMany(TaskComment::class);
     }
+    public function isParentTask()
+    {
+        // Check if the task has child tasks
+        return Task::where('parent_task', $this->id)->count() > 0;
+    }
+    
+    
+    
 }
