@@ -110,7 +110,7 @@ class ProjectMemberController extends Controller
     {
         try {
             // Find the project member by ID
-            $projectMember = ProjectMember::findOrFail($id);
+            $projectMember = ProjectMember::find($id);
 
             // Get the project ID before deleting the project member
             $projectId = $projectMember->project_id;
