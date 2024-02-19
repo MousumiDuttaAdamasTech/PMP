@@ -362,7 +362,7 @@
                                                <select name="project_task_status_id" id="project_task_status_id"
                                                    class="form-controlcl shadow-sm"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                                   required>
+                                                   required="please enter">
                                                    <option value="" selected disabled>Select Task Status</option>
 
                                                    @foreach($taskStatusesWithIds as $statusObject)
@@ -427,7 +427,7 @@
                                                <select name="assigned_to[]" id="assigned_to"
                                                    class="assigned_to form-controlcl shadow-sm"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                                   required>
+                                                   required="please enter">
                                                    <option value="" selected disabled>Select User</option>
                                                    @foreach ($project->members as $member)
                                                    <option value="{{ $member->user->id }}">{{ $member->user->name }}</option>
