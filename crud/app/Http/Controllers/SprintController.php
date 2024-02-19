@@ -37,15 +37,15 @@ class SprintController extends Controller
     {
         $request->validate([
             'sprint_name' => 'required',
-            'estimated_hrs' => 'required|numeric',
-            'actual_hrs' => 'required|numeric',
+            'estimated_hrs' => 'nullable|numeric',
+            'actual_hrs' => 'nullable|numeric',
             'sprint_status' => 'required',
             'sprint_taskDiscuss'=>'nullable|date',
-            'sprint_startDate' => 'required|date',
-            'sprint_endDate' => 'required|date', // Add validation for Sprint End Date
-            'sprint_demoDate' => 'required|date', // Add validation for Sprint Demo Date
-            'sprint_planningDate' => 'required|date', // Add validation for Sprint Planning Date
-            'current_date' => 'required|date',
+            'sprint_startDate' => 'nullable|date',
+            'sprint_endDate' => 'nullable|date', // Add validation for Sprint End Date
+            'sprint_demoDate' => 'nullable|date', // Add validation for Sprint Demo Date
+            'sprint_planningDate' => 'nullable|date', // Add validation for Sprint Planning Date
+            'current_date' => 'nullable|date',
             'assign_to' => 'required|exists:project_members,project_members_id',
             'projects_id' => 'required|exists:project,id',
             'is_active' => 'required|boolean',
@@ -67,8 +67,11 @@ class SprintController extends Controller
         $sprint->projects_id = $request->projects_id;
         $sprint->is_active = $request->is_active;
         $sprint->save();
+      
 
+      
         return redirect()->route('projects.sprint', ['project' => $request->projects_id])->with('success', 'Sprint created successfully.');
+
     }
 
 
@@ -93,15 +96,15 @@ class SprintController extends Controller
 {
     $request->validate([
         'sprint_name' => 'required',
-        'estimated_hrs' => 'required|numeric',
-        'actual_hrs' => 'required|numeric',
+        'estimated_hrs' => 'nullable|numeric',
+        'actual_hrs' => 'nullable|numeric',
         'sprint_status' => 'required',
         'sprint_taskDiscuss'=>'nullable|date',
-        'sprint_startDate' => 'required|date',
-        'sprint_endDate' => 'required|date',
-        'sprint_demoDate' => 'required|date',
-        'sprint_planningDate' => 'required|date',
-        'current_date' => 'required|date',
+        'sprint_startDate' => 'nullable|date',
+        'sprint_endDate' => 'nullable|date',
+        'sprint_demoDate' => 'nullable|date',
+        'sprint_planningDate' => 'nullable|date',
+        'current_date' => 'nullable|date',
         'assign_to' => 'required|exists:project_members,id',
         'is_active' => 'required|boolean',
         // Add validation rules for other fields
@@ -121,7 +124,7 @@ class SprintController extends Controller
     $sprint->is_active = $request->is_active;
     $sprint->save();
 
-    return back()->with('success', 'Sprint settings updated successfully.');
+    return back()->with('success', 'Sprint updated successfully.');
 }
 
 

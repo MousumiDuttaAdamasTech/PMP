@@ -18,6 +18,11 @@ return new class extends Migration
             $table->float('actual_hrs');
             $table->string('sprint_status');
             $table->date('current_date');
+            $table->date('sprint_planningDate'); // Add this line for sprint planning date
+            $table->date('sprint_taskDiscuss'); // Add this line for sprint task discussion date
+            $table->date('sprint_startDate'); // Add this line for sprint start date
+            $table->date('sprint_endDate'); // Add this line for sprint end date
+            $table->date('sprint_demoDate'); 
             $table->unsignedBigInteger('assign_to');
             //$table->unsignedBigInteger('task_status_id');
             $table->unsignedBigInteger('projects_id');
@@ -25,7 +30,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraints
-            $table->foreign('assign_to')->references('id')->on('project_members');
+            //$table->foreign('assign_to')->references('id')->on('project_members');
             //$table->foreign('task_status_id')->references('id')->on('task_status');
             $table->foreign('projects_id')->references('id')->on('project');
         });

@@ -15,8 +15,12 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('title');
+            $table->text('epic')->nullable();
+            $table->text('story')->nullable();
             $table->string('priority');
+            $table->string('task_type')->nullable();
             $table->string('estimated_time'); 
+            $table->integer('actual_hours')->nullable();
             $table->text('details');
             $table->string('assigned_to');
             $table->unsignedBigInteger('project_task_status_id');

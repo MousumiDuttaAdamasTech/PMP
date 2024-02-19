@@ -171,9 +171,38 @@
                                 <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
                                     <i class="fas fa-edit text-primary"></i>
                                 </a> 
-                                <a href="/deleteProjectMember/{{$projectMember->id}}" data-placement="top" title="Delete">
+                                {{-- <a href="{{ route('project_members.delete') }}" data-placement="top" title="Delete">
                                     <i class="fas fa-trash-alt text-danger"></i>
-                                </a> 
+                                </a>  --}}
+                                <form method="post" action="{{ route('project_members.destroy', ['project_member' => $projectMember->id]) }}">
+                                    @method('delete')
+                                    @csrf
+                                    <a href="#" class="delete-button p-1" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $projectMember->id }}">
+                                        <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
+                                    </a>
+                                    <!-- Delete Modal start -->
+                                    <div class="modal fade" id="deleteModal{{ $projectMember->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header flex-column">
+                                                    <div class="icon-box">
+                                                        <i class="material-icons">&#xE5CD;</i>
+                                                    </div>
+                                                    <h3 class="modal-title w-100">Are you sure?</h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Do you really want to delete these record?</p>
+                                                </div>
+                                                <div class="modal-footer justify-content-center">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Delete Modal end-->
+                                </form>
+                                
                             </div>
                             <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px" data-toggle="modal" data-target="#memberDetailsModal">
                                 <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}"
