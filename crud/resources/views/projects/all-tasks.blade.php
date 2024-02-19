@@ -75,16 +75,43 @@
         function createTasks(e){
             e.preventDefault();
             const sprint = document.getElementById("sprint_id").value;
-            const parent_task = document.getElementById("parent_task").value;
+            const parent_task = document.querySelector(".create_parent_task").value;
             const title = document.getElementById("title").value;
+            const epic = document.getElementById("epic").value;
+            const story = document.getElementById("story").value;
             const priority = document.getElementById("priority").value;
             const estimated_time = document.getElementById("estimated_time").value;
+            const task_type = document.getElementById("task_type").value;
             const project_task_status_id = document.getElementById("project_task_status_id").value;
             const details = document.getElementById("details").value;
             const assigned_to = document.getElementById("assigned_to").value;
             const allotted_to = document.getElementById("allotted_to").value;
             const attachments = document.getElementById("attachments").value;
-            //alert(attachments);
+
+            if(sprint && title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
+            {
+                const error_box = document.querySelector(".error_msg");
+                error_box.style.display = "none";
+                alert("Form Success");
+            }
+            else {
+                const error_box = document.querySelector(".error_msg");
+                error_box.style.display = "block";
+                let errorMessage = "<ul>";
+                if (!sprint) errorMessage += "<li>Sprint ID is missing.</li>";
+                if (!title) errorMessage += "<li>Title is missing.</li>";
+                if (!priority) errorMessage += "<li>Priority is missing.</li>";
+                if (!estimated_time) errorMessage += "<li>Estimated Time is missing.</li>";
+                if (!task_type) errorMessage += "<li>Task Type is missing.</li>";
+                if (!project_task_status_id) errorMessage += "<li>Project Task Status ID is missing.</li>";
+                if (!details) errorMessage += "<li>Details are missing.</li>";
+                if (!assigned_to) errorMessage += "<li>Assigned To is missing.</li>";
+                if (!allotted_to) errorMessage += "<li>Allotted To is missing.</li>";
+                errorMessage += "</ul>";
+                
+                error_box.innerHTML = errorMessage;
+            }
+
         }
     </script>    
 
@@ -783,6 +810,8 @@
                             <div class="row">
                                 <input type="hidden" name="project_id" value="{{ $project->id }}">
 
+                                <div class="col-md-12 error_msg p-3 alert alert-danger" style="display:none;"></div>
+
                                 @if(count($tasks) > 0)
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -791,6 +820,20 @@
                                             <option value="" selected disabled>Select Sprint</option>
                                             @foreach ($sprints as $sprint)
                                             <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="parent_task" style="font-size: 15px;">Parent Task</label>
+                                        <select name="parent_task" id="parent_task" class="create_parent_task form-control shadow-sm"
+                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                            <option value="" selected>Select a Parent Task</option>
+                                            @foreach ($tasks as $taskOption)
+                                                <option value="{{ $taskOption->id }}">
+                                                    {{ $taskOption->title }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -809,23 +852,6 @@
                                 </div>
                                 @endif
 
-                                @if(count($tasks) > 0)
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="parent_task" style="font-size: 15px;">Parent Task</label>
-                                        <select name="parent_task" id="parent_task" class="form-controlcl shadow-sm"
-                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                            <option value="" selected>Select a Parent Task</option>
-                                            @foreach ($tasks as $taskOption)
-                                                <option value="{{ $taskOption->id }}">
-                                                    {{ $taskOption->title }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                @endif
-
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="title">Title</label>
@@ -834,10 +860,24 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="epic" style="font-size: 15px;">Epic</label>
+                                        <input type="text" name="epic" id="epic" placeholder="Enter the epic" class="form-control shadow-sm">
+                                    </div>
+                                </div>
+                                    
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="story" style="font-size: 15px;">Story</label>
+                                        <input type="text" name="story" id="story" placeholder="Enter the story" class="form-control shadow-sm">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="priority" style="font-size: 15px;">Priority</label>
-                                        <select name="priority" id="priority" class="form-control shadow-sm" style="height:39px; color: #858585; font-size: 13px;">
+                                        <select name="priority" id="priority" class="form-control shadow-sm" style="height:39px; color: #858585; font-size: 14px;">
                                             <option value="" selected disabled>Select Priority</option>
                                             @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
                                                 <option value="{{ $value }}">{{ $label }}</option>
@@ -846,20 +886,33 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="estimated_time" style="font-size: 15px;">Estimated Hours</label>
                                         <input type="number" name="estimated_time" id="estimated_time"
-                                            placeholder="Enter the time" class="form-control shadow-sm" style="font-size: 13px;">
+                                            placeholder="Enter the time" class="form-control shadow-sm" style="font-size: 14px;">
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                        <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
+                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                            <option value="" selected disabled>Select Task Type</option>
+                                            @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
+                                                <option value="{{ $type }}">{{ $type }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="project_task_status_id" style="font-size: 15px;">Task Status</label>
                                         <select name="project_task_status_id" id="project_task_status_id"
                                             class="form-control shadow-sm"
-                                            style="height:39px; color: #858585; font-size: 13px;">
+                                            style="height:39px; color: #858585; font-size: 14px;">
                                             <option value="" selected disabled>Select Task Status</option>
                                                 @foreach($taskStatusesWithIds as $statusObject)
                                                     @php
