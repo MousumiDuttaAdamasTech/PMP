@@ -265,7 +265,7 @@
                           
                    <div class="modal fade modal-xl" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
                    aria-hidden="true">
-                   <div class="modal-dialog" role="document">
+                   <div class="modal-dialog modal-lg" role="document">
                        <div class="modal-content">
                            <div class="modal-header" style=" background-color:#061148; ">
                                <h5 class="modal-title" id="createTaskModalLabel" style="color: white;font-weight: bolder;">Create Task</h5>
