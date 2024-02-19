@@ -1,0 +1,7 @@
+update host in aws CORS
+
+update host in Clerk webhook
+
+update host in share button in user profile inside v2
+
+update host in all other share buttons too

@@ -18,17 +18,17 @@ class ProjectMemberController extends Controller
         // Pass the project members to the view
         return view('project_members.index', compact('projectMembers'));
     }
-    
+
     public function create($projectId)
     {
         $project = Project::findOrFail($projectId);
         $projectMembers = ProjectMember::all();
         $users = User::all();
         $projectRoles = ProjectRole::all();
-    
+
         return view('projects.team', compact('projects', 'projectMembers', 'projectRoles', 'users'));
     }
-    
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -74,32 +74,32 @@ class ProjectMemberController extends Controller
         return view('projects.team', compact('projectMember', 'users', 'projectRoles'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $validatedData = $request->validate([
-            'project_member_id' => 'required|exists:project_members,id',
-            'project_role_id' => 'required|exists:project_roles,id',
-            'engagement_percentage' => 'required',
-            'start_date' => 'nullable',
-            'end_date' => 'nullable',
-            'duration' => 'nullable',
-            'is_active' => 'required',
-            'engagement_mode' => 'nullable',
-        ]);
+        // $validatedData = $request->validate([
+        //     'project_member_id' => 'required|exists:project_members,id',
+        //     'project_role_id' => 'required|exists:project_roles,id',
+        //     'engagement_percentage' => 'required',
+        //     'start_date' => 'nullable',
+        //     'end_date' => 'nullable',
+        //     'duration' => 'nullable',
+        //     'is_active' => 'required',
+        //     'engagement_mode' => 'nullable',
+        // ]);
 
-        // Find the project member by ID
-        $projectMember = ProjectMember::findOrFail($id);
+        // // Find the project member by ID
+        $projectMember = ProjectMember::findOrFail($request->project_members_id);
 
         // Update the project member with validated data
         $projectMember->update([
-            'project_member_id' => $validatedData['project_member_id'],
-            'project_role_id' => $validatedData['project_role_id'],
-            'engagement_percentage' => $validatedData['engagement_percentage'],
-            'start_date' => $validatedData['start_date'],
-            'end_date' => $validatedData['end_date'],
-            'duration' => $validatedData['duration'],
-            'is_active' => $validatedData['is_active'],
-            'engagement_mode' => $validatedData['engagement_mode'],
+            //'project_member_id' => $validatedData['project_member_id'],
+            'project_role_id' => $request->project_role_id,
+            'engagement_percentage' => $request->engagement_percentage,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'duration' => $request->duration,
+            'is_active' => $request->is_active,
+            'engagement_mode' => $request->engagement_mode,
         ]);
 
         return redirect()->route('projects.team', ['project' => $request->project_id])
@@ -108,16 +108,26 @@ class ProjectMemberController extends Controller
 
     public function destroy($id)
     {
-        // Find the project member by ID
-        $projectMember = ProjectMember::findOrFail($id);
+        try {
+            // Find the project member by ID
+            $projectMember = ProjectMember::findOrFail($id);
 
-        // Get the project ID before deleting the project member
-        $projectId = $projectMember->project_id;
+            // Get the project ID before deleting the project member
+            $projectId = $projectMember->project_id;
 
-        // Delete the project member
-        $projectMember->delete();
+            // Delete the project member
+            $projectMember->delete();
 
-        return redirect()->route('projects.team', ['project' => $projectId])
-            ->with('success', 'Project member deleted successfully');
+            return redirect()->route('projects.team', ['project' => $projectId])
+                ->with('success', 'Project member deleted successfully');
+        } catch (\Illuminate\Database\QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            if ($errorCode == 1451) { // 1451 is the error code for foreign key constraint violation
+                return redirect()->back()->with('error', 'Cannot delete this project member. It is associated with other records.');
+            }
+            // For other database errors, you can handle them as needed
+            return redirect()->back()->with('error', 'An error occurred while deleting the project member.');
+        }
     }
+
 }
