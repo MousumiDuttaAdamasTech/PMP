@@ -279,8 +279,8 @@
            
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="sprint_id" style="font-size: 15px;">Sprint</label>
-                                               <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                               <label for="sprint_id" style="font-size: 15px;">Sprint <span style="color: red"></span></label>
+                                               <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                    <option value="" selected disabled>Select Sprint</option>
                                                    @foreach ($sprints as $sprint)
                                                    <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
@@ -293,7 +293,7 @@
                                            <div class="form-group">
                                                <label for="parent_task" style="font-size: 15px;">Parent Task</label>
                                                <select name="parent_task" id="parent_task" class="form-controlcl shadow-sm"
-                                                   style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                   style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" >
                                                    <option value="" selected disabled>No Parent Task</option>
                                                    @foreach ($tasks as $taskOption)
                                                        <option value="{{ $taskOption->id }}">
@@ -306,7 +306,7 @@
            
                                        <div class="col-md-12">
                                            <div class="form-group">
-                                               <label for="title">Title</label>
+                                               <label for="title">Title<span style="color: red"></span></label>
                                                <input type="text" name="title" id="title" placeholder="Enter the task title"
                                                    class="form-control shadow-sm" required>
                                            </div>
@@ -328,9 +328,9 @@
                                       
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                            <label for="task_type" style="font-size: 15px;">Task Type<span style="color: red"></span></label>
                                             <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
-                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                 <option value="" selected disabled>Select Task Type</option>
                                                 @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
                                                     <option value="{{ $type }}">{{ $type }}</option>
@@ -356,7 +356,7 @@
 
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="project_task_status_id" style="font-size: 15px;">Task Status</label>
+                                               <label for="project_task_status_id" style="font-size: 15px;">Task Status<span style="color: red"></span></label>
                                               
 
                                                <select name="project_task_status_id" id="project_task_status_id"
@@ -413,7 +413,7 @@
            
                                        <div class="col-md-12">
                                            <div class="form-group">
-                                               <label for="details" style="font-size: 15px;">Details</label>
+                                               <label for="details" style="font-size: 15px;">Details<span style="color: red"></span></label>
                                                <textarea name="details" id="details" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                    placeholder="Enter the details"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -423,7 +423,7 @@
            
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="assigned_to" style="font-size: 15px;">Assigned To</label>
+                                               <label for="assigned_to" style="font-size: 15px;">Assigned To<span style="color: red"></span></label>
                                                <select name="assigned_to[]" id="assigned_to"
                                                    class="assigned_to form-controlcl shadow-sm"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -438,7 +438,7 @@
            
                                        <div class="col-md-6">
                                            <div class="form-group allot_task">
-                                               <label for="allotted_to" style="font-size: 15px;">Allotted To</label>
+                                               <label for="allotted_to" style="font-size: 15px;">Allotted To<span style="color: red"></span></label>
                                                <select name="allotted_to[]" id="allotted_to"
                                                    class="allotted_to_task form-controlcl shadow-sm"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
@@ -811,8 +811,8 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="sprint_name" style="font-size: 15px;">Sprint Name</label>
-                                                        <input type="text" name="sprint_name" id="sprint_name" class="form-control shadow-sm" placeholder="Enter Sprint Name" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <label for="sprint_name" style="font-size: 15px;">Sprint Name <span style="color: red">*</span></label>
+                                                        <input type="text" name="sprint_name" id="sprint_name" class="form-control shadow-sm" placeholder="Enter Sprint Name" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                     </div>
                                                 </div>
 
@@ -820,7 +820,7 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="sprint_status" style="font-size: 15px;">Status</label>
+                                                        <label for="sprint_status" style="font-size: 15px;">Status<span style="color: red">*</span></label>
                                                         <select name="sprint_status" id="sprint_status" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                             <option value="" selected="selected" disabled="disabled">Select status</option>
                                                             <option value="Under discussion">Under discussion</option>
@@ -848,7 +848,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="sprint_planningDate" class="mb-1" style="font-size: 15px;">Sprint Planning Date</label>
-                                                        <input type="date" class="shadow-sm" name="sprint_planningDate" id="sprint_planningDate" required="required" style="color:#999; font-size: 14px;">
+                                                        <input type="date" class="shadow-sm" name="sprint_planningDate" id="sprint_planningDate"  style="color:#999; font-size: 14px;">
                                                     </div>
                                                 </div>
 
@@ -893,7 +893,7 @@
 
                                                 <div class="col-md-6 mb-3">
                                                     <div class="form-group">
-                                                        <label for="assign_to" style="font-size: 15px;">Assign To</label>
+                                                        <label for="assign_to" style="font-size: 15px;">Assign To<span style="color: red">*</span></label>
                                                         <select name="assign_to" id="assign_to" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                             <option value="">Select User</option>
                                                             @foreach ($project->projectMembers as $projectMember)
@@ -906,7 +906,7 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="is_active" style="font-size: 15px;">Is Active</label>
+                                                        <label for="is_active" style="font-size: 15px;">Is Active<span style="color: red">*</span></label>
                                                         <select name="is_active" id="is_active" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                             <option value="" selected="selected" disabled="disabled">Select type</option>
                                                             <option value="1">Yes</option>
