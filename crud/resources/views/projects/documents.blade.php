@@ -198,6 +198,15 @@
                                         <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
                                     @endif
 
+                                    {{-- @if(isset($document) && !empty($document->attachments))
+                                        <div id="attachmentContainer">
+                                            <i class="fas fa-paperclip text-primary mr-2"></i>
+                                            <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
+                                            <i class="fas fa-trash-alt text-danger delete-document"></i>
+                                            <input type="hidden" name="deletedAttachment" id="deletedAttachment" value="">
+                                        </div>
+                                    @endif --}}
+
                                     <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;" required>
                                 </div>
 
@@ -248,7 +257,23 @@
                 $('#editModal_' + documentId).modal('show');
             });
         });
-    </script>
 
+        document.addEventListener("DOMContentLoaded", function() {
+            var deleteIcons = document.querySelectorAll('.delete-document');
+
+            deleteIcons.forEach(function(icon) {
+                icon.addEventListener('click', function() {
+                    var attachmentContainer = icon.parentElement;
+                    attachmentContainer.remove();
+                    // Store the name of the deleted attachment in a hidden input
+                    document.getElementById('deletedAttachment').value = attachmentContainer.querySelector('a').innerText;
+                });
+            });
+
+            document.getElementById('documentForm').addEventListener('submit', function() {
+                // Optionally, you can perform additional validation here before submitting the form
+            });
+        });
+    </script>
 
 @endsection
