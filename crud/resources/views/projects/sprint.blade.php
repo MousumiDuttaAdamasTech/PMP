@@ -312,18 +312,18 @@
                                            </div>
                                        </div>
                                        <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="epic" style="font-size: 15px;">Epic</label>
-                                            <input type="text" name="epic" id="epic" placeholder="Enter the epic" class="form-control shadow-sm">
+                                            <div class="form-group">
+                                                <label for="epic" style="font-size: 15px;">Epic</label>
+                                                <input type="text" name="epic" id="epic" placeholder="Enter the epic" class="form-control shadow-sm">
+                                            </div>
                                         </div>
-                                    </div>
                                     
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="story" style="font-size: 15px;">Story</label>
-                                            <input type="text" name="story" id="story" placeholder="Enter the story" class="form-control shadow-sm">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="story" style="font-size: 15px;">Story</label>
+                                                <input type="text" name="story" id="story" placeholder="Enter the story" class="form-control shadow-sm">
+                                            </div>
                                         </div>
-                                    </div>
            
                                       
                                     <div class="col-md-6">
