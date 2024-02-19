@@ -30,7 +30,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign key constraints
-            $table->foreign('assign_to')->references('id')->on('project_members');
+            //$table->foreign('assign_to')->references('id')->on('project_members');
             //$table->foreign('task_status_id')->references('id')->on('task_status');
             $table->foreign('projects_id')->references('id')->on('project');
         });
