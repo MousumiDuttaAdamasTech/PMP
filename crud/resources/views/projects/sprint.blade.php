@@ -137,7 +137,7 @@
                      <div class="form-group"  style="position: sticky; position: -webkit-sticky; left: 0; margin-top: 1%;">
                         <label for="sprint-dropdown">Select Sprint:</label>
                         <select class="sprint" id="sprint-dropdown" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" data-url="{{ route('getSprints') }}">
-                            <option value="" selected >Select</option> <!-- Add this line -->
+                            <option value="" selected disabled>Select</option> <!-- Add this line -->
                             @foreach($sprints->where('projects_id', $project->id) as $sprint)
                                 <option value="{{ $sprint->id }}" data-project="{{ $sprint->projects_id }}">{{ $sprint->sprint_name }}</option>
                             @endforeach
@@ -640,7 +640,6 @@
                                                 </select>
                                             </div>
                                         </div>
-
                                         <div class="col-md-6">
                                             <div class="form-group allot_user_{{ $task->id }}">
                                                 <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
@@ -661,6 +660,7 @@
                                             </div>
                                         </div>
 
+                                        
                                         <!-- Add other form fields with unique identifiers -->
 
                                         <div class="form-actions">
@@ -776,7 +776,7 @@
                                 
 
                                 @foreach($tasks as $task)
-                                <div class="modal fade modal-xl" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                                <div class="modal " id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
                                     aria-hidden="true">
                                     <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                                         <div class="modal-content">
