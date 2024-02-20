@@ -425,6 +425,11 @@
                 </div>
             </div>
         @endforeach
+
+        <div>
+            <input type="checkbox" id="parentTasksCheckbox">
+            <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
+        </div>
     
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
@@ -442,6 +447,7 @@
             <tbody>
                 
                 @foreach($sortedTasks as $task)
+                    
                     <tr class="shadow" style="border-radius:15px;">
                         <td>{{ $task->uuid }}</td>
                         <td>{{ \Illuminate\Support\Str::limit(strip_tags($task->title), 20, $end='...') }}</td>
@@ -1031,11 +1037,25 @@
     </div>
     
     <script>
-    function confirmDelete(commentId) {
-        if (confirm("Are you sure you want to delete this comment?")) {
-            document.getElementById('deleteForm' + commentId).submit();
+        function confirmDelete(commentId) {
+            if (confirm("Are you sure you want to delete this comment?")) {
+                document.getElementById('deleteForm' + commentId).submit();
+            }
         }
-    }
-</script>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Hide parent tasks initially
+            $('#parentTasksCheckbox').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.shadow').hide(); // Hide all tasks initially
+                    $('.shadow:has(td:nth-child(5):contains("N/A"))').show(); // Show tasks with "N/A" in parent task column
+                } else {
+                    $('.shadow').show(); // Show all tasks if checkbox is unchecked
+                }
+            });
+        });
+    </script>
 
 @endsection

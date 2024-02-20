@@ -21,14 +21,25 @@ class TaskController extends Controller
         // Get the project ID from the request, assuming it's included in the URL as a parameter
         $projectId = $request->id;
 
-        // Assuming you have a 'project_id' column in your tasks table
-        $tasks = Task::where('project_id', $projectId)->get();
+        // Fetch all tasks initially
+        $tasksQuery = Task::where('project_id', $projectId);
+
+        // Check if the checkbox is checked
+        if ($request->has('parentTasks') && $request->input('parentTasks') == 'true') {
+            // Fetch tasks where their IDs are listed in the parent_task column
+            $parentTaskIds = Task::whereNotNull('parent_task')->pluck('parent_task');
+            $tasksQuery->whereIn('id', $parentTaskIds);
+        }
+
+        // Retrieve the tasks
+        $tasks = $tasksQuery->get();
 
         $sprints = Sprint::all();
 
         // Pass the tasks to the view
         return view('projects.all-tasks', compact('tasks', 'sprints'));
     }
+
 
     public function create()
     {
