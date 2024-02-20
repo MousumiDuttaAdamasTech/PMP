@@ -409,7 +409,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <select id="engagement_mode" name="engagement_mode[]" class="form-control" required>
+                            <select id="engagement_mode_1" name="engagement_mode[]" class="form-control" required onchange="handleEngagement(this.value, 1)">
                                 <option value="daily">Daily</option>
                                 <option value="weekly">Weekly</option>
                                 <option value="monthly">Monthly</option>
