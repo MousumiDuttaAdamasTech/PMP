@@ -680,7 +680,7 @@
 
                     <!-- Edit modal -->
                     @foreach($tasks as $task)
-                        <div class="modal fade modal-xl" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header" style=" background-color:#061148;">
@@ -734,7 +734,21 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="epic" style="font-size: 15px;">Epic</label>
+                                                        <input type="text" name="epic" id="epic" value="{{$task->epic}}" class="form-control shadow-sm">
+                                                    </div>
+                                                </div>
+                                    
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="story" style="font-size: 15px;">Story</label>
+                                                        <input type="text" name="story" id="story" value="{{$task->story}}" class="form-control shadow-sm">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
                                                         <select name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
@@ -747,7 +761,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                                         <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
@@ -755,7 +769,20 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                                        <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
+                                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                            <option value="" selected disabled>{{$task->task_type}}</option>
+                                                            @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
+                                                                <option value="{{ $type }}">{{ $type }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                         <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
@@ -847,7 +874,7 @@
             </tbody>
         </table>
 
-        <!-- Create modal -->
+        <!-- Create Tasks modal -->
         <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">

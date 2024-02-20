@@ -168,15 +168,6 @@
                         data-duration="{{ $pivotData->duration }}" data-engagement-mode="{{ $pivotData->engagement_mode }}"
                         data-is-active="{{ $pivotData->is_active }}" style="width: 225px; height: 250px;">
                         <div class="card-body mb-2 h-100" style="padding: 0 21px 0 21px;">
-                            <div class="d-flex justify-content-end gap-3 mt-2">
-                                <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
-                                    <i class="fas fa-edit text-primary"></i>
-                                </a> 
-                                <a href="/deleteProjectMember/{{$projectMember->id}}" data-placement="top" title="Delete">
-                                    <i class="fas fa-trash-alt text-danger"></i>
-                                </a>
-                                
-                            </div>
                             <div class="avatar" style="margin-left: 0px; margin-top: 10px; left: 17px" data-toggle="modal" data-target="#memberDetailsModal">
                                 <img class="rounded_circle mb-1 mt-3" src="{{ asset($projectMember->image) }}"
                                     alt="Profile Image" style="height: 140px; width: 140px;">
@@ -187,6 +178,14 @@
                             <p class="card-text role"
                                 style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
                                 {{ $roleName }}</p>
+                            <div class="d-flex justify-content-center gap-4 my-2">
+                                <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
+                                    <i class="fas fa-edit text-primary"></i>
+                                </a> 
+                                <a href="/deleteProjectMember/{{$projectMember->id}}" data-placement="top" title="Delete">
+                                    <i class="fas fa-trash-alt text-danger"></i>
+                                </a>
+                            </div>    
                         </div>
                     </div>
                     <!--Edit Modal -->
@@ -241,7 +240,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input type="date" id="start_date" name="start_date" class="form-control" required value="{{ $pivotData->start_date }}">
+                                                <input type="date" id="start_date_{{$projectMember->id}}" name="start_date" class="form-control" required value="{{ $pivotData->start_date }}">
                                             </div>
                                         
                                             <div class="col-md-6">
@@ -249,7 +248,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input value="{{ $pivotData->end_date }}" type="date" id="end_date" name="end_date" class="form-control" required onchange=handleEndDateChange()>
+                                                <input value="{{ $pivotData->end_date }}" type="date" id="end_date_{{$projectMember->id}}" name="end_date" class="form-control" required onchange="handleEndDateChange({{$projectMember->id}})">
                                             </div>
                                         
                                             <div class="col-md-6">
@@ -257,7 +256,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <input value="{{ $pivotData->duration }}" type="number" id="duration" name="duration" class="form-control" required oninput="handleDuration(this.value)">
+                                                <input value="{{ $pivotData->duration }}" type="number" id="duration_{{$projectMember->id}}" name="duration" class="form-control" required oninput="handleDuration(this.value,{{$projectMember->id}})">
                                             </div>
                                         
                                             <div class="col-md-6">
@@ -265,7 +264,7 @@
                                             </div>
                                         
                                             <div class="col-md-6">
-                                                <select id="engagement_mode" name="engagement_mode" class="form-control" required>
+                                                <select id="engagement_mode_{{$projectMember->id}}" name="engagement_mode" class="form-control" required onchange="handleEngagement(this.value,{{$projectMember->id}})">
                                                     <option value="{{ $pivotData->engagement_mode }}" selected>{{ $pivotData->engagement_mode }}</option>
                                                     <option value="Daily">Daily</option>
                                                     <option value="Weekly">Weekly</option>
@@ -387,7 +386,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="date" id="start_date" name="start_date[]" class="form-control" required>
+                            <input type="date" id="start_date_1" name="start_date[]" class="form-control" required>
                         </div>
 
                         <div class="col-md-6">
@@ -395,7 +394,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="date" id="end_date" name="end_date[]" class="form-control" required onchange=handleEndDateChange()>
+                            <input type="date" id="end_date_1" name="end_date[]" class="form-control" required onchange="handleEndDateChange('1')">
                         </div>
 
                         <div class="col-md-6">
@@ -403,7 +402,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="number" id="duration" name="duration[]" class="form-control" required oninput="handleDuration(this.value)">
+                            <input type="number" id="duration_1" name="duration[]" class="form-control" required oninput="handleDuration(this.value,'1')">
                         </div>
 
                         <div class="col-md-6">
@@ -411,7 +410,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <select id="engagement_mode" name="engagement_mode[]" class="form-control" required>
+                            <select id="engagement_mode_1" name="engagement_mode[]" class="form-control" required onchange="handleEngagement(this.value, 1)">
                                 <option value="daily">Daily</option>
                                 <option value="weekly">Weekly</option>
                                 <option value="monthly">Monthly</option>
@@ -461,22 +460,57 @@
         return end.toISOString().split('T')[0];
     }
 
-    function handleEndDateChange() {
-        var endDate = document.getElementById("end_date").value;
+    function handleEndDateChange(memberId) {
+        var endDate = document.getElementById("end_date_" + memberId).value;
         if (endDate) {
-            var startDate = document.getElementById("start_date").value;
+            var startDate = document.getElementById("start_date_" + memberId).value;
             var duration = calculateDuration(startDate, endDate);
-            document.getElementById("duration").value = duration;
+            document.getElementById("duration_" + memberId).value = duration;
         }
     }
 
-    function handleDuration(duration){
+    function handleDuration(duration, memberId) {
         if (duration) {
-            var startDate = document.getElementById("start_date").value;
+            var startDate = document.getElementById("start_date_" + memberId).value;
             var endDate = calculateEndDate(startDate, duration);
-            document.getElementById("end_date").value = endDate;
-         }
+            document.getElementById("end_date_" + memberId).value = endDate;
+        }
     }
+
+    function handleEngagement(mode, memberId) {
+        var durationInput = document.getElementById("duration_" + memberId);
+        var duration = parseInt(durationInput.value);
+        var startDateInput = document.getElementById("start_date_" + memberId); 
+        var endDateInput = document.getElementById("end_date_" + memberId); 
+        var startDate = new Date(startDateInput.value);
+        
+        if(duration && startDateInput.value && endDateInput.value) {
+            var endDate = new Date(startDate);
+
+            switch(mode.toLowerCase()) {
+                case "daily":
+                    endDate.setDate(startDate.getDate() + duration);
+                    break;
+                case "weekly":
+                    duration *= 5; 
+                    endDate.setDate(startDate.getDate() + duration);
+                    break;
+                case "monthly":
+                    endDate.setMonth(startDate.getMonth() + duration);
+                    break;
+                case "yearly":
+                    endDate.setFullYear(startDate.getFullYear() + duration);
+                    break;
+                default:
+                    break;
+            }
+
+            endDateInput.value = endDate.toISOString().split('T')[0];
+        }
+    }
+
+
+
 
     document.addEventListener('DOMContentLoaded', function () {
         var memberCards = document.querySelectorAll('.member-card');
