@@ -94,7 +94,7 @@
         function createTasks(e){
             e.preventDefault();
             const sprint = document.getElementById("sprint_id").value;
-            const parent_task = document.querySelector(".create_parent_task").value;
+            const parent_task = document.querySelector(".create_parent_task") ? document.querySelector(".create_parent_task").value : "";
             const title = document.getElementById("title").value;
             const epic = document.getElementById("epic").value;
             const story = document.getElementById("story").value;
@@ -604,19 +604,17 @@
                                             <div class="form-group">
                                                 <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
                                                 <textarea name="details" id="details_{{ $task->id }}"
-                                                    class="form-controlcl shadow-sm" required disabled style="background-color:#e9ecef;">
+                                                    class="form-control shadow-sm" disabled style="background-color:#e9ecef;text-align: left;">
                                                     {{ strip_tags($task->details) }}
                                                 </textarea>
                                             </div>
                                         </div>
 
-
-
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned To</label>
                                                 <select name="assigned_to" id="assigned_to_{{ $task->id }}"
-                                                    class="assign_to form-controlcl shadow-sm"
+                                                    class="assign_to form-control shadow-sm"
                                                     style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px; background-color:#e9ecef;" disabled>
                                                     @foreach ($project->members as $member)
                                                     <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
@@ -633,15 +631,12 @@
                                         <div class="col-md-6">
                                             <div class="form-group allot_user">
                                                 <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted To</label>
-                                                <div class="assign_to form-controlcl shadow-sm" style="position: relative;">
-                                                    <div class="selected-values" style="padding: 9px; color: #858585; font-size: 14px; cursor: pointer; background-color:#e9ecef;">
-                                                        @foreach ($project->members as $member)
-                                                            @if (in_array($member->user->id, old('allotted_to', optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])))
-                                                                &#8226 {{ $member->user->name }}
-                                                            @endif
-                                                        @endforeach
-                                                    </div>
-                                                    <div class="overlay" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 1px solid #8585854a; border-radius: 4px"></div>
+                                                <div class="assign_to form-control shadow-sm" style="position: relative;border: 1px solid #8585854a; border-radius: 4px;color: #858585; font-size: 14px; cursor: pointer; background-color:#e9ecef;">
+                                                    @foreach ($project->members as $member)
+                                                        @if (in_array($member->user->id, old('allotted_to', optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])))
+                                                            &#8226 {{ $member->user->name }}
+                                                        @endif
+                                                    @endforeach
                                                 </div>
                                             </div>
                                         </div>
@@ -679,7 +674,7 @@
 
                     <!-- Edit modal -->
                     @foreach($tasks as $task)
-                        <div class="modal fade modal-xl" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header" style=" background-color:#061148;">
@@ -733,7 +728,21 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="epic" style="font-size: 15px;">Epic</label>
+                                                        <input type="text" name="epic" id="epic" value="{{$task->epic}}" class="form-control shadow-sm">
+                                                    </div>
+                                                </div>
+                                    
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="story" style="font-size: 15px;">Story</label>
+                                                        <input type="text" name="story" id="story" value="{{$task->story}}" class="form-control shadow-sm">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
                                                         <select name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
@@ -746,7 +755,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                                         <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
@@ -754,7 +763,20 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-4">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                                        <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
+                                                                style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                            <option value="" selected disabled>{{$task->task_type}}</option>
+                                                            @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
+                                                                <option value="{{ $type }}">{{ $type }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                         <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
@@ -846,7 +868,7 @@
             </tbody>
         </table>
 
-        <!-- Create modal -->
+        <!-- Create Tasks modal -->
         <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
