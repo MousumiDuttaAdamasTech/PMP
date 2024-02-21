@@ -435,12 +435,12 @@
             <thead>
                 <tr>
                     <th>Task ID</th>
+                    <th>Epic</th>
+                    <th>Story</th>
                     <th>Task Title</th>
                     <th>Priority</th>
                     <th>Estd. Hours</th>
                     <th>Parent Task</th>
-                    <th>Epic</th>
-                    <th>Story</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -450,16 +450,6 @@
                     
                     <tr class="shadow" style="border-radius:15px;">
                         <td>{{ $task->uuid }}</td>
-                        <td>{{ \Illuminate\Support\Str::limit(strip_tags($task->title), 20, $end='...') }}</td>
-                        <td>{{ $task->priority }}</td>
-                        <td>{{ $task->estimated_time }}</td>
-                        <td>
-                            @if($task->parentTask)
-                                {{ \Illuminate\Support\Str::limit(strip_tags($task->parentTask->title), 20, $end='...') }}
-                            @else
-                                N/A
-                            @endif
-                        </td>
                         <td>
                             @if($task->epic)
                                 {{ \Illuminate\Support\Str::limit(strip_tags($task->epic), 20, $end='...') }}
@@ -470,6 +460,16 @@
                         <td>
                             @if($task->story)
                                 {{ \Illuminate\Support\Str::limit(strip_tags($task->story), 20, $end='...') }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>{{ \Illuminate\Support\Str::limit(strip_tags($task->title), 20, $end='...') }}</td>
+                        <td>{{ $task->priority }}</td>
+                        <td>{{ $task->estimated_time }}</td>
+                        <td>
+                            @if($task->parentTask)
+                                {{ \Illuminate\Support\Str::limit(strip_tags($task->parentTask->title), 20, $end='...') }}
                             @else
                                 N/A
                             @endif
@@ -772,11 +772,10 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="task_type" style="font-size: 15px;">Task Type</label>
-                                                        <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
+                                                        <select name="task_type" id="task_typee" class="form-controlcl shadow-sm"
                                                                 style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                                            <option value="" selected disabled>{{$task->task_type}}</option>
                                                             @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
-                                                                <option value="{{ $type }}">{{ $type }}</option>
+                                                                <option value="{{ $type }}" {{$task->task_type == $type ? 'selected' : ''}}>{{ $type }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>

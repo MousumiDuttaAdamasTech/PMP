@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     public const PRIORITIES = [
-        'p0 (critical)', 'p1 (high)', 'p2 (medium)', 'p3 (low)',
+        'p0', 'p1', 'p2', 'p3',
     ];
 
     public const TASK_TYPES = [
