@@ -133,7 +133,77 @@
             }
 
         }
-    </script>    
+    </script> 
+    
+    <script>
+        function displayUploadedFiles(input) {
+            const filesContainer = document.getElementById('uploadedFilesContainer');
+            filesContainer.innerHTML = ''; 
+    
+            const mainDiv = document.createElement('div');
+            mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+    
+            Array.from(input.files).forEach(file => {
+    
+                const fileElement = document.createElement('div');
+                fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+    
+                const deleteLink = document.createElement('div');
+                deleteLink.className = 'd-flex justify-content-end w-100';
+                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+    
+                const icon = document.createElement('div');
+                icon.className = 'text-center';
+                icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+    
+                const fileName = document.createElement('div');
+                fileName.className = 'w-100 text-center';
+                fileName.innerHTML = file.name;
+                fileName.style.color = "white";
+    
+                //fileElement.appendChild(deleteLink);
+                fileElement.appendChild(icon);
+                fileElement.appendChild(fileName);
+                mainDiv.appendChild(fileElement);
+                filesContainer.appendChild(mainDiv);
+            });
+        }
+    
+        function displayUploadedFiles2(input,bugId){
+            const filesContainer = document.getElementById(`uploadedFilesContainer_${bugId}`);
+            filesContainer.innerHTML = ''; 
+    
+            const mainDiv = document.createElement('div');
+            mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+    
+            Array.from(input.files).forEach(file => {
+    
+                const fileElement = document.createElement('div');
+                fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+    
+                const deleteLink = document.createElement('div');
+                deleteLink.className = 'd-flex justify-content-end w-100';
+                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+    
+                const icon = document.createElement('div');
+                icon.className = 'text-center';
+                icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+    
+                const fileName = document.createElement('div');
+                fileName.className = 'w-100 text-center';
+                fileName.innerHTML = file.name;
+                fileName.style.color = "white";
+    
+                //fileElement.appendChild(deleteLink);
+                fileElement.appendChild(icon);
+                fileElement.appendChild(fileName);
+                mainDiv.appendChild(fileElement);
+                filesContainer.appendChild(mainDiv);
+            });
+        }
+    </script>
 
     @if ($errors->any())
         <div class="error-messages">
@@ -536,7 +606,7 @@
                     </tr>
 
                     <!-- Show Task Modal -->
-                    <div class="modal fade modal-xl" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                    <div class="modal fade" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
                         aria-hidden="true">
                         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -579,21 +649,47 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="epic" style="font-size: 15px;">Epic</label>
+                                                <input type="text" name="epic" id="epic" value="{{$task->epic}}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="story" style="font-size: 15px;">Story</label>
+                                                <input type="text" name="story" id="story" value="{{$task->story}}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
                                                 <input type="text" name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" value="{{ $task->priority }}" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                                 <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}" value="{{ $task->estimated_time }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                                <select name="task_type" id="task_typee" class="form-controlcl shadow-sm"
+                                                        style="padding-top:5px; padding-bottom:5px; height:39px; background-color:#e9ecef; font-size: 14px;" disabled>
+                                                    @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
+                                                        <option value="{{ $type }}" {{$task->task_type == $type ? 'selected' : ''}}>{{ $type }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                 <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
@@ -856,6 +952,16 @@
                                                         </select>
                                                     </div>
                                                 </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="attachments">Attachments</label>
+                                                        <input onchange="displayUploadedFiles(this)" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                                        <small class="text-muted">You can upload multiple files.</small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-3" id="uploadedFilesContainer"></div>
 
                                                 <!-- Add other form fields with unique identifiers -->
 

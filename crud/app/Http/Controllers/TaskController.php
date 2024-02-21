@@ -187,6 +187,22 @@ class TaskController extends Controller
         $taskUser->save();
     }
 
+    if ($request->hasFile('attachments')) {
+        foreach ($request->file('attachments') as $attachment) {
+            // Set the file name to the original name
+            $fileName = $attachment->getClientOriginalName();
+
+            // Store the attachment in the storage/app/public/task_attachments directory with the same name
+            $path = $attachment->storeAs('task_attachments', $fileName, 'public');
+
+            // Create TaskAttachment and associate it with the task
+            TaskAttachment::create([
+                'task_id' => $task->id,
+                'file_path' => $path,
+            ]);
+        }
+    }
+
     return back()->with('success', 'Updated successfully.');
 }
     public function destroy(Task $task)
