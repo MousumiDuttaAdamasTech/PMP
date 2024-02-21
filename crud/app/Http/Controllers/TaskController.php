@@ -65,7 +65,7 @@ class TaskController extends Controller
             'assigned_to' => 'required',
             'allotted_to' => 'required',
             'project_id' => 'required',
-            'sprint_id' => 'required',
+            'sprint_id' => 'nullable',
             'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png',
         ]);
     
@@ -150,7 +150,7 @@ class TaskController extends Controller
         'assigned_to' => 'required',
         'allotted_to' => 'required',
         'project_id' => 'required',
-        'sprint_id' => 'required',
+        'sprint_id' => 'nullable',
         'attachments.*' => 'file|mimes:pdf,doc,docx,csv,xlsx,jpg,png', //validation for multiple files
     ]);
 

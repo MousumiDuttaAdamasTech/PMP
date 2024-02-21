@@ -24,7 +24,7 @@ return new class extends Migration
             $table->text('details');
             $table->string('assigned_to');
             $table->unsignedBigInteger('project_task_status_id');
-            $table->unsignedBigInteger('sprint_id');
+            $table->unsignedBigInteger('sprint_id')->nullable();
             $table->foreign('sprint_id')->references('id')->on('sprints');
             $table->unsignedBigInteger('parent_task')->nullable();
             $table->foreign('parent_task')->references('id')->on('tasks'); 

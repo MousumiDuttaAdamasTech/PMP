@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('sprint_name');
             $table->float('estimated_hrs');
-            $table->float('actual_hrs');
+            $table->float('actual_hrs')->nullable();
             $table->string('sprint_status');
-            $table->date('current_date');
-            $table->date('sprint_planningDate'); // Add this line for sprint planning date
-            $table->date('sprint_taskDiscuss'); // Add this line for sprint task discussion date
-            $table->date('sprint_startDate'); // Add this line for sprint start date
-            $table->date('sprint_endDate'); // Add this line for sprint end date
-            $table->date('sprint_demoDate'); 
+            $table->date('current_date')->nullable();
+            $table->date('sprint_planningDate')->nullable(); // Add this line for sprint planning date
+            $table->date('sprint_taskDiscuss')->nullable(); // Add this line for sprint task discussion date
+            $table->date('sprint_startDate')->nullable(); // Add this line for sprint start date
+            $table->date('sprint_endDate')->nullable(); // Add this line for sprint end date
+            $table->date('sprint_demoDate')->nullable(); 
             $table->unsignedBigInteger('assign_to');
             //$table->unsignedBigInteger('task_status_id');
             $table->unsignedBigInteger('projects_id');
