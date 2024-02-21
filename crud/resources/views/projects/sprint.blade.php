@@ -172,7 +172,13 @@
                                             <div class="backlog-tasks" id="{{ strtolower(str_replace(' ', '', $status)) }}-tasks" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
                                             <div class="custom-card-container" style="overflow-x:auto;max-height: 140px;margin-bottom:5px;width:135px;">
                                             @foreach($tasks as $task)
-                                            @if ($task->project_task_status_id === $statusId) <!-- Check if task status matches the current status block -->
+                                            
+                                            @php
+                                            $latestSprintId = $sprints->sortByDesc('created_at')->first()->id;
+                                            @endphp
+                                        
+
+                                            @if ($task->project_task_status_id === $statusId && $task->sprint_id === $latestSprintId) <!-- Check if task status matches the current status block -->
                                             <div class="card shadow" id="task{{ $task->id }}" draggable="true" ondragstart="drag(event)" style="margin-bottom: 15px; height:130px;max-height:120px;overflow-x:auto; width:120px;" >
                                                 <div class="card__header" >
                                                     <div class="card-container-color {{ $task->priority }}" >
@@ -326,9 +332,9 @@
        
                                        <div class="col-md-12">
                                            <div class="form-group">
-                                               <label for="title">Title</label>
+                                               <label for="title">Title<span style="color: red;">*</span></label>
                                                <input type="text" name="title" id="title" placeholder="Enter the task title"
-                                                   class="form-control shadow-sm">
+                                                   class="form-control shadow-sm" required>
                                            </div>
                                        </div>
        
@@ -348,8 +354,8 @@
        
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="priority" style="font-size: 15px;">Priority</label>
-                                               <select name="priority" id="priority" class="form-control shadow-sm" style="height:39px; color: #858585; font-size: 14px;">
+                                               <label for="priority" style="font-size: 15px;">Priority<span style="color: red;">*</span></label>
+                                               <select name="priority" id="priority" class="form-control shadow-sm" style="height:39px; color: #858585; font-size: 14px;" required>
                                                    <option value="" selected disabled>Select Priority</option>
                                                    @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
                                                        <option value="{{ $value }}">{{ $label }}</option>
@@ -360,9 +366,9 @@
        
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="estimated_time" style="font-size: 15px;">Estimated Hours</label>
+                                               <label for="estimated_time" style="font-size: 15px;">Estimated Hours<span style="color: red;">*</span></label>
                                                <input type="number" name="estimated_time" id="estimated_time"
-                                                   placeholder="Enter the time" class="form-control shadow-sm" style="font-size: 14px;">
+                                                   placeholder="Enter the time" class="form-control shadow-sm" style="font-size: 14px;" required>
                                            </div>
                                        </div>
 
@@ -377,9 +383,9 @@
        
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                               <label for="task_type" style="font-size: 15px;">Task Type<span style="color: red;">*</span></label>
                                                <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
-                                                       style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                       style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                    <option value="" selected disabled>Select Task Type</option>
                                                    @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
                                                        <option value="{{ $type }}">{{ $type }}</option>
@@ -390,7 +396,7 @@
        
                                        <div class="col-md-12">
                                            <div class="form-group">
-                                               <label for="project_task_status_id" style="font-size: 15px;">Task Status</label>
+                                               <label for="project_task_status_id" style="font-size: 15px;">Task Status<span style="color: red;">*</span></label>
                                                <select name="project_task_status_id" id="project_task_status_id"
                                                    class="form-control shadow-sm"
                                                    style="height:39px; color: #858585; font-size: 14px;">
@@ -409,7 +415,7 @@
        
                                        <div class="col-md-12">
                                            <div class="form-group">
-                                               <label for="details" style="font-size: 15px;">Details</label>
+                                               <label for="details" style="font-size: 15px;">Details<span style="color: red;">*</span></label>
                                                <textarea name="details" id="details" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                    placeholder="Enter the details"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"></textarea>
@@ -418,7 +424,7 @@
        
                                        <div class="col-md-6">
                                            <div class="form-group">
-                                               <label for="assigned_to" style="font-size: 15px;">Assigned To</label>
+                                               <label for="assigned_to" style="font-size: 15px;">Assigned To<span style="color: red;">*</span></label>
                                                <select name="assigned_to[]" id="assigned_to"
                                                    class="assigned_to form-controlcl shadow-sm"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -433,7 +439,7 @@
        
                                        <div class="col-md-6">
                                            <div class="form-group allot_task">
-                                               <label for="allotted_to" style="font-size: 15px;">Allotted To</label>
+                                               <label for="allotted_to" style="font-size: 15px;">Allotted To<span style="color: red;">*</span></label>
                                                <select name="allotted_to[]" id="allotted_to"
                                                    class="allotted_to_task form-controlcl shadow-sm"
                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
@@ -523,7 +529,7 @@
 
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="title_{{ $task->id }}" style="font-size: 15px;">Title</label>
+                                                <label for="title_{{ $task->id }}" style="font-size: 15px;">Title <span style="color: red;">*</span></label>
                                                 <input type="text" name="title" id="title_{{ $task->id }}"
                                                     class="form-control shadow-sm" value="{{ $task->title }}" required>
                                             </div>
@@ -547,7 +553,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
+                                                <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority <span style="color: red;">*</span></label>
                                                 <select name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                     @foreach (\App\Models\Task::getPriorityOptions() as $value => $label)
                                                         <option value="{{ $value }}" {{ $task->priority == $value ? 'selected' : '' }}>
@@ -560,7 +566,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
+                                                <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours<span style="color: red;">*</span></label>
                                                 <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
                                                     value="{{ $task->estimated_time }}" class="form-control shadow-sm" required>
                                             </div>
@@ -574,7 +580,7 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="task_type_{{ $task->id }}" style="font-size: 15px;">Task Type</label>
+                                                <label for="task_type_{{ $task->id }}" style="font-size: 15px;">Task Type<span style="color: red;">*</span></label>
                                                 <select name="task_type" id="task_type_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                     @foreach(\App\Models\Task::getTaskTypeOptions() as $value => $label)
                                                         <option value="{{ $value }}" {{ $task->task_type == $value ? 'selected' : '' }}>
@@ -587,7 +593,7 @@
 
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
+                                                <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status<span style="color: red;">*</span></label>
                                                 <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
                                                     class="form-controlcl shadow-sm"
                                                     style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -615,7 +621,7 @@
 
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
+                                                <label for="details_{{ $task->id }}" style="font-size: 15px;">Details<span style="color: red;"></span></label>
                                                 <textarea name="details" id="details_{{ $task->id }}" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>{{ $task->details }}</textarea>
                                             </div>
                                         </div>
@@ -623,7 +629,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
-                                                    To</label>
+                                                    To<span style="color: red;">*</span></label>
                                                 <select name="assigned_to[]" id="assigned_to_{{ $task->id }}"
                                                     class="assign_to form-controlcl shadow-sm"
                                                     style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -640,10 +646,11 @@
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group allot_user_{{ $task->id }}">
                                                 <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
-                                                    To</label>
+                                                    To<span style="color: red;">*</span></label>
                                                 <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
                                                     class="assign_to form-controlcl shadow-sm allotted_to_user"
                                                     style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
@@ -680,7 +687,7 @@
                 @php
                 // Sort the tasks collection based on the 'id' attribute
                 $sortedTasks = $tasks->sortByDesc('id');
-            @endphp
+                @endphp
 
 
 {{-- manage task assign tab --}}
@@ -699,10 +706,10 @@
                                 <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                                     <thead>
                                         <tr>
-                                            <th style="width: 25%;">ID</th>
-                                            <th style="width: 25%;">Title</th>
+                                            <th style="width: 25%;">Task ID</th>
+                                            <th style="width: 25%;">Task Title</th>
                                             <th style="width: 25%;">Priority</th>
-                                            <th style="width: 25%;">Estimated Time</th>
+                                            <th style="width: 25%;">Estd. Time</th>
                                             <th style="width: 25%;">Actions</th>
                                         </tr>
                                     </thead>
