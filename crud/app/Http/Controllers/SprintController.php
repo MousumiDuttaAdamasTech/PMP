@@ -105,7 +105,7 @@ class SprintController extends Controller
         'sprint_demoDate' => 'nullable|date',
         'sprint_planningDate' => 'nullable|date',
         'current_date' => 'nullable|date',
-        'assign_to' => 'required|exists:project_members,id',
+        'assign_to' => 'required|exists:project_members,project_members_id',
         'is_active' => 'required|boolean',
         // Add validation rules for other fields
     ]);
