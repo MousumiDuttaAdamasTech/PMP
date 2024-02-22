@@ -66,19 +66,28 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            if(document.getElementById("flag").value==1)
-            {
-                const activeTab = "manageContent";
-                if (activeTab) {
-                    const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
-                    if (tabLink) {
-                        tabLink.click();
-                        }
-                    } 
-            }
-            }); 
+        function setRedirectFlag(value) {
+        document.getElementById('flag').value = value;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check the condition for Overview
+        if (document.getElementById("flag").value == 1) {
+            activateTab('manageContent');
+        }
+
+        // Check the condition for Task Assign
+        if (document.getElementById("flag").value == 2) {
+            activateTab('taskAssignContent');
+        }
+    });
+
+    function activateTab(tabId) {
+        const tabLink = document.querySelector(`.nav-link[data-bs-target="#${tabId}"]`);
+        if (tabLink) {
+            tabLink.click();
+        }
+    }
   </script>
 
 
@@ -110,9 +119,11 @@
     </script>
 @endif
 
+
+
     <div class="form-container">
         @if(Session::get('success'))
-            <input type="hidden" id="flag" value="1">
+            <input type="hidden" id="flag" value="2">
         @else
             <input type="hidden" id="flag" value="0">
         @endif
@@ -192,7 +203,7 @@
 
                                                     
                                                     <div class="edit-ico">
-                                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_{{ $task->id }}">
+                                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_{{ $task->id }}">
                                                             <i class="fas fa-edit" style="margin-right: 10px;color: rgba(0, 0, 0, 0.5);"></i>
                                                         </a>
                                                 </div>
@@ -273,7 +284,7 @@
 
                    <!-- Create task modal -->
                           
-                   <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
+                <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
                    aria-hidden="true">
                    <div class="modal-dialog" role="document">
                        <div class="modal-content">
@@ -285,6 +296,7 @@
                                <form  action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="createTask">
                                    @csrf
                                    <div class="row">
+                                    
                                        <input type="hidden" name="project_id" value="{{ $project->id }}">
        
                                        <div class="col-md-12 error_msg p-3 alert alert-danger" style="display:none;"></div>
@@ -458,7 +470,7 @@
                                        </div>
        
                                        <div class="form-actions">
-                                           <button type="submit" class="btn btn-primary">Create</button>
+                                           <button type="submit" class="btn btn-primary"  onclick="setRedirectFlag(2)">Create</button>
                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</a>
                                        </div>
                                    </div>
@@ -466,14 +478,14 @@
                            </div>
                        </div>
                    </div>
-               </div>  
+                </div>  
 
 
                {{-- modal end --}}
                
   {{-- show task modal --}}
                     @foreach($tasks as $task)
-                    <div class="modal fade" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                    <div class="modal fade" id="showTaskModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
                         aria-hidden="true">
                         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -628,7 +640,7 @@
 {{-- edit task modal --}}
 
                 @foreach($tasks as $task)
-                <div class="modal fade " id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal fade " id="editTaskModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style=" background-color:#061148;">
@@ -865,10 +877,10 @@
                                     <td style="font-size: 14px; width:25%;">{{ $task->priority }}</td>
                                     <td style="width: 20%;">{{ $task->estimated_time }}</td>
                                     <td class="d-flex align-items-center" style="font-size: 15px;width:25%;">
-                                        <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showModal_{{ $task->id }}">
+                                        <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showTaskModal_{{ $task->id }}">
                                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                         </a>
-                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_{{ $task->id }}">
+                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_{{ $task->id }}">
                                             <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                         </a>
                                         <a href="#" data-toggle="modal" data-target="#commentModal{{ $task->id }}">
@@ -877,11 +889,11 @@
                                         <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                                             @method('delete')
                                             @csrf
-                                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
+                                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteTaskModal{{ $task->id }}">
                                                 <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                             </button>
                                             <!-- Delete Modal start -->
-                                                <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="deleteTaskModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header flex-column">
@@ -1255,7 +1267,7 @@
                                                     <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                                 </a>
 
-                                                <a href="#" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $sprint->id }}">
+                                                <a href="#" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteSprintModal{{ $sprint->id }}">
                                                     <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                                 </a>
 
@@ -1264,7 +1276,7 @@
                                                     @csrf
                                                              
                                                     <!-- Delete Modal start -->
-                                                    <div class="modal fade" id="deleteModal{{ $sprint->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                    <div class="modal fade" id="deleteSprintModal{{ $sprint->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header flex-column">
@@ -1327,7 +1339,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="sprint_status" style="font-size: 15px;">Status<span style="color: red">*</span></label>
-                                                        <select name="sprint_status" id="sprint_status" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <select name="sprint_status" id="sprint_status" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                             <option value="" selected="selected" disabled="disabled">Select status</option>
                                                             <option value="Under discussion">Under discussion</option>
                                                             <option value="Under development">Under development</option>
@@ -1413,7 +1425,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="is_active" style="font-size: 15px;">Is Active<span style="color: red">*</span></label>
-                                                        <select name="is_active" id="is_active" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <select name="is_active" id="is_active" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                             <option value="" selected="selected" disabled="disabled">Select type</option>
                                                             <option value="1">Yes</option>
                                                             <option value="0">No</option>
@@ -1492,7 +1504,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th style="font-weight: 600; padding-left:30px;">Assigned By:</th>
+                                                        <th style="font-weight: 600; padding-left:30px;">Assigned To:</th>
                                                         <td style="font-weight: 500">{{ $sprint->projectMember->user->name }}</td>
                                                     </tr>
                                                 </tbody>
@@ -1741,7 +1753,7 @@ $('#sprint-dropdown').change(function () {
             var statusIdFormatted = status.toLowerCase().replace(/\s/g, '');
 
             // Create HTML for the kanban-block
-            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height:130px;max-height: 230px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
+            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height: 130px;;max-height: 230px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
 
             // Create HTML for the status at the top
             var statusHtml = '<div class="backlog-name" style="margin-top:-6px;">' + status + '</div>';
@@ -1758,7 +1770,7 @@ $('#sprint-dropdown').change(function () {
                     // Create HTML for the card with the status and its associated tasks
                     var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
                         '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
-                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_' + task.id + '">' +
+                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
                         '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                         '</a>' +
                         '</div>' +
