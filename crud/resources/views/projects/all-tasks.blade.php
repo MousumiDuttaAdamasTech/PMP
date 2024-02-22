@@ -133,7 +133,79 @@
             }
 
         }
-    </script>    
+    </script> 
+    
+    <script>
+        function displayUploadedFiles(input) {
+            const filesContainer = document.getElementById('uploadedFilesContainer');
+            filesContainer.innerHTML = ''; 
+    
+            const mainDiv = document.createElement('div');
+            mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+    
+            Array.from(input.files).forEach(file => {
+    
+                const fileElement = document.createElement('div');
+                fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+    
+                const deleteLink = document.createElement('div');
+                deleteLink.className = 'd-flex justify-content-end w-100';
+                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+    
+                const icon = document.createElement('div');
+                icon.className = 'text-center';
+                icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+    
+                const fileName = document.createElement('div');
+                fileName.className = 'w-100 text-center';
+                fileName.innerHTML = file.name;
+                fileName.style.color = "white";
+                fileName.style.overflow = "hidden";
+                fileName.style.textOverflow = "ellipsis";
+    
+                //fileElement.appendChild(deleteLink);
+                fileElement.appendChild(icon);
+                fileElement.appendChild(fileName);
+                mainDiv.appendChild(fileElement);
+                filesContainer.appendChild(mainDiv);
+            });
+        }
+    
+        // function displayUploadedFiles2(input,bugId){
+        //     const filesContainer = document.getElementById(`uploadedFilesContainer_${bugId}`);
+        //     filesContainer.innerHTML = ''; 
+    
+        //     const mainDiv = document.createElement('div');
+        //     mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+    
+        //     Array.from(input.files).forEach(file => {
+    
+        //         const fileElement = document.createElement('div');
+        //         fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+        //         fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+    
+        //         const deleteLink = document.createElement('div');
+        //         deleteLink.className = 'd-flex justify-content-end w-100';
+        //         deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+    
+        //         const icon = document.createElement('div');
+        //         icon.className = 'text-center';
+        //         icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+    
+        //         const fileName = document.createElement('div');
+        //         fileName.className = 'w-100 text-center';
+        //         fileName.innerHTML = file.name;
+        //         fileName.style.color = "white";
+    
+        //         //fileElement.appendChild(deleteLink);
+        //         fileElement.appendChild(icon);
+        //         fileElement.appendChild(fileName);
+        //         mainDiv.appendChild(fileElement);
+        //         filesContainer.appendChild(mainDiv);
+        //     });
+        // }
+    </script>
 
     @if ($errors->any())
         <div class="error-messages">
@@ -176,35 +248,42 @@
                                 <!-- Display existing comments here -->
                                 @foreach($task->comments->whereNull('parent_comment') as $comment)
                                     <div class="mb-3">
+                                        <div class="p-3" style="background-color: #abaaaa;border-radius:5px;">
                                         <div class="comment-header">
-                                            <strong>{{ $comment->user->name }}</strong>
-                                            <span class="text-muted" style="font-size: 0.8rem;"><em>{{ $comment->created_at->format('M j, Y \a\t g:i a') }}</em></span>
-                                            @if($comment->updated_at != $comment->created_at)
-                                                <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
-                                            @endif                                    
+                                            <div class="d-flex flex-column">
+                                                <div class="d-flex gap-2 align-items-center">
+                                                    <strong>{{ $comment->user->name }}</strong>
+                                                    @if($comment->updated_at != $comment->created_at)
+                                                        <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
+                                                    @endif 
+                                                </div>  
+                                                <span class="text-muted" style="font-size: 0.7rem;"><em>{{ $comment->created_at->format('M j, Y \a\t g:i a') }}</em></span>
+                                            </div>                                 
                                         </div>
-                                        <div class="comment-content" style="font-size: 0.9rem;">
-                                            {{ $comment->comment }}
+                                        <div class="comment-content my-3" style="font-size: 1rem;">
+                                            <span style="font-weight:600;">{{ $comment->comment }}</span>
                                         </div>
                                         <!-- Edit and Delete Comment icons with custom colors -->
                                         @if(Auth::user()->isProjectMember($task->project_id))
-                                            <div class="comment-actions d-flex align-items-center gap-2 mt-2">
+                                            <div class="comment-actions d-flex align-items-center gap-1 mt-2">
+                                                @if(Auth::id() == $comment->member_id)
                                                 <button type="button" style="background: none; border: none;" data-toggle="modal" data-target="#editCommentModal_{{ $comment->id }}">
-                                                    <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
+                                                    <i class="bi bi-pencil" style="color: #007bff; font-size: 0.9rem;"></i>
                                                 </button>
 
                                                 <form action="{{ route('task.comments.destroy', ['comment' => $comment->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $comment->id }}">
                                                     @csrf
                                                     @method('delete')
                                                     <button type="button" onclick="confirmDelete('{{ $comment->id }}')" style="background: none; border: none;">
-                                                        <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                        <i class="bi bi-trash" style="color: #ff0000; font-size: 0.9rem;"></i>
                                                     </button>
                                                 </form>
-
+                                                @endif
                                                 <button type="button" style="background: none; border: none;" data-toggle="collapse" data-target="#replyForm_{{ $comment->id }}">
-                                                    <i class="bi bi-reply" style="font-size: 1rem;"></i>
+                                                    <i class="bi bi-reply" style="font-size: 0.9rem;"></i>
                                                 </button>
                                             </div>
+                                        </div>    
                     
                                             <!-- Edit Comment Modal -->
                                             <div class="modal fade" id="editCommentModal_{{ $comment->id }}" tabindex="-1" role="dialog" aria-labelledby="editCommentModalLabel_{{ $comment->id }}" aria-hidden="true">
@@ -240,7 +319,7 @@
                                                     <input type="hidden" name="task_id" value="{{ $task->id }}">
                                                     <div class="form-group">
                                                         <label for="replyComment">Reply to {{ $comment->user->name }}:</label>
-                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required></textarea>
+                                                        <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required>@ {{ $comment->user->name }}</textarea>
                                                     </div>
                                                     <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
                                                 </form>
@@ -250,37 +329,42 @@
                                         <!-- Display replies indented under the parent comment -->
                                         @foreach($task->comments as $reply)
                                             @if($reply->parent_comment == $comment->id)
-                                                <div class="my-3 ml-3">
-                                                    <div class="comment-header">
-                                                        <strong>{{ $reply->user->name }}</strong>
-                                                        <span class="text-muted" style="font-size: 0.8rem;"><em>{{ $reply->created_at->format('M j, Y \a\t g:i a') }}</em></span>
-                                                        @if($reply->updated_at != $reply->created_at)
-                                                            <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
-                                                        @endif
+                                                <div class="my-3 ml-3 p-3" style="background-color: #abaaaa;border-radius:5px;">
+                                                    <div class="comment-header d-flex flex-column">
+                                                        <div class="d-flex gap-2 align-items-center">
+                                                            <strong>{{ $reply->user->name }}</strong>
+                                                            @if($reply->updated_at != $reply->created_at)
+                                                                <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
+                                                            @endif
+                                                        </div>
+                                                        <span class="text-muted" style="font-size: 0.7rem;"><em>{{ $reply->created_at->format('M j, Y \a\t g:i a') }}</em></span>
                                                     </div>
-                                                    <div class="comment-content" style="font-size: 0.9rem;">
-                                                        {{ $reply->comment }}
+                                                    <div class="comment-content my-3" style="font-size: 1rem;">
+                                                        <span style="font-weight:600;">{{ $reply->comment }}</span>
                                                     </div>
                                                     <!-- Edit and Delete Comment icons with custom colors -->
                                                     @if(Auth::user()->isProjectMember($task->project_id))
                                                         <!-- Edit Comment Button -->
                                                         <div class="mt-2">
-                                                            <button type="button" style="background: none; border: none;" data-toggle="modal" data-target="#editReplyModal_{{ $reply->id }}">
-                                                                <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
-                                                            </button>
-
-                                                            <form action="{{ route('task.comments.destroy', ['comment' => $reply->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $reply->id }}">
-                                                                @csrf
-                                                                @method('delete')
-                                                                <button type="button" onclick="confirmDelete('{{ $reply->id }}')" style="margin-right: 5px; background: none; border: none;">
-                                                                    <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                            @if(Auth::id() == $reply->member_id)
+                                                                <button type="button" style="background: none; border: none;" data-toggle="modal" data-target="#editReplyModal_{{ $reply->id }}">
+                                                                    <i class="bi bi-pencil" style="color: #007bff; font-size: 0.9rem;"></i>
                                                                 </button>
-                                                            </form>
 
-                                                            <button type="button" style="background: none; border: none;" data-toggle="collapse" data-target="#rreplyForm{{ $reply->id }}">
-                                                                <i class="bi bi-reply" style="font-size: 1rem;"></i>
+                                                                <form action="{{ route('task.comments.destroy', ['comment' => $reply->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $reply->id }}">
+                                                                    @csrf
+                                                                    @method('delete')
+                                                                    <button type="button" onclick="confirmDelete('{{ $reply->id }}')" style="margin-right: 5px; background: none; border: none;">
+                                                                        <i class="bi bi-trash" style="color: #ff0000; font-size: 0.9rem;"></i>
+                                                                    </button>
+                                                                </form>
+                                                            @endif    
+
+                                                            <button type="button" style="background: none; border: none;" data-toggle="collapse" data-target="#replyForm{{ $reply->id }}">
+                                                                <i class="bi bi-reply" style="font-size: 0.9rem;"></i>
                                                             </button>
                                                         </div>
+                                                </div>        
 
                                                         <!-- Edit Comment Modal -->
                                                         <div class="modal fade" id="editReplyModal_{{ $reply->id }}" tabindex="-1" role="dialog" aria-labelledby="editReplyModalLabel_{{ $reply->id }}" aria-hidden="true">
@@ -325,15 +409,17 @@
                                                         @foreach($task->comments as $subReply)
                                                             @if($subReply->parent_comment == $reply->id)
                                                                 <!-- Display sub-reply to the reply -->
-                                                                <div class="mb-3 ml-6">
-                                                                    <div class="comment-header">
-                                                                        <strong>{{ $subReply->user->name }}</strong>
-                                                                        <span class="text-muted" style="font-size: 0.8rem;"><em>{{ $subReply->created_at->format('M j, Y \a\t g:i a') }}</em></span>
+                                                                <div class="my-3 ml-3 p-3" style="background-color: #abaaaa;border-radius:5px;">
+                                                                    <div class="comment-header d-flex">
+                                                                        <div class="d-flex flex-column">
+                                                                            <strong>{{ $subReply->user->name }}</strong>
+                                                                            <span class="text-muted" style="font-size: 0.7rem;"><em>{{ $subReply->created_at->format('M j, Y \a\t g:i a') }}</em></span>
+                                                                        </div>
                                                                         @if($subReply->updated_at != $subReply->created_at)
                                                                             <span class="text-muted" style="font-size: 0.8rem;">(edited)</span>
                                                                         @endif
                                                                     </div>
-                                                                    <div class="comment-content" style="font-size: 0.9rem;">
+                                                                    <div class="comment-content my-3" style="font-size: 1rem;font-weight:600;">
                                                                         @if($subReply->parentComment)
                                                                             
                                                                                 {{ $subReply->comment }}
@@ -342,17 +428,23 @@
                                                                     </div>
 
                                                                     <!-- Edit Comment Button -->
-                                                                    <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editSubReplyModal_{{ $subReply->id }}">
-                                                                        <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
-                                                                    </button>
-
-                                                                    <form action="{{ route('task.comments.destroy', ['comment' => $subReply->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $subReply->id }}">
-                                                                        @csrf
-                                                                        @method('delete')
-                                                                        <button type="button" onclick="confirmDelete('{{ $subReply->id }}')" style="margin-right: 5px; background: none; border: none;">
-                                                                            <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                                    @if(Auth::id() == $subReply->member_id)
+                                                                        <button type="button" style="margin-right: 5px; background: none; border: none;" data-toggle="modal" data-target="#editSubReplyModal_{{ $subReply->id }}">
+                                                                            <i class="bi bi-pencil" style="color: #007bff; font-size: 1rem;"></i>
                                                                         </button>
-                                                                    </form>
+
+                                                                        <form action="{{ route('task.comments.destroy', ['comment' => $subReply->id]) }}" method="post" style="display: inline;" id="deleteForm{{ $subReply->id }}">
+                                                                            @csrf
+                                                                            @method('delete')
+                                                                            <button type="button" onclick="confirmDelete('{{ $subReply->id }}')" style="margin-right: 5px; background: none; border: none;">
+                                                                                <i class="bi bi-trash" style="color: #ff0000; font-size: 1rem;"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                    @endif    
+
+                                                                    <button type="button" style="background: none; border: none;" data-toggle="collapse" data-target="#subreplyForm{{ $subReply->id }}">
+                                                                        <i class="bi bi-reply" style="font-size: 0.9rem;"></i>
+                                                                    </button>
 
                                                                     <!-- Edit Comment Modal -->
                                                                     <div class="modal fade" id="editSubReplyModal_{{ $subReply->id }}" tabindex="-1" role="dialog" aria-labelledby="editSubReplyModalLabel_{{ $subReply->id }}" aria-hidden="true">
@@ -397,10 +489,23 @@
                                                                         </div>
                                                                     </div> --}}
                                                                 </div>
+
+                                                                <!-- Sub Reply button and form for reply -->
+                                                                <div class="collapse" id="subreplyForm{{ $subReply->id }}">
+                                                                    <form action="{{ route('task.comments.reply', ['task' => $task->id, 'comment' => $subReply->id]) }}" method="post">
+                                                                        @csrf
+                                                                        <input type="hidden" name="task_id" value="{{ $task->id }}">
+                                                                        <input type="hidden" name="parent_comment" value="{{ $subReply->id }}">
+                                                                        <div class="form-group">
+                                                                            <label for="replyComment" @required(true)>Reply to {{ $subReply->user->name }}:</label>
+                                                                            <textarea name="comment" class="form-control" id="replyComment" rows="2" placeholder="Type your reply here" required>@ {{ $subReply->user->name }}</textarea>
+                                                                        </div>
+                                                                        <button type="submit" class="btn btn-primary btn-sm">Add Reply</button>
+                                                                    </form>
+                                                                </div>
                                                             @endif
                                                         @endforeach
                                                     @endif
-                                                </div>
                                             @endif
                                         @endforeach
                                         
@@ -430,35 +535,31 @@
                 </div>
             </div>
         @endforeach
+
+        <div>
+            <input type="checkbox" id="parentTasksCheckbox">
+            <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
+        </div>
     
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
                 <tr>
                     <th>Task ID</th>
+                    <th>Epic</th>
+                    <th>Story</th>
                     <th>Task Title</th>
                     <th>Priority</th>
                     <th>Estd. Hours</th>
                     <th>Parent Task</th>
-                    <th>Epic</th>
-                    <th>Story</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 
                 @foreach($sortedTasks as $task)
+                    
                     <tr class="shadow" style="border-radius:15px;">
                         <td>{{ $task->uuid }}</td>
-                        <td>{{ \Illuminate\Support\Str::limit(strip_tags($task->title), 20, $end='...') }}</td>
-                        <td>{{ $task->priority }}</td>
-                        <td>{{ $task->estimated_time }}</td>
-                        <td>
-                            @if($task->parentTask)
-                                {{ \Illuminate\Support\Str::limit(strip_tags($task->parentTask->title), 20, $end='...') }}
-                            @else
-                                N/A
-                            @endif
-                        </td>
                         <td>
                             @if($task->epic)
                                 {{ \Illuminate\Support\Str::limit(strip_tags($task->epic), 20, $end='...') }}
@@ -469,6 +570,16 @@
                         <td>
                             @if($task->story)
                                 {{ \Illuminate\Support\Str::limit(strip_tags($task->story), 20, $end='...') }}
+                            @else
+                                N/A
+                            @endif
+                        </td>
+                        <td>{{ \Illuminate\Support\Str::limit(strip_tags($task->title), 20, $end='...') }}</td>
+                        <td>{{ $task->priority }}</td>
+                        <td>{{ $task->estimated_time }}</td>
+                        <td>
+                            @if($task->parentTask)
+                                {{ \Illuminate\Support\Str::limit(strip_tags($task->parentTask->title), 20, $end='...') }}
                             @else
                                 N/A
                             @endif
@@ -530,7 +641,7 @@
                     </tr>
 
                     <!-- Show Task Modal -->
-                    <div class="modal fade modal-xl" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                    <div class="modal fade" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
                         aria-hidden="true">
                         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -573,21 +684,47 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="epic" style="font-size: 15px;">Epic</label>
+                                                <input type="text" name="epic" id="epic" value="{{$task->epic}}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+                            
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="story" style="font-size: 15px;">Story</label>
+                                                <input type="text" name="story" id="story" value="{{$task->story}}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
                                                 <input type="text" name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" value="{{ $task->priority }}" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                                 <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}" value="{{ $task->estimated_time }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                                <select name="task_type" id="task_typee" class="form-controlcl shadow-sm"
+                                                        style="padding-top:5px; padding-bottom:5px; height:39px; background-color:#e9ecef; font-size: 14px;" disabled>
+                                                    @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
+                                                        <option value="{{ $type }}" {{$task->task_type == $type ? 'selected' : ''}}>{{ $type }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                 <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
@@ -646,26 +783,26 @@
                                             </div>
                                         </div>
 
-                                            @if($task->attachments && $task->attachments->count() > 0)
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="documents">Documents</label>
-                                                        <ul>
-                                                            @foreach ($task->attachments as $attachment)
-                                                                <li class="list-group-item">
-                                                                    <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                                    <a href="{{($attachment->file_path) }}"
-                                                                        target="_blank">
-                                                                        {{ $attachment->file_path }}
-                                                                    </a>
-                                                                </li>
-                                                            @endforeach 
-                                                        </ul>
-                                                    </div>
+                                        @if($task->attachments && $task->attachments->count() > 0)
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="documents">Documents</label>
+                                                    <ul>
+                                                        @foreach ($task->attachments as $attachment)
+                                                            <li class="list-group-item">
+                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                                <a href="{{($attachment->file_path) }}"
+                                                                    target="_blank">
+                                                                    {{ $attachment->file_path }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach 
+                                                    </ul>
                                                 </div>
-                                            @endif
-                                                
-                                                <!-- Add other form fields with unique identifiers -->
+                                            </div>
+                                        @endif
+                                            
+                                        <!-- Add other form fields with unique identifiers -->
 
                                         <div class="form-actions">
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -771,11 +908,10 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="task_type" style="font-size: 15px;">Task Type</label>
-                                                        <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
+                                                        <select name="task_type" id="task_typee" class="form-controlcl shadow-sm"
                                                                 style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                                            <option value="" selected disabled>{{$task->task_type}}</option>
                                                             @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
-                                                                <option value="{{ $type }}">{{ $type }}</option>
+                                                                <option value="{{ $type }}" {{$task->task_type == $type ? 'selected' : ''}}>{{ $type }}</option>
                                                             @endforeach
                                                         </select>
                                                     </div>
@@ -815,11 +951,15 @@
                                                     <div class="form-group">
                                                         <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
                                                             To</label>
-                                                        <select name="assigned_to[]" id="assigned_to_{{ $task->id }}"
-                                                            class="assign_to form-controlcl shadow-sm"
-                                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                            <select name="assigned_to[]" id="assigned_to_{{ $task->id }}" class="assign_to form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                             required>
-                                                            <option value="" selected disabled>Select User</option>
+                                                                @foreach($projectMembers as $member)
+                                                                    <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                                        old('assigned_to', explode(',', optional($task)->assigned_to) ?? [])) ? 'selected' : '' }}>
+                                                                        {{ $member->user->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
                                                             @foreach ($project->members as $member)
                                                             <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                                                 old('assigned_to',
@@ -828,7 +968,7 @@
                                                                 {{ $member->user->name }}
                                                             </option>
                                                             @endforeach
-                                                        </select>
+                                                        </select> 
                                                     </div>
                                                 </div>
 
@@ -837,18 +977,24 @@
                                                         <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
                                                             To</label>
                                                         <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
-                                                            class="assign_to form-controlcl shadow-sm allotted_to_user"
+                                                            class="assign_to form-control shadow-sm allotted_to_user"
                                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
                                                             required multiple>
                                                             @foreach ($project->members as $member)
                                                             <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                                                old('allotted_to',
-                                                                optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                                                'selected' : '' }}>
-                                                                {{ $member->user->name }}
+                                                                        old('allotted_to', explode(',', optional($task)->allotted_to) ?? [])) ? 'selected' : '' }}>
+                                                                        {{ $member->user->name }}
                                                             </option>
                                                             @endforeach
                                                         </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <label for="attachments">Attachments</label>
+                                                        <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                                        <small class="text-muted">You can upload multiple files.</small>
                                                     </div>
                                                 </div>
 
@@ -865,10 +1011,6 @@
                             </div>
                         </div>
                     @endforeach
-
-                  
-                   
-
                 @endforeach
             </tbody>
         </table>
@@ -1045,10 +1187,12 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="attachments">Attachments</label>
-                                        <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                        <input onchange="displayUploadedFiles(this)" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
                                         <small class="text-muted">You can upload multiple files.</small>
                                     </div>
                                 </div>
+
+                                <div class="mt-3" id="uploadedFilesContainer"></div>
 
                                 <div class="form-actions">
                                     <button type="submit" class="btn btn-primary">Create</button>
@@ -1063,11 +1207,25 @@
     </div>
     
     <script>
-    function confirmDelete(commentId) {
-        if (confirm("Are you sure you want to delete this comment?")) {
-            document.getElementById('deleteForm' + commentId).submit();
+        function confirmDelete(commentId) {
+            if (confirm("Are you sure you want to delete this comment?")) {
+                document.getElementById('deleteForm' + commentId).submit();
+            }
         }
-    }
-</script>
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Hide parent tasks initially
+            $('#parentTasksCheckbox').change(function () {
+                if ($(this).is(':checked')) {
+                    $('.shadow').hide(); // Hide all tasks initially
+                    $('.shadow:has(td:nth-child(5):contains("N/A"))').show(); // Show tasks with "N/A" in parent task column
+                } else {
+                    $('.shadow').show(); // Show all tasks if checkbox is unchecked
+                }
+            });
+        });
+    </script>
 
 @endsection

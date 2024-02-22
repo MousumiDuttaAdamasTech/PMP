@@ -200,7 +200,7 @@
                             <td>{{ $releaseManagement->rmid }}</td>
                             <td>{{ $releaseManagement->release_date }}</td>
                             <td>{{ $releaseManagement->name }}</td>
-                            <td>{{ $releaseManagement->approver->user->name }}</td>
+                            <td>{{ optional($releaseManagement->approver)->user->name }}</td>
 
                             <td>
                                 <a href="#" data-toggle="modal" data-placement="top" title="Show"

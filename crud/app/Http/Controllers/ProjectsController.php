@@ -659,6 +659,15 @@ class ProjectsController extends Controller
     public function all_tasks(Project $project)
     {
         $projectId = $project->id;
+
+        // Fetch tasks where their IDs are in the parent_task column of any task in the project
+        $parentTasks = Task::whereIn('id', function ($query) use ($projectId) {
+            $query->select('parent_task')
+                ->from('tasks')
+                ->where('project_id', $projectId)
+                ->whereNotNull('parent_task');
+        })->get();
+
         $tasks = Task::where('project_id', $project->id)->get();
         $taskStatuses = TaskStatus::all();
         $users = User::all();
@@ -687,7 +696,7 @@ class ProjectsController extends Controller
             ->distinct()
             ->pluck('type_name')
             ->toArray();
-        return view('projects.all-tasks', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
+        return view('projects.all-tasks', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers','parentTasks'));
     }
 
     public function updateTaskStatus(Request $request)
