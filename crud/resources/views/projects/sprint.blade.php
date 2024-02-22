@@ -66,19 +66,28 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            if(document.getElementById("flag").value==1)
-            {
-                const activeTab = "manageContent";
-                if (activeTab) {
-                    const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
-                    if (tabLink) {
-                        tabLink.click();
-                        }
-                    } 
-            }
-            }); 
+        function setRedirectFlag(value) {
+        document.getElementById('flag').value = value;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check the condition for Overview
+        if (document.getElementById("flag").value == 1) {
+            activateTab('manageContent');
+        }
+
+        // Check the condition for Task Assign
+        if (document.getElementById("flag").value == 2) {
+            activateTab('taskAssignContent');
+        }
+    });
+
+    function activateTab(tabId) {
+        const tabLink = document.querySelector(`.nav-link[data-bs-target="#${tabId}"]`);
+        if (tabLink) {
+            tabLink.click();
+        }
+    }
   </script>
 
 
@@ -110,9 +119,11 @@
     </script>
 @endif
 
+
+
     <div class="form-container">
         @if(Session::get('success'))
-            <input type="hidden" id="flag" value="1">
+            <input type="hidden" id="flag" value="2">
         @else
             <input type="hidden" id="flag" value="0">
         @endif
@@ -273,7 +284,7 @@
 
                    <!-- Create task modal -->
                           
-                   <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
+                <div class="modal fade" id="createTaskModal" tabindex="-1" role="dialog" aria-labelledby="createTaskModalLabel"
                    aria-hidden="true">
                    <div class="modal-dialog" role="document">
                        <div class="modal-content">
@@ -285,6 +296,7 @@
                                <form  action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data" class="createTask">
                                    @csrf
                                    <div class="row">
+                                    
                                        <input type="hidden" name="project_id" value="{{ $project->id }}">
        
                                        <div class="col-md-12 error_msg p-3 alert alert-danger" style="display:none;"></div>
@@ -458,7 +470,7 @@
                                        </div>
        
                                        <div class="form-actions">
-                                           <button type="submit" class="btn btn-primary">Create</button>
+                                           <button type="submit" class="btn btn-primary"  onclick="setRedirectFlag(2)">Create</button>
                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</a>
                                        </div>
                                    </div>
@@ -466,7 +478,7 @@
                            </div>
                        </div>
                    </div>
-               </div>  
+                </div>  
 
 
                {{-- modal end --}}
@@ -1327,7 +1339,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="sprint_status" style="font-size: 15px;">Status<span style="color: red">*</span></label>
-                                                        <select name="sprint_status" id="sprint_status" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <select name="sprint_status" id="sprint_status" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                             <option value="" selected="selected" disabled="disabled">Select status</option>
                                                             <option value="Under discussion">Under discussion</option>
                                                             <option value="Under development">Under development</option>
@@ -1413,7 +1425,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="is_active" style="font-size: 15px;">Is Active<span style="color: red">*</span></label>
-                                                        <select name="is_active" id="is_active" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <select name="is_active" id="is_active" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                             <option value="" selected="selected" disabled="disabled">Select type</option>
                                                             <option value="1">Yes</option>
                                                             <option value="0">No</option>
@@ -1492,7 +1504,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <th style="font-weight: 600; padding-left:30px;">Assigned By:</th>
+                                                        <th style="font-weight: 600; padding-left:30px;">Assigned To:</th>
                                                         <td style="font-weight: 500">{{ $sprint->projectMember->user->name }}</td>
                                                     </tr>
                                                 </tbody>
@@ -1741,7 +1753,7 @@ $('#sprint-dropdown').change(function () {
             var statusIdFormatted = status.toLowerCase().replace(/\s/g, '');
 
             // Create HTML for the kanban-block
-            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height:130px;max-height: 230px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
+            var kanbanBlockHtml = '<div class="kanban-block shadow" style="min-height: 130px;;max-height: 230px;" id="' + statusIdFormatted + '" ondrop="drop(event, \'' + statusIdFormatted + '\')" ondragover="allowDrop(event)">';
 
             // Create HTML for the status at the top
             var statusHtml = '<div class="backlog-name" style="margin-top:-6px;">' + status + '</div>';
