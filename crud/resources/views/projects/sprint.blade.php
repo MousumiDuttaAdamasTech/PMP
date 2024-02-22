@@ -203,7 +203,7 @@
 
                                                     
                                                     <div class="edit-ico">
-                                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_{{ $task->id }}">
+                                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_{{ $task->id }}">
                                                             <i class="fas fa-edit" style="margin-right: 10px;color: rgba(0, 0, 0, 0.5);"></i>
                                                         </a>
                                                 </div>
@@ -485,7 +485,7 @@
                
   {{-- show task modal --}}
                     @foreach($tasks as $task)
-                    <div class="modal fade" id="showModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
+                    <div class="modal fade" id="showTaskModal_{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="showModalLabel_{{ $task->id }}"
                         aria-hidden="true">
                         <div class="modal-dialog modal-md modal-dialog-centered" role="document">
                             <div class="modal-content">
@@ -640,7 +640,7 @@
 {{-- edit task modal --}}
 
                 @foreach($tasks as $task)
-                <div class="modal fade " id="editModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                <div class="modal fade " id="editTaskModal_{{ $task->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style=" background-color:#061148;">
@@ -877,10 +877,10 @@
                                     <td style="font-size: 14px; width:25%;">{{ $task->priority }}</td>
                                     <td style="width: 20%;">{{ $task->estimated_time }}</td>
                                     <td class="d-flex align-items-center" style="font-size: 15px;width:25%;">
-                                        <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showModal_{{ $task->id }}">
+                                        <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showTaskModal_{{ $task->id }}">
                                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                         </a>
-                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_{{ $task->id }}">
+                                        <a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_{{ $task->id }}">
                                             <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                         </a>
                                         <a href="#" data-toggle="modal" data-target="#commentModal{{ $task->id }}">
@@ -889,11 +889,11 @@
                                         <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                                             @method('delete')
                                             @csrf
-                                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
+                                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteTaskModal{{ $task->id }}">
                                                 <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                             </button>
                                             <!-- Delete Modal start -->
-                                                <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="deleteTaskModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header flex-column">
@@ -1267,7 +1267,7 @@
                                                     <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                                 </a>
 
-                                                <a href="#" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $sprint->id }}">
+                                                <a href="#" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteSprintModal{{ $sprint->id }}">
                                                     <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                                 </a>
 
@@ -1276,7 +1276,7 @@
                                                     @csrf
                                                              
                                                     <!-- Delete Modal start -->
-                                                    <div class="modal fade" id="deleteModal{{ $sprint->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                                    <div class="modal fade" id="deleteSprintModal{{ $sprint->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                         <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header flex-column">
@@ -1770,7 +1770,7 @@ $('#sprint-dropdown').change(function () {
                     // Create HTML for the card with the status and its associated tasks
                     var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
                         '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
-                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_' + task.id + '">' +
+                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
                         '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                         '</a>' +
                         '</div>' +
