@@ -37,7 +37,7 @@ class SprintController extends Controller
     {
         $request->validate([
             'sprint_name' => 'required',
-            'estimated_hrs' => 'nullable|numeric',
+            'estimated_hrs' => 'required|numeric',
             'actual_hrs' => 'nullable|numeric',
             'sprint_status' => 'required',
             'sprint_taskDiscuss'=>'nullable|date',
@@ -105,7 +105,7 @@ class SprintController extends Controller
         'sprint_demoDate' => 'nullable|date',
         'sprint_planningDate' => 'nullable|date',
         'current_date' => 'nullable|date',
-        'assign_to' => 'required|exists:project_members,id',
+        'assign_to' => 'required|exists:project_members,project_members_id',
         'is_active' => 'required|boolean',
         // Add validation rules for other fields
     ]);
