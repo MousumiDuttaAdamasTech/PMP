@@ -960,14 +960,6 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
-                                                            @foreach ($project->members as $member)
-                                                            <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                                                old('assigned_to',
-                                                                optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                                                'selected' : '' }}>
-                                                                {{ $member->user->name }}
-                                                            </option>
-                                                            @endforeach
                                                         </select> 
                                                     </div>
                                                 </div>
