@@ -151,6 +151,8 @@
             fileName.className = 'w-100 text-center';
             fileName.innerHTML = file.name;
             fileName.style.color = "white";
+            fileName.style.overflow = "hidden";
+            fileName.style.textOverflow = "ellipsis";
 
             //fileElement.appendChild(deleteLink);
             fileElement.appendChild(icon);

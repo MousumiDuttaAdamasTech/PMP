@@ -199,6 +199,7 @@
                         // Get the role name if found, otherwise an empty string
                         $roleName = $role ? $role->member_role_type : ''; 
                     @endphp
+                   
                     <div class="col-lg-3 col-md-6 d-flex flex-col align-items-center card member-card" data-member-name="{{ $projectMember->profile_name }}"
                         data-role="{{ $roleName }}" data-engagement-percentage="{{ $pivotData->engagement_percentage }}"
                         data-start-date="{{ $pivotData->start_date }}" data-end-date="{{ $pivotData->end_date }}"

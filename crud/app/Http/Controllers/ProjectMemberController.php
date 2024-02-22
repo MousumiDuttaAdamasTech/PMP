@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use App\Models\ProjectMember;
+use App\Models\Sprint;
+use App\Models\Task;
 use App\Models\User;
 use App\Models\Project;
 use App\Models\ProjectRole;
@@ -120,12 +123,27 @@ class ProjectMemberController extends Controller
 
     public function destroy(Request $request)
     {
-        try {
+        $memberId = $request->query('memberId');
+        $projectId = $request->query('projectId');
 
-            $memberId = $request->query('memberId');
-            $projectId = $request->query('projectId');
+        $sprint = Sprint::where('projects_id', $projectId)
+            ->where('assign_to', $memberId)
+            ->first();
 
+        $task = Task::where('project_id', $projectId)
+            ->where(function ($query) use ($memberId) {
+                $query->where('assigned_to', $memberId)
+                    ->orWhereIn('allotted_to', [$memberId]);
+            })
+            ->first();
 
+        $documents = Document::where('project_id', $projectId)
+            ->where('approved_by', $memberId)
+            ->first();
+
+        if ($sprint || $task || $documents) {
+            return redirect()->back()->with('error', 'Cannot delete this project member. It is associated with other records.');
+        } else {
             // Find the project member by ID
             $projectMember = ProjectMember::where('project_id', $projectId)
                 ->where('project_members_id', $memberId)
@@ -136,13 +154,6 @@ class ProjectMemberController extends Controller
 
             return redirect()->route('projects.team', ['project' => $projectId])
                 ->with('success', 'Project member deleted successfully');
-        } catch (\Illuminate\Database\QueryException $e) {
-            $errorCode = $e->errorInfo[1];
-            if ($errorCode == 1451) { // 1451 is the error code for foreign key constraint violation
-                return redirect()->back()->with('error', 'Cannot delete this project member. It is associated with other records.');
-            }
-            // For other database errors, you can handle them as needed
-            return redirect()->back()->with('error', 'An error occurred while deleting the project member.');
         }
     }
 
