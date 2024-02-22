@@ -31,35 +31,45 @@ class ProjectMemberController extends Controller
 
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'project_id' => 'required',
-            'project_members_id.*' => 'required|exists:users,id', // Validate each element in the array
-            'project_role_id.*' => 'required|exists:project_role,id', // Validate each element in the array
-            'engagement_percentage.*' => 'required', // Validate each element in the array
-            'start_date.*' => 'nullable',
-            'end_date.*' => 'nullable',
-            'duration.*' => 'nullable',
-            'is_active.*' => 'required',
-            'engagement_mode.*' => 'nullable',
-        ]);
+        $member = ProjectMember::where('project_id', $request->project_id)
+            ->where('project_members_id', $request->project_members_id)
+            ->first();
 
-        // Loop through the validated data and create project members
-        foreach ($validatedData['project_members_id'] as $key => $projectId) {
-            ProjectMember::create([
-                'project_id' => $validatedData['project_id'][$key],
-                'project_members_id' => $projectId,
-                'project_role_id' => $validatedData['project_role_id'][$key],
-                'engagement_percentage' => $validatedData['engagement_percentage'][$key],
-                'start_date' => $validatedData['start_date'][$key],
-                'end_date' => $validatedData['end_date'][$key],
-                'duration' => $validatedData['duration'][$key],
-                'is_active' => $validatedData['is_active'][$key],
-                'engagement_mode' => $validatedData['engagement_mode'][$key],
+        if (!$member) {
+
+            $validatedData = $request->validate([
+                'project_id' => 'required',
+                'project_members_id.*' => 'required|exists:users,id', // Validate each element in the array
+                'project_role_id.*' => 'required|exists:project_role,id', // Validate each element in the array
+                'engagement_percentage.*' => 'required', // Validate each element in the array
+                'start_date.*' => 'nullable',
+                'end_date.*' => 'nullable',
+                'duration.*' => 'nullable',
+                'is_active.*' => 'required',
+                'engagement_mode.*' => 'nullable',
             ]);
-        }
 
-        return redirect()->route('projects.team', ['project' => $request->project_id])
-            ->with('success', 'Project members added successfully');
+            // Loop through the validated data and create project members
+            foreach ($validatedData['project_members_id'] as $key => $projectId) {
+                ProjectMember::create([
+                    'project_id' => $validatedData['project_id'][$key],
+                    'project_members_id' => $projectId,
+                    'project_role_id' => $validatedData['project_role_id'][$key],
+                    'engagement_percentage' => $validatedData['engagement_percentage'][$key],
+                    'start_date' => $validatedData['start_date'][$key],
+                    'end_date' => $validatedData['end_date'][$key],
+                    'duration' => $validatedData['duration'][$key],
+                    'is_active' => $validatedData['is_active'][$key],
+                    'engagement_mode' => $validatedData['engagement_mode'][$key],
+                ]);
+            }
+
+            return redirect()->route('projects.team', ['project' => $request->project_id])
+                ->with('success', 'Project members added successfully');
+        } else {
+            return redirect()->route('projects.team', ['project' => $request->project_id])
+                ->with('error', 'Member already exists');
+        }
     }
 
     public function edit($id)
@@ -87,8 +97,10 @@ class ProjectMemberController extends Controller
         //     'engagement_mode' => 'nullable',
         // ]);
 
-        // // Find the project member by ID
-        $projectMember = ProjectMember::findOrFail($request->project_members_id);
+        // Find the project member by ID
+        $projectMember = ProjectMember::where('project_id', $request->project_id)
+            ->where('project_members_id', $request->project_members_id)
+            ->first();
 
         // Update the project member with validated data
         $projectMember->update([
@@ -106,14 +118,18 @@ class ProjectMemberController extends Controller
             ->with('success', 'Project member updated successfully');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
         try {
-            // Find the project member by ID
-            $projectMember = ProjectMember::find($id);
 
-            // Get the project ID before deleting the project member
-            $projectId = $projectMember->project_id;
+            $memberId = $request->query('memberId');
+            $projectId = $request->query('projectId');
+
+
+            // Find the project member by ID
+            $projectMember = ProjectMember::where('project_id', $projectId)
+                ->where('project_members_id', $memberId)
+                ->first();
 
             // Delete the project member
             $projectMember->delete();

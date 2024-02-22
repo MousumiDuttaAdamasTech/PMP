@@ -49,6 +49,27 @@
                 showConfirmButton: false,
                 timer: 3000
             });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '{{ Session::get('error') }}',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        });
+    </script>
+@endif
+
+@if(Session::has('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ Session::get('error') }}',
+                showConfirmButton: false,
+                timer: 3000
+            });
         });
     </script>
 @endif
@@ -147,9 +168,9 @@
 <div class="form-container">
     <div class="row">
         @if (session('error'))
-            <div class=" col-md-6 mx-auto alert alert-danger">
+            {{-- <div class=" col-md-6 mx-auto alert alert-danger">
                 {{ session('error') }}
-            </div>
+            </div> --}}
         @endif
         <div class="col-md-12 mb-3">
             <div class="titlebar d-flex flex-column flex-md-row justify-content-md-between align-items-center gap-3"
@@ -198,7 +219,7 @@
                                 <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
                                     <i class="fas fa-edit text-primary"></i>
                                 </a> 
-                                <a href="/deleteProjectMember/{{$projectMember->id}}" data-placement="top" title="Delete">
+                                <a href="/deleteProjectMember/?memberId={{$projectMember->id}}&projectId={{$projectMember->pivot->project_id}}" data-placement="top" title="Delete">
                                     <i class="fas fa-trash-alt text-danger"></i>
                                 </a>
                             </div>    
@@ -402,7 +423,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="date" id="start_date_1" name="start_date[]" class="form-control" required>
+                            <input type="date" id="start_date_stiff" name="start_date[]" class="form-control" required>
                         </div>
 
                         <div class="col-md-6">
@@ -410,7 +431,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="date" id="end_date_1" name="end_date[]" class="form-control" required onchange="handleEndDateChange('1')">
+                            <input type="date" id="end_date_stiff" name="end_date[]" class="form-control" required onchange="handleEndDateChange('stiff')">
                         </div>
 
                         <div class="col-md-6">
@@ -418,7 +439,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <input type="number" id="duration_1" name="duration[]" class="form-control" required oninput="handleDuration(this.value,'1')">
+                            <input type="number" id="duration_stiff" name="duration[]" class="form-control" required oninput="handleDuration(this.value,'stiff')">
                         </div>
 
                         <div class="col-md-6">
@@ -426,7 +447,7 @@
                         </div>
 
                         <div class="col-md-6">
-                            <select id="engagement_mode_1" name="engagement_mode[]" class="form-control" required onchange="handleEngagement(this.value, 1)">
+                            <select id="engagement_mode_stiff" name="engagement_mode[]" class="form-control" required onchange="handleEngagement(this.value, 'stiff')">
                                 <option value="daily">Daily</option>
                                 <option value="weekly">Weekly</option>
                                 <option value="monthly">Monthly</option>
