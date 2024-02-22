@@ -960,12 +960,6 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
-
-                                                        {{-- <select name="assigned_to[]" id="assigned_to_{{ $task->id }}"
-                                                            class="assign_to form-controlcl shadow-sm"
-                                                            style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
-                                                            required>
-                                                            {{-- <option value="" selected disabled>Select User</option> --}}
                                                             @foreach ($project->members as $member)
                                                             <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                                                 old('assigned_to',
@@ -974,7 +968,7 @@
                                                                 {{ $member->user->name }}
                                                             </option>
                                                             @endforeach
-                                                        </select> --}}
+                                                        </select> 
                                                     </div>
                                                 </div>
 
@@ -987,12 +981,6 @@
                                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
                                                             required multiple>
                                                             @foreach ($project->members as $member)
-                                                            {{-- <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                                                old('allotted_to',
-                                                                optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                                                'selected' : '' }}>
-                                                                {{ $member->user->name }}
-                                                            </option> --}}
                                                             <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                                                         old('allotted_to', explode(',', optional($task)->allotted_to) ?? [])) ? 'selected' : '' }}>
                                                                         {{ $member->user->name }}

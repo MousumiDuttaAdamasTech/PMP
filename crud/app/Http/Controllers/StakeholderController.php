@@ -34,7 +34,7 @@ class  StakeholderController extends Controller
     {
         $validatedData = $request->validate([
             'release_management_id' => 'required',
-            'member_id' => 'required|exists:project_members,id',
+            'member_id' => 'required|exists:project_members,project_members_id',
             'stakeholder_role_id' => 'required|exists:stakeholder_roles,id',
         ]);
 
