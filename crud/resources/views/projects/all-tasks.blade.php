@@ -161,6 +161,8 @@
                 fileName.className = 'w-100 text-center';
                 fileName.innerHTML = file.name;
                 fileName.style.color = "white";
+                fileName.style.overflow = "hidden";
+                fileName.style.textOverflow = "ellipsis";
     
                 //fileElement.appendChild(deleteLink);
                 fileElement.appendChild(icon);
@@ -170,39 +172,39 @@
             });
         }
     
-        function displayUploadedFiles2(input,bugId){
-            const filesContainer = document.getElementById(`uploadedFilesContainer_${bugId}`);
-            filesContainer.innerHTML = ''; 
+        // function displayUploadedFiles2(input,bugId){
+        //     const filesContainer = document.getElementById(`uploadedFilesContainer_${bugId}`);
+        //     filesContainer.innerHTML = ''; 
     
-            const mainDiv = document.createElement('div');
-            mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+        //     const mainDiv = document.createElement('div');
+        //     mainDiv.className = 'row mt-4 gap-2 justify-content-center';
     
-            Array.from(input.files).forEach(file => {
+        //     Array.from(input.files).forEach(file => {
     
-                const fileElement = document.createElement('div');
-                fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
-                fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+        //         const fileElement = document.createElement('div');
+        //         fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+        //         fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
     
-                const deleteLink = document.createElement('div');
-                deleteLink.className = 'd-flex justify-content-end w-100';
-                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+        //         const deleteLink = document.createElement('div');
+        //         deleteLink.className = 'd-flex justify-content-end w-100';
+        //         deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
     
-                const icon = document.createElement('div');
-                icon.className = 'text-center';
-                icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+        //         const icon = document.createElement('div');
+        //         icon.className = 'text-center';
+        //         icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
     
-                const fileName = document.createElement('div');
-                fileName.className = 'w-100 text-center';
-                fileName.innerHTML = file.name;
-                fileName.style.color = "white";
+        //         const fileName = document.createElement('div');
+        //         fileName.className = 'w-100 text-center';
+        //         fileName.innerHTML = file.name;
+        //         fileName.style.color = "white";
     
-                //fileElement.appendChild(deleteLink);
-                fileElement.appendChild(icon);
-                fileElement.appendChild(fileName);
-                mainDiv.appendChild(fileElement);
-                filesContainer.appendChild(mainDiv);
-            });
-        }
+        //         //fileElement.appendChild(deleteLink);
+        //         fileElement.appendChild(icon);
+        //         fileElement.appendChild(fileName);
+        //         mainDiv.appendChild(fileElement);
+        //         filesContainer.appendChild(mainDiv);
+        //     });
+        // }
     </script>
 
     @if ($errors->any())
@@ -748,26 +750,26 @@
                                             </div>
                                         </div>
 
-                                            @if($task->attachments && $task->attachments->count() > 0)
-                                                <div class="col-md-12">
-                                                    <div class="form-group">
-                                                        <label for="documents">Documents</label>
-                                                        <ul>
-                                                            @foreach ($task->attachments as $attachment)
-                                                                <li class="list-group-item">
-                                                                    <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                                    <a href="{{($attachment->file_path) }}"
-                                                                        target="_blank">
-                                                                        {{ $attachment->file_path }}
-                                                                    </a>
-                                                                </li>
-                                                            @endforeach 
-                                                        </ul>
-                                                    </div>
+                                        @if($task->attachments && $task->attachments->count() > 0)
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="documents">Documents</label>
+                                                    <ul>
+                                                        @foreach ($task->attachments as $attachment)
+                                                            <li class="list-group-item">
+                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                                <a href="{{($attachment->file_path) }}"
+                                                                    target="_blank">
+                                                                    {{ $attachment->file_path }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach 
+                                                    </ul>
                                                 </div>
-                                            @endif
-                                                
-                                                <!-- Add other form fields with unique identifiers -->
+                                            </div>
+                                        @endif
+                                            
+                                        <!-- Add other form fields with unique identifiers -->
 
                                         <div class="form-actions">
                                             <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -920,7 +922,7 @@
                                                             class="assign_to form-controlcl shadow-sm"
                                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                             required>
-                                                            <option value="" selected disabled>Select User</option>
+                                                            {{-- <option value="" selected disabled>Select User</option> --}}
                                                             @foreach ($project->members as $member)
                                                             <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                                                 old('assigned_to',
@@ -956,12 +958,10 @@
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="attachments">Attachments</label>
-                                                        <input onchange="displayUploadedFiles(this)" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                                        <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
                                                         <small class="text-muted">You can upload multiple files.</small>
                                                     </div>
                                                 </div>
-
-                                                <div class="mt-3" id="uploadedFilesContainer"></div>
 
                                                 <!-- Add other form fields with unique identifiers -->
 
@@ -976,10 +976,6 @@
                             </div>
                         </div>
                     @endforeach
-
-                  
-                   
-
                 @endforeach
             </tbody>
         </table>
@@ -1156,10 +1152,12 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="attachments">Attachments</label>
-                                        <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                        <input onchange="displayUploadedFiles(this)" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
                                         <small class="text-muted">You can upload multiple files.</small>
                                     </div>
                                 </div>
+
+                                <div class="mt-3" id="uploadedFilesContainer"></div>
 
                                 <div class="form-actions">
                                     <button type="submit" class="btn btn-primary">Create</button>
