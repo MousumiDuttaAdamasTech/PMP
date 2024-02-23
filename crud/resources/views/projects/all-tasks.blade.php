@@ -755,16 +755,12 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned To</label>
-                                                <select name="assigned_to" id="assigned_to_{{ $task->id }}"
-                                                    class="assign_to form-control shadow-sm"
-                                                    style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px; background-color:#e9ecef;" disabled>
-                                                    @foreach ($project->members as $member)
-                                                    <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                                        old('assigned_to',
-                                                        optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                                        'selected' : '' }}>
-                                                        {{ $member->user->name }}
-                                                    </option>
+                                                <select name="assigned_to[]" id="assigned_to_{{ $task->id }}" class="assign_to form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" disabled>
+                                                    @foreach($projectMembers as $member)
+                                                        <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                            old('assigned_to', explode(',', optional($task)->assigned_to) ?? [])) ? 'selected' : '' }}>
+                                                            {{ $member->user->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -772,13 +768,13 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group allot_user">
-                                                <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted To</label>
+                                              <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted To</label>
                                                 <div class="assign_to form-control shadow-sm" style="position: relative;border: 1px solid #8585854a; border-radius: 4px;color: #858585; font-size: 14px; cursor: pointer; background-color:#e9ecef;">
-                                                    @foreach ($project->members as $member)
-                                                        @if (in_array($member->user->id, old('allotted_to', optional($task)->allottedToUsers()->pluck('id')->toArray() ?? [])))
-                                                            &#8226 {{ $member->user->name }}
-                                                        @endif
-                                                    @endforeach
+                                                  @foreach ($project->members as $member)
+                                                  @if (in_array($member->user->id, old('allotted_to', explode(',', optional($task)->allotted_to) ?? [])))
+                                                  &#8226 {{ $member->user->name }}
+                                                  @endif
+                                                  @endforeach
                                                 </div>
                                             </div>
                                         </div>
@@ -960,14 +956,14 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
-                                                            @foreach ($project->members as $member)
+                                                            {{-- @foreach ($project->members as $member)
                                                             <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
                                                                 old('assigned_to',
                                                                 optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
                                                                 'selected' : '' }}>
                                                                 {{ $member->user->name }}
                                                             </option>
-                                                            @endforeach
+                                                            @endforeach --}}
                                                         </select> 
                                                     </div>
                                                 </div>
