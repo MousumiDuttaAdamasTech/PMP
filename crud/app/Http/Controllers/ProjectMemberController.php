@@ -133,7 +133,7 @@ class ProjectMemberController extends Controller
         $task = Task::where('project_id', $projectId)
             ->where(function ($query) use ($memberId) {
                 $query->where('assigned_to', $memberId)
-                    ->orWhereIn('allotted_to', [$memberId]);
+                    ->orWhereRaw("FIND_IN_SET('$memberId', allotted_to)");
             })
             ->first();
 
