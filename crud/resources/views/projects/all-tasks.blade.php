@@ -163,6 +163,7 @@
                 fileName.style.color = "white";
                 fileName.style.overflow = "hidden";
                 fileName.style.textOverflow = "ellipsis";
+                fileName.style.whiteSpace = "nowrap";
     
                 //fileElement.appendChild(deleteLink);
                 fileElement.appendChild(icon);
@@ -172,39 +173,42 @@
             });
         }
     
-        // function displayUploadedFiles2(input,bugId){
-        //     const filesContainer = document.getElementById(`uploadedFilesContainer_${bugId}`);
-        //     filesContainer.innerHTML = ''; 
+        function displayUploadedFiles2(input,taskId){
+            const filesContainer = document.getElementById(`uploadedFilesContainer_${taskId}`);
+            filesContainer.innerHTML = ''; 
     
-        //     const mainDiv = document.createElement('div');
-        //     mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+            const mainDiv = document.createElement('div');
+            mainDiv.className = 'row mt-4 gap-2 justify-content-center';
     
-        //     Array.from(input.files).forEach(file => {
+            Array.from(input.files).forEach(file => {
     
-        //         const fileElement = document.createElement('div');
-        //         fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
-        //         fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+                const fileElement = document.createElement('div');
+                fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
     
-        //         const deleteLink = document.createElement('div');
-        //         deleteLink.className = 'd-flex justify-content-end w-100';
-        //         deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+                const deleteLink = document.createElement('div');
+                deleteLink.className = 'd-flex justify-content-end w-100';
+                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
     
-        //         const icon = document.createElement('div');
-        //         icon.className = 'text-center';
-        //         icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+                const icon = document.createElement('div');
+                icon.className = 'text-center';
+                icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
     
-        //         const fileName = document.createElement('div');
-        //         fileName.className = 'w-100 text-center';
-        //         fileName.innerHTML = file.name;
-        //         fileName.style.color = "white";
+                const fileName = document.createElement('div');
+                fileName.className = 'w-100 text-center';
+                fileName.innerHTML = file.name;
+                fileName.style.color = "white";
+                fileName.style.overflow = "hidden";
+                fileName.style.textOverflow = "ellipsis";
+                fileName.style.whiteSpace = "nowrap";
     
-        //         //fileElement.appendChild(deleteLink);
-        //         fileElement.appendChild(icon);
-        //         fileElement.appendChild(fileName);
-        //         mainDiv.appendChild(fileElement);
-        //         filesContainer.appendChild(mainDiv);
-        //     });
-        // }
+                //fileElement.appendChild(deleteLink);
+                fileElement.appendChild(icon);
+                fileElement.appendChild(fileName);
+                mainDiv.appendChild(fileElement);
+                filesContainer.appendChild(mainDiv);
+            });
+        }
     </script>
 
     @if ($errors->any())
@@ -945,26 +949,16 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned
-                                                            To</label>
-                                                            <select name="assigned_to[]" id="assigned_to_{{ $task->id }}" class="assign_to form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
+                                                        <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned To</label>
+                                                        <select name="assigned_to[]" id="assigned_to_{{ $task->id }}" class="assign_to form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                             required>
-                                                                @foreach($projectMembers as $member)
-                                                                    <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                                                        old('assigned_to', explode(',', optional($task)->assigned_to) ?? [])) ? 'selected' : '' }}>
-                                                                        {{ $member->user->name }}
-                                                                    </option>
-                                                                @endforeach
-                                                            </select>
-                                                            {{-- @foreach ($project->members as $member)
-                                                            <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
-                                                                old('assigned_to',
-                                                                optional($task)->assignedToUsers()->pluck('id')->toArray() ?? [])) ?
-                                                                'selected' : '' }}>
-                                                                {{ $member->user->name }}
-                                                            </option>
-                                                            @endforeach --}}
-                                                        </select> 
+                                                            @foreach($projectMembers as $member)
+                                                                <option value="{{ $member->user->id }}" {{ in_array($member->user->id,
+                                                                    old('assigned_to', explode(',', optional($task)->assigned_to) ?? [])) ? 'selected' : '' }}>
+                                                                    {{ $member->user->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
                                                     </div>
                                                 </div>
 
@@ -986,12 +980,34 @@
                                                     </div>
                                                 </div>
 
+                                                <div class="mt-3" id="uploadedFilesContainer_{{$task->id}}"></div>
+
                                                 <div class="col-md-12">
                                                     <div class="form-group">
                                                         <label for="attachments">Attachments</label>
-                                                        <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                                        <input onchange="displayUploadedFiles2(this,{{$task->id}})" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
                                                         <small class="text-muted">You can upload multiple files.</small>
                                                     </div>
+                                                </div>
+
+                                                <div class="row my-4 gap-2 justify-content-center">
+                                                    @forEach($taskAttachments as $taskAttachment)
+                                                        @if($task->id == $taskAttachment->task_id)
+                                                            <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                                <div class="d-flex justify-content-end w-100">
+                                                                    <a href="/deleteTaskAttachments/{{$taskAttachment->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                                </div>
+                                                                <div class="w-100 text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                                                    <a href="{{ asset($taskAttachment->file_path) }}" style="text-decoration: none; color: white;">
+                                                                        {{ basename($taskAttachment->file_path) }}
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 </div>
 
                                                 <!-- Add other form fields with unique identifiers -->
@@ -1188,7 +1204,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mt-3" id="uploadedFilesContainer"></div>
+                                <div class="my-3" id="uploadedFilesContainer"></div>
 
                                 <div class="form-actions">
                                     <button type="submit" class="btn btn-primary">Create</button>
