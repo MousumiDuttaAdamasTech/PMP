@@ -118,6 +118,9 @@ class TaskController extends Controller
             }
         }
 
+        session()->flash('success', 'Task created successfully.');
+        session()->flash('flag', 2);
+
         return back()->with('success', 'Task created successfully.');
     }
 

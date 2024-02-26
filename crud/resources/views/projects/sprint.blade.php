@@ -28,8 +28,7 @@
     
     <script>
         $(document).ready(function () {
-           
-            
+
         });
     </script>
 
@@ -66,28 +65,32 @@
             });
         }
 
-        function setRedirectFlag(value) {
-        document.getElementById('flag').value = value;
-    }
+        document.addEventListener('DOMContentLoaded', function () {
+            var flagelement=document.getElementById("flag").value;
+            console.log(flagelement);
+            
+            if(document.getElementById("flag").value==1)
+            {
+                const activeTab = "manageContent";
+                if (activeTab) {
+                    const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
+                    if (tabLink) {
+                        tabLink.click();
+                        }
+                    } 
+            }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Check the condition for Overview
-        if (document.getElementById("flag").value == 1) {
-            activateTab('manageContent');
-        }
-
-        // Check the condition for Task Assign
-        if (document.getElementById("flag").value == 2) {
-            activateTab('taskAssignContent');
-        }
-    });
-
-    function activateTab(tabId) {
-        const tabLink = document.querySelector(`.nav-link[data-bs-target="#${tabId}"]`);
-        if (tabLink) {
-            tabLink.click();
-        }
-    }
+            if(document.getElementById("flag").value==2)
+            {
+                const activeTab = "taskAssignContent";
+                if (activeTab) {
+                    const tabLink = document.querySelector(`.nav-link[data-bs-target="#${activeTab}"]`);
+                    if (tabLink) {
+                        tabLink.click();
+                        }
+                    } 
+            }
+            }); 
   </script>
 
 
@@ -122,8 +125,8 @@
 
 
     <div class="form-container">
-        @if(Session::get('success'))
-            <input type="hidden" id="flag" value="2">
+        @if(Session::has('success') && Session::has('flag'))
+            <input type="hidden" id="flag" value="{{ Session::get('flag') }}">
         @else
             <input type="hidden" id="flag" value="0">
         @endif
@@ -187,6 +190,8 @@
                                             <div class="backlog-tasks" id="{{ strtolower(str_replace(' ', '', $status)) }}-tasks" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
                                             <div class="custom-card-container" style="overflow-x:auto;max-height: 140px;margin-bottom:5px;width:135px;">
                                             @foreach($tasks as $task)
+
+                                            @if($sprints->isNotEmpty())
                                             @if ($task->project_task_status_id === $statusId && $task->sprint_id === $latestSprintId) <!-- Check if task status matches the current status block -->
                                             <div class="card shadow" id="task{{ $task->id }}" draggable="true" ondragstart="drag(event)" style="margin-bottom: 15px; height:130px;max-height:120px;overflow-x:auto; width:120px;" >
                                                 <div class="card__header" >
@@ -251,7 +256,8 @@
                                                     </div>
             
                                                 </div>
-                                                </div>
+                                             </div>
+                                             @endif
                                          @endif
                                         @endforeach
                                             </div>
@@ -462,15 +468,15 @@
                                        </div>
        
                                        <div class="col-md-12">
-                                           <div class="form-group">
-                                               <label for="attachments">Attachments</label>
-                                               <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
-                                               <small class="text-muted">You can upload multiple files.</small>
-                                           </div>
-                                       </div>
+                                        <div class="form-group">
+                                            <label for="attachments">Attachments</label>
+                                            <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                            <small class="text-muted">You can upload multiple files.</small>
+                                        </div>
+                                    </div>
        
                                        <div class="form-actions">
-                                           <button type="submit" class="btn btn-primary"  onclick="setRedirectFlag(2)">Create</button>
+                                           <button type="submit" class="btn btn-primary">Create</button>
                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</a>
                                        </div>
                                    </div>
@@ -858,25 +864,47 @@
                         </button>
                     </div>
 
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="showParentTasks">
+                        <label class="form-check-label" for="showParentTasks">Show Parent Tasks Only</label>
+                    </div>
+                    
+
                     <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
                             <tr>
-                                <th style="width: 25%;">ID</th>
-                                <th style="width: 25%;">Title</th>
-                                <th style="width: 25%;">Priority</th>
-                                <th style="width: 25%;">Estimated Time</th>
-                                <th style="width: 25%;">Actions</th>
+                                <th style="width: 14.2%;">Task ID</th>
+                                <th style="width: 14.2%;">Epic</th>
+                                <th style="width: 14.2%;">Story</th>
+                                <th style="width: 14.2%;">Task Title</th>
+                                <th style="width: 14.2%;">Priority</th>
+                                <th style="width: 14.2%;">Estd. Time</th>
+                                <th style="width: 14.2%;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($sortedTasks as $task)
-                            @if($task->sprint_id === null)
-                                <tr class="shadow" style="border-radius:15px;">
-                                    <td style="font-size: 15px; width:25%;">{{ $task->uuid }}</td>
-                                    <td style="font-size: 15px; width:25%;">{{ $task->title }}</td>
-                                    <td style="font-size: 14px; width:25%;">{{ $task->priority }}</td>
-                                    <td style="width: 20%;">{{ $task->estimated_time }}</td>
-                                    <td class="d-flex align-items-center" style="font-size: 15px;width:25%;">
+                            
+                                <tr id="taskRow_{{ $task->id }}" class="shadow" style="border-radius:15px;">
+                                    <td style="font-size: 15px; width:14.2%;">{{ $task->uuid }}</td>
+                                    <td style="width: 14.2%;">
+                                        @if($task->epic)
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($task->epic), 20, $end='...') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td style="width: 14.2%;">
+                                        @if($task->story)
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($task->story), 20, $end='...') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td style="font-size: 15px; width:14.2%;">{{ $task->title }}</td>
+                                    <td style="font-size: 14px; width:14.2%;">{{ $task->priority }}</td>
+                                    <td style="width: 14.2%;">{{ $task->estimated_time }}</td>
+                                    <td class="d-flex align-items-center" style="font-size: 15px;width:14.2%;">
                                         <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showTaskModal_{{ $task->id }}">
                                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                         </a>
@@ -930,7 +958,7 @@
                                         </form>
                                     </td>
                                 </tr>
-                                @endif
+                               
                             @endforeach
                         </tbody>
                     </table>
@@ -1257,7 +1285,17 @@
                                             
                                             @endif
                                         </td>
-                                        <td style="width: 25%;">{{ $sprint->current_date }}</td> 
+                                        <td style="width: 25%;">
+                                            
+                                          @if( $sprint->current_date)
+                                            {{ $sprint->current_date}}
+                                          
+                                          @else
+                                            N/A
+                                          
+                                          @endif
+                                        
+                                        </td> 
                                         <td style="width: 25%;">
                                             <div class="btn-group" role="group">
                                                 <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showSprintModal_{{ $sprint->id }}">
@@ -1475,11 +1513,23 @@
                                                     </tr>
                                                     <tr>
                                                         <th style="font-weight: 600; padding-left:30px;">Actual Hours:</th>
-                                                        <td style="font-weight: 500">{{ $sprint->actual_hrs }}</td>
+                                                        <td style="font-weight: 500">
+                                                            @if($sprint->actual_hrs)
+                                                            {{ $sprint->actual_hrs }}
+                                                            @else
+                                                             N/A
+                                                             @endif
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th style="font-weight: 600; padding-left:30px;">Current Date:</th>
-                                                        <td style="font-weight: 500">{{ $sprint->current_date }}</td>
+                                                        <td style="font-weight: 500">
+                                                            @if($sprint->current_date )
+                                                            {{$sprint->current_date }}
+                                                            @else
+                                                             N/A
+                                                             @endif
+                                                        </td>
                                                     </tr>
                                                     <tr>
                                                         <th style="font-weight: 600; padding-left:30px;">Sprint Status:</th>
@@ -1666,9 +1716,48 @@
                 </div>
             </div> 
         </div>
-
-
-
+        <script>
+            $(document).ready(function () {
+                // Map necessary properties from PHP to JavaScript
+                var tasks = @json($tasks->map(function($task) {
+                    return [
+                        'id' => $task->id,
+                        'isParentTask' => $task->isParentTask(),
+                        
+                    ];
+                }));
+        
+                console.log('All tasks:', tasks);
+        
+            
+                function updateTable() {
+                    var showParentTasks = $('#showParentTasks').prop('checked');
+                    console.log('Show Parent Tasks:', showParentTasks);
+        
+                    tasks.forEach(function (task) {
+                        var isParentTask = task.isParentTask;
+                        console.log('Task ID:', task.id, 'Is Parent Task:', isParentTask);
+        
+                        var shouldShow = showParentTasks ? isParentTask : true;
+                        console.log('Should Show:', shouldShow);
+        
+                        var $row = $('#taskRow_' + task.id);
+                        $row.toggle(shouldShow);
+                    });
+                }
+        
+                // Attach change event handler to the checkbox
+                $('#showParentTasks').change(function () {
+                    console.log('Checkbox changed');
+                    updateTable();
+                });
+        
+                // Initial table update
+                updateTable();
+            });
+        </script>
+        
+       
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -1717,6 +1806,7 @@
     <script>
         // Wait for the entire page to load
         $(document).ready(function () {
+            
 
 
             // Add a click event listener to the manageTaskAssignButton
@@ -1770,7 +1860,7 @@ $('#sprint-dropdown').change(function () {
                     // Create HTML for the card with the status and its associated tasks
                     var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
                         '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
-                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
+                        '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_' + task.id + '">' +
                         '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                         '</a>' +
                         '</div>' +

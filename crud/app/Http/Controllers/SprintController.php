@@ -68,7 +68,8 @@ class SprintController extends Controller
         $sprint->is_active = $request->is_active;
         $sprint->save();
       
-
+        session()->flash('success', 'Sprint created successfully.');
+        session()->flash('flag', 1);
       
         return redirect()->route('projects.sprint', ['project' => $request->projects_id])->with('success', 'Sprint created successfully.');
 
