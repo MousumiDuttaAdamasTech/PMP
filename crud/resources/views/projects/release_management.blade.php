@@ -158,6 +158,44 @@
 </script>
 @endsection
 
+<script>
+    function displayUploadedFiles(input,id) {
+        const filesContainer = document.getElementById(`uploadedFilesContainer_${id}`);
+        filesContainer.innerHTML = ''; 
+
+        const mainDiv = document.createElement('div');
+        mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+
+        Array.from(input.files).forEach(file => {
+
+            const fileElement = document.createElement('div');
+            fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+            fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+
+            const deleteLink = document.createElement('div');
+            deleteLink.className = 'd-flex justify-content-end w-100';
+            deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+
+            const icon = document.createElement('div');
+            icon.className = 'text-center';
+            icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+
+            const fileName = document.createElement('div');
+            fileName.className = 'w-100 text-center';
+            fileName.innerHTML = file.name;
+            fileName.style.color = "white";
+            fileName.style.overflow = "hidden";
+            fileName.style.textOverflow = "ellipsis";
+            fileName.style.whiteSpace = "nowrap";
+
+            //fileElement.appendChild(deleteLink);
+            fileElement.appendChild(icon);
+            fileElement.appendChild(fileName);
+            mainDiv.appendChild(fileElement);
+            filesContainer.appendChild(mainDiv);
+        });
+    }
+</script>
 
 
 @section('main_content')
@@ -465,12 +503,12 @@
     </div>
 
     <!-- Release Management Modal -->
-    <div class="modal fade modal-xl" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel"
+    <div class="modal fade" id="releaseManagementModal" tabindex="-1" role="dialog" aria-labelledby="releaseManagementModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="releaseManagementModalLabel">Add Release Management</h5>
+                <div class="modal-header" style="background-color:#061148;">
+                    <h4 class="modal-title" id="releaseManagementModalLabel" style="color: white;font-weight: bolder;">Add Release Management</h5>
                 </div>
                 <div class="modal-body">
                     <form action="{{ route('projects.release_management.store', ['project' => $project->id]) }}"
@@ -483,14 +521,14 @@
                             <!-- Other Release Management Form Fields -->
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="rmid">Release Management ID:</label>
+                                    <label for="rmid">RMID</label>
                                     <input type="text" class="form-control shadow-sm" name="rmid" id="rmid" required>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="release_date">Release Date:</label>
+                                    <label for="release_date">Release Date</label>
                                     <input type="date" class="form-control shadow-sm" name="release_date" id="release_date"
                                         required>
                                 </div>
@@ -498,7 +536,7 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="approved_by">Approved By:</label>
+                                    <label for="approved_by">Approved By</label>
                                     <select name="approved_by" id="approved_by" class="form-controlcl shadow-sm" required>
                                         <option value="">Select User</option>
                                         @foreach ($project->projectMembers as $projectMember)
@@ -510,23 +548,25 @@
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="name">Name:</label>
+                                    <label for="name">Name</label>
                                     <input type="text" class="form-control shadow-sm" name="name" id="name" required>
                                 </div>
                             </div>
 
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="details">Details:</label>
+                                    <label for="details">Details</label>
                                     <textarea name="details" id="details" required
                                     class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"></textarea>
                                 </div>
                             </div>
 
+                            <div id="uploadedFilesContainer_documents"></div>
+
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="documents">Documents:</label>
-                                    <input type="file" class="form-control shadow-sm" name="documents[]" id="documents"
+                                    <label for="documents">Documents</label>
+                                    <input type="file" onchange="displayUploadedFiles(this,'documents')" class="form-control shadow-sm" name="documents[]" id="documents"
                                         multiple>
                                 </div>
                             </div>
