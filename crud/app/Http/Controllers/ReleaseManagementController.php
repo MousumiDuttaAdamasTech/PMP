@@ -137,10 +137,10 @@ class ReleaseManagementController extends Controller
                 'release_management_id' => $request->input('release_management_id'),
                 'stakeholder_role_id' => $request->input('stakeholder_role_id'),
             ]);
-    
+
             // Associate the Stakeholder with the current ReleaseManagement
             $stakeholder->release_management()->associate($releaseManagement);
-    
+
             // Save the Stakeholder
             $stakeholder->save();
         }
@@ -149,20 +149,13 @@ class ReleaseManagementController extends Controller
             ->with('success', 'Stakeholder added successfully');
     }
 
-    public function destroy(Project $project, ReleaseManagement $releaseManagement)
+    public function destroy($projectId, $rmdocid)
     {
-        // Delete the documents associated with the release management entry
-        foreach ($releaseManagement->documents as $document) {
-            // Assuming you are using Laravel's storage for file management
-            \Storage::delete($document->document_path);
-            
-            // Delete the ReleaseManagementDocument instance
-            $document->delete();
-        }
+        // Use $projectId and $rmdocid as needed
+        $doc = ReleaseManagementDocument::find($rmdocid);
+        $doc->delete();
 
-        // Delete the release management entry
-        $releaseManagement->delete();
-
-        return redirect()->route('projects.release_management', $project)->with('success', 'Release Management entry deleted successfully!');
+        // Assuming you have the $project object already
+        return redirect()->route('projects.release_management', $projectId)->with('success', 'Release Management entry deleted successfully!');
     }
 }
