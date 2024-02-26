@@ -22,6 +22,7 @@ use App\Models\ProjectTaskStatus;
 use App\Models\RolePrice;
 use App\Models\WorkerPrice;
 use App\Models\Task;
+use App\Models\TaskAttachment;
 use App\Models\Sprint;
 use App\Models\Kanban;
 use App\Models\ProjectMember;
@@ -677,6 +678,10 @@ class ProjectsController extends Controller
         $profiles = Profile::all();
         $projectMembers = ProjectMember::with('user')->get();
 
+        $taskAttachments = TaskAttachment::whereIn('task_id', $tasks->pluck('id'))->get();
+
+        
+// dd($taskAttachments);
 
         // Fetch task statuses for the current project
         $taskStatusesWithIds = DB::table('project_task_status')
@@ -696,7 +701,7 @@ class ProjectsController extends Controller
             ->distinct()
             ->pluck('type_name')
             ->toArray();
-        return view('projects.all-tasks', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers','parentTasks'));
+        return view('projects.all-tasks', compact('project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers','parentTasks','taskAttachments'));
     }
 
     public function updateTaskStatus(Request $request)

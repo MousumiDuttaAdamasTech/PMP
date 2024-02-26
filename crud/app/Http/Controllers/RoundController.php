@@ -16,7 +16,7 @@ class RoundController extends Controller
         $round->sprint_id = $request->sprint;
         $round->qa_status_id = $request->status;
         $round->save();
-        return back()->with('success', 'Round Entry Created.');
+        return back()->with('success1', 'Round Entry Created.');
     }
 
     public function editRound(Request $request)
@@ -28,6 +28,6 @@ class RoundController extends Controller
         $round->sprint_id = $request->sprint;
         $round->qa_status_id = $request->status;
         $round->save();
-        return back()->with('success', 'Round Entry Edited.');
+        return back()->with('success1', 'Round Entry Edited.');
     }
 }

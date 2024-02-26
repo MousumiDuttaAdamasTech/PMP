@@ -197,15 +197,34 @@
     }
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check the condition for Overview
+        if (document.getElementById("flag").value == 0) {
+            activateTab('create');
+        }
+
+        // Check the condition for Task Assign
+        if (document.getElementById("flag").value == 1) {
+            activateTab('manage');
+        }
+    });
+
+    function activateTab(tabId) {
+        const tabLink = document.querySelector(`.nav-link[data-bs-target="#${tabId}"]`);
+        if (tabLink) {
+            tabLink.click();
+        }
+    }
+</script>
+
 <div class="form-container p-4">
-        {{-- <ul class="nav nav-tabs nav-tabs-bordered d-flex justify-content-between" id="sprintTabs">
-                <li class="nav-item" style="width: 50%;border-right: 2px solid rgb(177, 169, 169);">
-                    <button class="nav-link active mx-auto w-100" id="overviewTab" data-toggle="tab" data-bs-target="#create" href="#create">Bugs</button>
-                </li>
-                <li class="nav-item" style="width: 50%">
-                    <button class="nav-link mx-auto w-100" data-bs-toggle="tab" data-bs-target="#manage" href="#manage"  id="manageTab" data-toggle="tab" >Manage Rounds</button>
-                </li>
-        </ul> --}}
+        @if(Session::get('success1'))
+            <input type="hidden" id="flag" value="1">
+        @else
+            <input type="hidden" id="flag" value="0">
+        @endif
+        
         <ul class="nav nav-tabs nav-tabs-bordered" id="sprintTabs">
             <li class="nav-item">
                 <button class="nav-link active" id="overviewTab" data-toggle="tab" data-bs-target="#create" href="#create">Bugs</button>
