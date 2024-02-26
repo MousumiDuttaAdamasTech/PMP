@@ -34,6 +34,10 @@ class TaskController extends Controller
         // Retrieve the tasks
         $tasks = $tasksQuery->get();
 
+        $taskAttachments = TaskAttachment::whereIn('task_id', $tasks->pluck('id'))->get();
+        
+        // dd($taskAttachments);
+        
         $sprints = Sprint::all();
 
         // Pass the tasks to the view
@@ -47,7 +51,8 @@ class TaskController extends Controller
         $projectMembers = ProjectMember::all();
         $projects = Project::all();
         $sprints = Sprint::all();
-        return back()->with(compact('tasks', 'projectMembers', 'projects', 'sprints'));
+        $taskAttachments = TaskAttachment::whereIn('task_id', $tasks->pluck('id'))->get();
+        return back()->with(compact('tasks', 'projectMembers', 'projects', 'sprints','taskAttachments'));
     }
 
     public function store(Request $request)
@@ -118,6 +123,9 @@ class TaskController extends Controller
             }
         }
 
+        $taskAttachments = TaskAttachment::where('task_id', $request->task_id)->get();
+        // dd($taskAttachments);
+
         return back()->with('success', 'Task created successfully.');
     }
 
@@ -132,7 +140,8 @@ class TaskController extends Controller
         $projectMembers = ProjectMember::all();
         $projects = Project::all();
         $sprints = Sprint::all();
-        return back()->with(compact('task', 'tasks', 'projectMembers', 'projects', 'sprints'));
+        $taskAttachments = TaskAttachment::whereIn('task_id', $tasks->pluck('id'))->get();
+        return back()->with(compact('task', 'tasks', 'projectMembers', 'projects', 'sprints','taskAttachments'));
     }
 
    public function update(Request $request, Task $task)
@@ -203,6 +212,8 @@ class TaskController extends Controller
         }
     }
 
+    $taskAttachments = TaskAttachment::where('task_id', $request->task_id)->get();
+
     return back()->with('success', 'Updated successfully.');
 }
     public function destroy(Task $task)
@@ -216,5 +227,13 @@ class TaskController extends Controller
         $task = Task::findOrFail($taskId);
         $task->project_task_status_id = 7;
         $task->save();
+    }
+
+    public function deleteTaskAttachments(Request $request)
+    {
+        $doc_id = $request->id;
+        $doc = TaskAttachment::find($doc_id);
+        $doc->delete();
+        return back()->with('success', 'Attachment Deleted.');
     }
 }

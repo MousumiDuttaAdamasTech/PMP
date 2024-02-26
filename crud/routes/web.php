@@ -209,6 +209,8 @@ Route::post('/createTaskFromMultipleBug', [BugController::class, 'createTaskFrom
 
 Route::get('/deleteBugDocuments/{id}', [BugController::class, 'deleteBugDocuments'])->name('deleteBugDocuments');
 
+Route::get('/deleteTaskAttachments/{id}', [TaskController::class, 'deleteTaskAttachments'])->name('deleteTaskAttachments');
+
 Route::get('/deleteProjectMember', [ProjectMemberController::class, 'destroy'])->name('deleteProjectMember');
 
 Route::post('/editTeamMember', [ProjectMemberController::class, 'update'])->name('editTeamMember');

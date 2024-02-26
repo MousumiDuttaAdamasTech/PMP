@@ -49,13 +49,6 @@
                 showConfirmButton: false,
                 timer: 3000
             });
-            Swal.fire({
-                icon: 'error',
-                title: 'Error!',
-                text: '{{ Session::get('error') }}',
-                showConfirmButton: false,
-                timer: 3000
-            });
         });
     </script>
 @endif
