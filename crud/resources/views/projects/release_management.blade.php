@@ -294,19 +294,19 @@
                         </tr>
 
                         <!-- Details Modal for each releaseManagement -->
-                        <div class="modal fade modal-xl" id="showReleaseManagementModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="showReleaseManagementModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal fade" id="showReleaseManagementModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="showReleaseManagementModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header" >
+                                    <div class="modal-header" style="background-color:#061148;">
                                         <h5 class="modal-title"
-                                            id="showReleaseManagementModalLabel{{ $releaseManagement->id }}">Release Management Details
+                                            id="showReleaseManagementModalLabel{{ $releaseManagement->id }}" style="color: white;font-weight: bolder;">Release Management Details
                                         </h5>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="rmid" style="font-size: 15px;">Release Management</label>
+                                                    <label for="rmid" style="font-size: 15px;">RMID</label>
                                                     <input type="text" name="rmid" id="rmid" class="form-control shadow-sm"
                                                         required value="{{ old('rmid', $releaseManagement->rmid) }}" disabled>
                                                 </div>
@@ -346,17 +346,21 @@
                                             <div class="col-md-12">
                                                 <div class="form-group">
                                                     <label for="documents">Documents</label>
-                                                    <ul>
-                                                        @foreach ($releaseManagement->documents as $document)
-                                                        <li class="list-group-item">
-                                                            <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                            <a href="{{ Storage::url($document->document_path) }}"
-                                                                target="_blank">
-                                                                {{ $document->document_path }}
-                                                            </a>
-                                                        </li>
+                                                    {{-- RM DOCS --}}
+                                                    <div class="row mt-2 gap-2 justify-content-center">
+                                                        @forEach($releaseManagement->documents as $bugDocument)
+                                                            @if($releaseManagement->id == $bugDocument->release_management_id)
+                                                                <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                                    <div class="text-center">
+                                                                        <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                                    </div>
+                                                                    <div class="w-100 text-center" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                                                        <a href="{{asset($bugDocument->document_path)}}" style="text-decoration: none;color:white;">{{$bugDocument->document_path}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
                                                         @endforeach
-                                                    </ul>
+                                                    </div>
                                                 </div>
                                             </div>
                                             @endif
@@ -370,11 +374,11 @@
                         </div>
 
                         <!-- Edit modal -->
-                        <div class="modal fade modal-lg modal-xl" id="editModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
+                        <div class="modal fade" id="editModal{{ $releaseManagement->id }}" tabindex="-1" role="dialog" aria-labelledby="editModalLabel{{ $releaseManagement->id }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editModalLabel{{ $releaseManagement->id }}">Edit Release Management</h5>
+                                    <div class="modal-header" style="background-color:#061148;">
+                                        <h5 class="modal-title" id="editModalLabel{{ $releaseManagement->id }}" style="color: white;font-weight: bolder;">Edit Release Management</h5>
                                     </div>
                                     <div class="modal-body">
                                         <form action="{{ route('projects.release_management.update', ['project' => $project, 'releaseManagement' => $releaseManagement]) }}" method="post" enctype="multipart/form-data">
@@ -385,21 +389,21 @@
                                             <!-- Add this section to populate the fields with releaseManagement data -->
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="edit_rmid">Release Management ID:</label>
+                                                        <label for="edit_rmid">RMID</label>
                                                         <input type="text" class="form-control shadow-sm" name="rmid" id="edit_rmid" value="{{ old('rmid', $releaseManagement->rmid) }}" required>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="edit_release_date">Release Date:</label>
+                                                        <label for="edit_release_date">Release Date</label>
                                                         <input type="date" class="form-control shadow-sm" name="release_date" id="edit_release_date" value="{{ old('release_date', $releaseManagement->release_date) }}" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <div class="form-group">
-                                                        <label for="edit_approved_by">Approved By:</label>
+                                                        <label for="edit_approved_by">Approved By</label>
                                                         <select name="approved_by" id="edit_approved_by" class="form-control shadow-sm" required>
                                                             @foreach ($project->projectMembers as $projectMember)
                                                                 <option value="{{ $projectMember->id }}" {{ $projectMember->id == $releaseManagement->approved_by ? 'selected' : '' }}>
@@ -412,16 +416,47 @@
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="edit_name">Name:</label>
+                                                        <label for="edit_name">Name</label>
                                                         <input type="text" class="form-control shadow-sm" name="name" id="edit_name" value="{{ old('name', $releaseManagement->name) }}" required>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="edit_details">Details:</label>
+                                                        <label for="edit_details">Details</label>
                                                         <textarea name="details" id="edit_details" required class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">{{ old('details', $releaseManagement->details) }}</textarea>
                                                     </div>
+                                                </div>
+
+                                                <div id="uploadedFilesContainer_{{ $releaseManagement->id }}"></div>
+
+                                                <div class="col-md-12 mt-2">
+                                                    <div class="form-group">
+                                                        <label for="documents">Documents</label>
+                                                        <input type="file" onchange="displayUploadedFiles(this,`{{ $releaseManagement->id }}`)" class="form-control shadow-sm" name="documents[]" id="documents"
+                                                            multiple>
+                                                    </div>
+                                                </div>
+
+                                                {{-- RM DOCS --}}
+                                                <div class="row mt-4 gap-2 justify-content-center">
+                                                    @forEach($releaseManagement->documents as $bugDocument)
+                                                        @if($releaseManagement->id == $bugDocument->release_management_id)
+                                                            <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                                <div class="d-flex justify-content-end w-100">
+                                                                    <a href="{{ route('deleteRMDoc', ['projectId' => $releaseManagement->project_id, 'rmdocid' => $bugDocument->id]) }}">
+                                                                        <i class="fa-regular fa-trash-can" style="color:red;"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                                </div>
+                                                                <div class="w-100 text-center" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                                                    <a href="{{asset($bugDocument->document_path)}}" style="text-decoration: none;color:white;">{{$bugDocument->document_path}}</a>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 </div>
 
                                             </div>
