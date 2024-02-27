@@ -410,6 +410,7 @@
                                                </select>
                                            </div>
                                        </div>
+                                       
        
                                        <div class="col-md-12">
                                            <div class="form-group">
@@ -577,10 +578,17 @@
                                                     class="form-controlcl shadow-sm"
                                                     style="padding-top: 5px; padding-bottom: 5px; height: 39px; color: #858585; font-size: 14px; background-color:#e9ecef;"
                                                     disabled>
-                                                    @foreach ($taskStatuses as $taskStatus)
-                                                    <option value="{{ $taskStatus->id }}" {{ old('project_task_status_id',
-                                                        optional($task)->project_task_status_id) == $taskStatus->id ? 'selected' : '' }}>
-                                                        {{ $taskStatus->status }}
+                                                    <option value="" selected disabled>Select Task Status</option>
+                                                  
+                                                    @foreach($taskStatusesWithIds as $statusObject)
+                                                    @php
+                                                    $status = $statusObject->status; 
+                                                    $statusId = $statusObject->project_task_status_id; 
+                                                    @endphp
+                                                    <option value="{{ $statusId }}" {{ old('project_task_status_id',
+                                                        optional($task)->project_task_status_id) == $statusId ? 'selected' :
+                                                        '' }}>
+                                                        {{ $status }}
                                                     </option>
                                                     @endforeach
                                                 </select>
@@ -720,7 +728,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
                                                 <select name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
@@ -733,14 +741,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
                                                 <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
                                                     value="{{ $task->estimated_time }}" class="form-control shadow-sm" required>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="actual_hours_{{ $task->id }}" style="font-size: 15px;">Actual Hours</label>
                                                 <input type="number" name="actual_hours" id="actual_hours_{{ $task->id }}" value="{{ number_format($task->actual_hours, 0, '.', '') }}" class="form-control shadow-sm">
@@ -760,7 +768,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                 <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
@@ -1089,9 +1097,9 @@
                                                                             <div class="modal-content">
                                                                                 <div class="modal-header">
                                                                                     <h5 class="modal-title" id="editReplyModalLabel_{{ $reply->id }}">Edit Reply</h5>
-                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                         <span aria-hidden="true">&times;</span>
-                                                                                    </button>
+                                                                                    </button> --}}
                                                                                 </div>
                                                                                 <div class="modal-body">
                                                                                     <form action="{{ route('task.comments.update', ['comment' => $reply->id]) }}" method="post">
@@ -1164,9 +1172,9 @@
                                                                                         <div class="modal-content">
                                                                                             <div class="modal-header">
                                                                                                 <h5 class="modal-title" id="editSubReplyModalLabel_{{ $subReply->id }}">Edit Reply</h5>
-                                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                                {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                                                     <span aria-hidden="true">&times;</span>
-                                                                                                </button>
+                                                                                                </button> --}}
                                                                                             </div>
                                                                                             <div class="modal-body">
                                                                                                 <form action="{{ route('task.comments.update', ['comment' => $subReply->id]) }}" method="post">
@@ -1584,9 +1592,9 @@
                                         <!-- Modal Header -->
                                         <div class="modal-header" style=" background-color:#061148;" >
                                             <h5 class="modal-title" id="editSprintModalLabel" style="color: white;font-weight: bolder;">Edit Sprint</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            {{-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
-                                            </button>
+                                            </button> --}}
                                         </div>
                                         <!-- Modal Body -->
                                         <div class="modal-body">
