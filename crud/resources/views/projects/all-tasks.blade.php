@@ -540,10 +540,12 @@
             </div>
         @endforeach
 
-        <div>
-            <input type="checkbox" id="parentTasksCheckbox">
-            <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="showParentTasks">
+            <label class="form-check-label" for="showParentTasks">Show Parent Tasks Only</label>
         </div>
+        
+        
     
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
@@ -562,7 +564,7 @@
                 
                 @foreach($sortedTasks as $task)
                     
-                    <tr class="shadow" style="border-radius:15px;">
+                    <tr id="taskRow_{{ $task->id }}" class="shadow" style="border-radius:15px;">
                         <td>{{ $task->uuid }}</td>
                         <td>
                             @if($task->epic)
@@ -1217,6 +1219,47 @@
             </div>
         </div>    
     </div>
+
+    <script>
+        $(document).ready(function () {
+            // Map necessary properties from PHP to JavaScript
+            var tasks = @json($tasks->map(function($task) {
+                return [
+                    'id' => $task->id,
+                    'isParentTask' => $task->isParentTask(),
+                    
+                ];
+            }));
+    
+            console.log('All tasks:', tasks);
+    
+        
+            function updateTable() {
+                var showParentTasks = $('#showParentTasks').prop('checked');
+                console.log('Show Parent Tasks:', showParentTasks);
+    
+                tasks.forEach(function (task) {
+                    var isParentTask = task.isParentTask;
+                    console.log('Task ID:', task.id, 'Is Parent Task:', isParentTask);
+    
+                    var shouldShow = showParentTasks ? isParentTask : true;
+                    console.log('Should Show:', shouldShow);
+    
+                    var $row = $('#taskRow_' + task.id);
+                    $row.toggle(shouldShow);
+                });
+            }
+    
+            // Attach change event handler to the checkbox
+            $('#showParentTasks').change(function () {
+                console.log('Checkbox changed');
+                updateTable();
+            });
+    
+            // Initial table update
+            updateTable();
+        });
+    </script>
     
     <script>
         function confirmDelete(commentId) {
@@ -1226,7 +1269,7 @@
         }
     </script>
 
-    <script>
+    {{-- <script>
         $(document).ready(function () {
             // Hide parent tasks initially
             $('#parentTasksCheckbox').change(function () {
@@ -1238,6 +1281,6 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 
 @endsection

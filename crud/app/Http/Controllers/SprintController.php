@@ -125,6 +125,9 @@ class SprintController extends Controller
     $sprint->is_active = $request->is_active;
     $sprint->save();
 
+    session()->flash('success', 'Sprint created successfully.');
+    session()->flash('flag', 1);
+
     return back()->with('success', 'Sprint updated successfully.');
 }
 
@@ -132,6 +135,8 @@ class SprintController extends Controller
     public function destroy(Sprint $sprint)
     {
         $sprint->delete();
+        session()->flash('success', 'Sprint created successfully.');
+        session()->flash('flag', 1);
         return back()->with('success', 'Sprint deleted successfully.');
     }
 }
