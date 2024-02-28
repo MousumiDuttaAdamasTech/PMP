@@ -1448,8 +1448,8 @@
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="estimated_hrs" style="font-size: 15px;">Estimated Hours</label>
-                                                        <input type="number" name="estimated_hrs" id="estimated_hrs" class="form-control shadow-sm" placeholder="Enter Estimated Hours" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                        <label for="estimated_hrs" style="font-size: 15px;">Estimated Hours <span style="color: red">*</span></label>
+                                                        <input type="number" name="estimated_hrs" id="estimated_hrs" class="form-control shadow-sm" placeholder="Enter Estimated Hours" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                     </div>        
                                                 </div>
 
@@ -1874,7 +1874,7 @@
                             // Create HTML for the card with the status and its associated tasks
                             var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
                                 '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
-                                '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editModal_' + task.id + '">' +
+                                '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
                                 '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                                 '</a>' +
                                 '</div>' +
