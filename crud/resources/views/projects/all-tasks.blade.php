@@ -1037,7 +1037,7 @@
                                                                 </div>
                                                                 <div class="w-100 text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
                                                                     <a href="{{ asset($taskAttachment->file_path) }}" style="text-decoration: none; color: white;">
-                                                                        {{ basename($taskAttachment->file_path) }}
+                                                                         {{ basename($taskAttachment->file_path) }}
                                                                     </a>
                                                                 </div>
                                                             </div>

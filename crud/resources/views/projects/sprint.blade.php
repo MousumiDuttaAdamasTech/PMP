@@ -156,14 +156,19 @@
                     $latestSprintId = $sprints->isNotEmpty() ? $sprints->sortByDesc('created_at')->first()->id : null;
                     @endphp
                     <div class="form-group" style="position: sticky; position: -webkit-sticky; left: 0; margin-top: 1%;">
-                     
+                      
                         <label for="sprint-dropdown">Select Sprint:</label>
                         <select class="sprint" id="sprint-dropdown" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" data-url="{{ route('getSprints') }}">
+
+                            @if($sprints->isEmpty())
+                            <option value="" disabled selected>No Sprint Available</option>
+                            @else
                             @foreach($sprints->where('projects_id', $project->id)->reverse() as $sprint)
                                 <option value="{{ $sprint->id }}" data-project="{{ $sprint->projects_id }}" {{ $sprint->id == $latestSprintId ? 'selected' : '' }}>
                                     {{ $sprint->sprint_name }}
                                 </option>
                             @endforeach
+                            @endif
                         </select>
                     </div>
 
