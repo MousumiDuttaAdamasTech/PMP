@@ -552,8 +552,6 @@
             <label class="form-check-label" for="showParentTasks">Show Parent Tasks Only</label>
         </div>
         
-        
-    
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
                 <tr>
