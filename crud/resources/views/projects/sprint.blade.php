@@ -657,6 +657,25 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        @if($task->attachments && $task->attachments->count() > 0)
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="documents">Documents</label>
+                                                    <ul>
+                                                        @foreach ($task->attachments as $attachment)
+                                                            <li class="list-group-item">
+                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                                <a href="{{($attachment->file_path) }}"
+                                                                    target="_blank">
+                                                                    {{ $attachment->file_path }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach 
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        @endif
     
                                                 <!-- Add other form fields with unique identifiers -->
     
@@ -865,7 +884,15 @@
                                             </div>
                                         </div>
 
-                                       
+                                        <div class="mt-3" id="uploadedFilesContainer_{{$task->id}}"></div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="attachments">Attachments</label>
+                                                <input onchange="displayUploadedFiles2(this,{{$task->id}})" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                                <small class="text-muted">You can upload multiple files.</small>
+                                            </div>
+                                        </div>
 
 
                                         <!-- Add other form fields with unique identifiers -->
