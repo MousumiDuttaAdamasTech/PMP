@@ -11,6 +11,18 @@
 <link rel="stylesheet" href="{{ asset('css/form.css') }}">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<style>
+    @media (max-width: 767px) {
+
+.dataTables_filter{
+  margin-top: 10px;
+}
+
+.dataTables_filter input.form-control-sm {
+    max-width: 250px !important; /* Remove max-width restriction for mobile views */
+}
+}
+</style>
 
 @endsection
 
@@ -546,14 +558,11 @@
             <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
         </div> --}}
 
-        {{-- <div>{{Auth::user()->isProjectMember($task->project_id)}}</div> --}}
         <div class="form-check">
             <input type="checkbox" class="form-check-input" id="showParentTasks">
             <label class="form-check-label" for="showParentTasks">Show Parent Tasks Only</label>
         </div>
         
-        
-    
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
                 <tr>
