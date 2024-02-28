@@ -720,6 +720,13 @@
 
                                         <div class="col-md-6">
                                             <div class="form-group">
+                                                <label for="actual_hours_{{ $task->id }}" style="font-size: 15px;">Actual Hours</label>
+                                                <input type="number" name="actual_hours" id="actual_hours_{{ $task->id }}" value="{{ $task->actual_hours }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
                                                 <label for="task_type" style="font-size: 15px;">Task Type</label>
                                                 <select name="task_type" id="task_typee" class="form-controlcl shadow-sm"
                                                         style="padding-top:5px; padding-bottom:5px; height:39px; background-color:#e9ecef; font-size: 14px;" disabled>
@@ -730,7 +737,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
                                                 <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
@@ -866,7 +873,7 @@
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="title_{{ $task->id }}" style="font-size: 15px;">Title</label>
+                                                        <label for="title_{{ $task->id }}" style="font-size: 15px;">Title<span style="color: red">*</span></label>
                                                         <input type="text" name="title" id="title_{{ $task->id }}"
                                                             class="form-control shadow-sm" value="{{ $task->title }}" required>
                                                     </div>
@@ -888,7 +895,7 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority</label>
+                                                        <label for="priority_{{ $task->id }}" style="font-size: 15px;">Priority<span style="color: red">*</span></label>
                                                         <select name="priority" id="priority_{{ $task->id }}" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                             @foreach (\App\Models\Task::getPriorityOptions() as $value => $label)
                                                                 <option value="{{ $value }}" {{ $task->priority == $value ? 'selected' : '' }}>
@@ -901,15 +908,21 @@
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours</label>
+                                                        <label for="estimated_time_{{ $task->id }}" style="font-size: 15px;">Estimated Hours<span style="color: red">*</span></label>
                                                         <input type="number" name="estimated_time" id="estimated_time_{{ $task->id }}"
                                                             value="{{ $task->estimated_time }}" class="form-control shadow-sm" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="actual_hours_{{ $task->id }}" style="font-size: 15px;">Actual Hours</label>
+                                                        <input type="number" name="actual_hours" id="actual_hours_{{ $task->id }}" value="{{ number_format($task->actual_hours, 0, '.', '') }}" class="form-control shadow-sm">
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                                        <label for="task_type" style="font-size: 15px;">Task Type<span style="color: red">*</span></label>
                                                         <select name="task_type" id="task_typee" class="form-controlcl shadow-sm"
                                                                 style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                             @foreach(\App\Models\Task::getTaskTypeOptions() as $type)
@@ -919,9 +932,9 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-md-6">
+                                                <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status</label>
+                                                        <label for="project_task_status_id_{{ $task->id }}" style="font-size: 15px;">Task Status<span style="color: red">*</span></label>
                                                         <select name="project_task_status_id" id="project_task_status_id_{{ $task->id }}"
                                                             class="form-controlcl shadow-sm"
                                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -944,14 +957,14 @@
 
                                                 <div class="col-md-12">
                                                     <div class="form-group">
-                                                        <label for="details_{{ $task->id }}" style="font-size: 15px;">Details</label>
+                                                        <label for="details_{{ $task->id }}" style="font-size: 15px;">Details<span style="color: red">*</span></label>
                                                         <textarea name="details" id="details_{{ $task->id }}" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>{{ $task->details }}</textarea>
                                                     </div>
                                                 </div>
 
                                                 <div class="col-md-6">
                                                     <div class="form-group">
-                                                        <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned To</label>
+                                                        <label for="assigned_to_{{ $task->id }}" style="font-size: 15px;">Assigned To<span style="color: red">*</span></label>
                                                         <select name="assigned_to[]" id="assigned_to_{{ $task->id }}" class="assign_to form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                                             required>
                                                             @foreach($projectMembers as $member)
@@ -967,7 +980,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group allot_user_{{ $task->id }}">
                                                         <label for="allotted_to_{{ $task->id }}" style="font-size: 15px;">Allotted
-                                                            To</label>
+                                                            To<span style="color: red">*</span></label>
                                                         <select name="allotted_to[]" id="allotted_to_{{ $task->id }}"
                                                             class="assign_to form-control shadow-sm allotted_to_user"
                                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"
@@ -1088,7 +1101,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="title">Title</label>
+                                        <label for="title">Title<span style="color: red">*</span></label>
                                         <input type="text" name="title" id="title" placeholder="Enter the task title"
                                             class="form-control shadow-sm">
                                     </div>
@@ -1110,7 +1123,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="priority" style="font-size: 15px;">Priority</label>
+                                        <label for="priority" style="font-size: 15px;">Priority<span style="color: red">*</span></label>
                                         <select name="priority" id="priority" class="form-control shadow-sm" style="height:39px; color: #858585; font-size: 14px;">
                                             <option value="" selected disabled>Select Priority</option>
                                             @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
@@ -1122,7 +1135,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="estimated_time" style="font-size: 15px;">Estimated Hours</label>
+                                        <label for="estimated_time" style="font-size: 15px;">Estimated Hours<span style="color: red">*</span></label>
                                         <input type="number" name="estimated_time" id="estimated_time"
                                             placeholder="Enter the time" class="form-control shadow-sm" style="font-size: 14px;">
                                     </div>
@@ -1130,7 +1143,15 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="task_type" style="font-size: 15px;">Task Type</label>
+                                        <label for="actual_hours" style="font-size: 15px;">Actual Hours</label>
+                                        <input type="number" name="actual_hours" id="actual_hours" placeholder="Enter the actual hours"
+                                            class="form-control shadow-sm" style="font-size: 14px;">
+                                    </div>
+                                   </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="task_type" style="font-size: 15px;">Task Type<span style="color: red">*</span></label>
                                         <select name="task_type" id="task_type" class="form-controlcl shadow-sm"
                                                 style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                             <option value="" selected disabled>Select Task Type</option>
@@ -1141,9 +1162,9 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6">
+                                <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="project_task_status_id" style="font-size: 15px;">Task Status</label>
+                                        <label for="project_task_status_id" style="font-size: 15px;">Task Status<span style="color: red">*</span></label>
                                         <select name="project_task_status_id" id="project_task_status_id"
                                             class="form-control shadow-sm"
                                             style="height:39px; color: #858585; font-size: 14px;">
@@ -1162,7 +1183,7 @@
 
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="details" style="font-size: 15px;">Details</label>
+                                        <label for="details" style="font-size: 15px;">Details<span style="color: red">*</span></label>
                                         <textarea name="details" id="details" class="ckeditor form-control shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
                                             placeholder="Enter the details"
                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"></textarea>
@@ -1171,7 +1192,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="assigned_to" style="font-size: 15px;">Assigned To</label>
+                                        <label for="assigned_to" style="font-size: 15px;">Assigned To<span style="color: red">*</span></label>
                                         <select name="assigned_to[]" id="assigned_to"
                                             class="assigned_to form-controlcl shadow-sm"
                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;"
@@ -1186,7 +1207,7 @@
 
                                 <div class="col-md-6">
                                     <div class="form-group allot_task">
-                                        <label for="allotted_to" style="font-size: 15px;">Allotted To</label>
+                                        <label for="allotted_to" style="font-size: 15px;">Allotted To<span style="color: red">*</span></label>
                                         <select name="allotted_to[]" id="allotted_to"
                                             class="allotted_to_task form-controlcl shadow-sm"
                                             style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;width:100%;"

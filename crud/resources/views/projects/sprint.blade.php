@@ -67,7 +67,7 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             var flagelement=document.getElementById("flag").value;
-            console.log(flagelement);
+            
             
             if(document.getElementById("flag").value==1)
             {
@@ -1606,7 +1606,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="sprint_name" style="font-size: 15px;">Sprint Name:</label>
+                                                            <label for="sprint_name" style="font-size: 15px;">Sprint Name:<span style="color: red">*</span></label>
                                                             <input type="text" name="sprint_name" id="sprint_name" class="form-control" value="{{ old('sprint_name', $sprint->sprint_name) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                         </div>
                                                     </div>
@@ -1614,7 +1614,7 @@
                                                    
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="sprint_status" style="font-size: 15px;">Status:</label>
+                                                            <label for="sprint_status" style="font-size: 15px;">Status:<span style="color: red">*</span></label>
                                                             <select name="sprint_status" id="sprint_status" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                             <option value="Under discussion" {{ $sprint->sprint_status === 'Under discussion' ? 'selected' : '' }}>Under discussion</option>
                                                             <option value="Under development" {{ $sprint->sprint_status === 'Under development' ? 'selected' : '' }}>Under development</option>
@@ -1630,45 +1630,45 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="current_date" style="font-size: 15px;">Current Date:</label>
-                                                            <input type="date" name="current_date" id="current_date" class="form-control shadow-sm" value="{{ old('current_date', $sprint->current_date) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required="required">
+                                                            <input type="date" name="current_date" id="current_date" class="form-control shadow-sm" value="{{ old('current_date', $sprint->current_date) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" >
                                                         </div>
                                                     </div>
 
                                                     
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="sprint_planningDate" class="mb-1" style="font-size: 15px;">Sprint Planning Date</label>
+                                                            <label for="sprint_planningDate" class="mb-1" style="font-size: 15px;">Sprint Planning Date:</label>
                                                             <input type="date" class="shadow-sm" name="sprint_planningDate" id="sprint_planningDate" value="{{ old('sprint_planningDate', $sprint->sprint_planningDate) }}" style="color:#999; font-size: 14px;" >
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="sprint_taskDiscuss" class="mb-1" style="font-size: 15px;">Sprint Task Discussion</label>
+                                                            <label for="sprint_taskDiscuss" class="mb-1" style="font-size: 15px;">Sprint Task Discussion:</label>
                                                             <input type="date" class="shadow-sm" name="sprint_taskDiscuss" id="sprint_taskDiscuss" value="{{ old('sprint_taskDiscuss', $sprint->sprint_taskDiscuss) }}" style="color:#999; font-size: 14px;" >
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="sprint_startDate" class="mb-1" style="font-size: 15px;">Sprint Start Date</label>
-                                                            <input type="date" class="shadow-sm" name="sprint_startDate" id="sprint_startDate" value="{{ old('sprint_startDate', $sprint->sprint_startDate) }}" style="color:#999; font-size: 14px;" required="required">
+                                                            <label for="sprint_startDate" class="mb-1" style="font-size: 15px;">Sprint Start Date:</label>
+                                                            <input type="date" class="shadow-sm" name="sprint_startDate" id="sprint_startDate" value="{{ old('sprint_startDate', $sprint->sprint_startDate) }}" style="color:#999; font-size: 14px;" >
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="sprint_endDate" class="mb-1" style="font-size: 15px;">Sprint End Date</label>
-                                                            <input type="date" class="shadow-sm" name="sprint_endDate" id="sprint_endDate" value="{{ old('sprint_endDate', $sprint->sprint_endDate) }}" style="color:#999; font-size: 14px;" required="required">
+                                                            <label for="sprint_endDate" class="mb-1" style="font-size: 15px;">Sprint End Date:</label>
+                                                            <input type="date" class="shadow-sm" name="sprint_endDate" id="sprint_endDate" value="{{ old('sprint_endDate', $sprint->sprint_endDate) }}" style="color:#999; font-size: 14px;">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="sprint_demoDate" class="mb-1" style="font-size: 15px;">Sprint Demo Date</label>
-                                                            <input type="date" class="shadow-sm" name="sprint_demoDate" id="sprint_demoDate" value="{{ old('sprint_demoDate', $sprint->sprint_demoDate) }}" style="color:#999; font-size: 14px;" required="required">
+                                                            <input type="date" class="shadow-sm" name="sprint_demoDate" id="sprint_demoDate" value="{{ old('sprint_demoDate', $sprint->sprint_demoDate) }}" style="color:#999; font-size: 14px">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="estimated_hrs" style="font-size: 15px;">Estimated Hours:</label>
+                                                            <label for="estimated_hrs" style="font-size: 15px;">Estimated Hours: <span style="color: red">*</span></label>
                                                             <input type="number" name="estimated_hrs" id="estimated_hrs" class="form-control shadow-sm" value="{{ old('estimated_hrs', $sprint->estimated_hrs) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required="required">
                                                         </div>        
                                                     </div>
@@ -1676,7 +1676,7 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label for="actual_hrs" style="font-size: 15px;">Actual Hours:</label>
-                                                            <input type="number" name="actual_hrs" id="actual_hrs" class="form-control shadow-sm" value="{{ old('actual_hrs', $sprint->actual_hrs) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required="required">
+                                                            <input type="number" name="actual_hrs" id="actual_hrs" class="form-control shadow-sm" value="{{ old('actual_hrs', $sprint->actual_hrs) }}" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                         </div>        
                                                     </div>
                                                     
@@ -1684,7 +1684,7 @@
                                                     
                                                     <div class="col-md-6 mb-3">
                                                         <div class="form-group">
-                                                            <label for="assign_to" style="font-size: 15px;">Assign To</label>
+                                                            <label for="assign_to" style="font-size: 15px;">Assign To:<span style="color: red">*</span></label>
                                                             <select name="assign_to" id="assign_to" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" required>
                                                                 <option value="">Select User</option>
                                                                 @foreach ($project->projectMembers as $projectMember)
@@ -1698,7 +1698,7 @@
                                                     
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="is_active" style="font-size: 15px;">Is Active:</label>
+                                                            <label for="is_active" style="font-size: 15px;">Is Active:<span style="color: red">*</span></label>
                                                             <select name="is_active" id="is_active" class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
                                                                 @if(old('is_active', $sprint->is_active) == '1')
                                                                     <option value="1" selected>Yes</option>
@@ -1748,19 +1748,19 @@
                     ];
                 }));
         
-                console.log('All tasks:', tasks);
+               
         
             
                 function updateTable() {
                     var showParentTasks = $('#showParentTasks').prop('checked');
-                    console.log('Show Parent Tasks:', showParentTasks);
+                    
         
                     tasks.forEach(function (task) {
                         var isParentTask = task.isParentTask;
-                        console.log('Task ID:', task.id, 'Is Parent Task:', isParentTask);
+                       
         
                         var shouldShow = showParentTasks ? isParentTask : true;
-                        console.log('Should Show:', shouldShow);
+                        
         
                         var $row = $('#taskRow_' + task.id);
                         $row.toggle(shouldShow);
@@ -1769,7 +1769,7 @@
         
                 // Attach change event handler to the checkbox
                 $('#showParentTasks').change(function () {
-                    console.log('Checkbox changed');
+                   
                     updateTable();
                 });
         
@@ -1828,11 +1828,11 @@
     $(document).ready(function () {
 
         $('#sprint-dropdown').change(function () {
-            console.log('Dropdown changed');
+           
 
             var projectId = '{{ $project->id }}';
             var selectedSprint = $(this).val();
-            console.log('{{ route("getTasksWithStatus") }}?project_id=' + projectId + '&sprint_id=' + selectedSprint);
+            
 
             fetch('{{ route("getTasksWithStatus") }}?project_id=' + projectId + '&sprint_id=' + selectedSprint, {
                 method: 'GET',
@@ -1847,7 +1847,6 @@
                 return response.json();
             })
             .then(tasksByStatus => {
-                console.log(tasksByStatus);
                 // Clear existing tasks from the Kanban board
                 $('.kanban-board').empty();
 
@@ -1868,7 +1867,7 @@
 
                     // Check if there are tasks for the current status
                     if (tasks && tasks.length > 0) {
-                        console.log('Task:', tasks);
+                       
                         // Append new tasks to the custom card container
                         tasks.forEach(task => {
                             // Create HTML for the card with the status and its associated tasks
