@@ -123,6 +123,9 @@ class TaskController extends Controller
             }
         }
 
+        session()->flash('success', 'Task created successfully.');
+        session()->flash('flag', 2);
+
         $taskAttachments = TaskAttachment::where('task_id', $request->task_id)->get();
         // dd($taskAttachments);
 
@@ -213,12 +216,16 @@ class TaskController extends Controller
     }
 
     $taskAttachments = TaskAttachment::where('task_id', $request->task_id)->get();
+    session()->flash('success', 'Task created successfully.');
+    session()->flash('flag', 2);
 
     return back()->with('success', 'Updated successfully.');
 }
     public function destroy(Task $task)
     {
         $task->delete();
+        session()->flash('success', 'Task created successfully.');
+        session()->flash('flag', 2);
         return back()->with('success', 'Deleted successfully.');
     }
 

@@ -1760,3 +1760,35 @@ a {
 }
 
 
+    /* Your existing styles */
+
+    /* Adjust the nav tabs for mobile view */
+    @media (max-width: 767px) {
+        .nav-tabs {
+            flex-direction: row; /* Display as a row */
+     
+        }
+
+        .nav-tabs .nav-item {
+            width: auto; /* Allow tabs to take their natural width */
+            white-space: nowrap; /* Prevent line breaks in tab text */
+        }
+
+        .nav-tabs .nav-link {
+            padding: 5px 10px; /* Adjust padding as needed */
+            font-size: 13px; /* Adjust font size as needed */
+        }
+    }
+
+
+
+@media (max-width: 767px) {
+
+  .dataTables_filter{
+    margin-top: 10px;
+  }
+
+  .dataTables_filter input.form-control-sm {
+      max-width: 250px !important; /* Remove max-width restriction for mobile views */
+  }
+}
