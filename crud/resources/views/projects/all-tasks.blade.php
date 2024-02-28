@@ -102,7 +102,8 @@
             const estimated_time = document.getElementById("estimated_time").value;
             const task_type = document.getElementById("task_type").value;
             const project_task_status_id = document.getElementById("project_task_status_id").value;
-            const details = document.getElementById("details").value;
+            const editor = CKEDITOR.instances.details;
+            const details = editor.getData();
             const assigned_to = document.getElementById("assigned_to").value;
             const allotted_to = document.getElementById("allotted_to").value;
             const attachments = document.getElementById("attachments").value;
@@ -540,10 +541,12 @@
             </div>
         @endforeach
 
-        <div>
+        {{-- <div>
             <input type="checkbox" id="parentTasksCheckbox">
             <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
-        </div>
+        </div> --}}
+
+        {{-- <div>{{Auth::user()->isProjectMember($task->project_id)}}</div> --}}
     
         <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
             <thead>
@@ -1226,7 +1229,7 @@
         }
     </script>
 
-    <script>
+    {{-- <script>
         $(document).ready(function () {
             // Hide parent tasks initially
             $('#parentTasksCheckbox').change(function () {
@@ -1238,6 +1241,6 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 
 @endsection

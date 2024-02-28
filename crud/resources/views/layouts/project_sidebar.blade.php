@@ -119,10 +119,10 @@
 <div class="row">
     <div class="col-md-2 card">
         <ul class="nav flex-column">
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link mainLinks" href="{{ route('projects.overview', ['project' => $project->id]) }}"
                     id="overview-link" data-tab="projects.overview">Overview</a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link mainLinks" href="{{ route('projects.sprint', ['project' => $project->id]) }}"
                     id="sprint-link" data-tab="projects.sprint">Sprint</a>
@@ -160,10 +160,10 @@
                 <a class="nav-link mainLinks" href="{{ route('projects.edit', ['project' => $project->id]) }}"
                     id="settings" data-tab="projects.edit">Settings</a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link mainLinks" href="{{ route('projects.reports', ['project' => $project->id]) }}"
                     id="reports" data-tab="projects.reports">Reports</a>
-            </li>
+            </li> --}}
         </ul>
     </div>
     <!-- Main content area -->

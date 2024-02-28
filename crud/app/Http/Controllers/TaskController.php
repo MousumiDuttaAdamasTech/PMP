@@ -25,11 +25,11 @@ class TaskController extends Controller
         $tasksQuery = Task::where('project_id', $projectId);
 
         // Check if the checkbox is checked
-        if ($request->has('parentTasks') && $request->input('parentTasks') == 'true') {
-            // Fetch tasks where their IDs are listed in the parent_task column
-            $parentTaskIds = Task::whereNotNull('parent_task')->pluck('parent_task');
-            $tasksQuery->whereIn('id', $parentTaskIds);
-        }
+        // if ($request->has('parentTasks') && $request->input('parentTasks') == 'true') {
+        //     // Fetch tasks where their IDs are listed in the parent_task column
+        //     $parentTaskIds = Task::whereNotNull('parent_task')->pluck('parent_task');
+        //     $tasksQuery->whereIn('id', $parentTaskIds);
+        // }
 
         // Retrieve the tasks
         $tasks = $tasksQuery->get();
