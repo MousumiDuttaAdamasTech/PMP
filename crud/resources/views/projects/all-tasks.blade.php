@@ -669,15 +669,17 @@
                                                 <label for="parent_task_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
                                                 <select name="sprint_id" id="sprint_id_{{ $task->id }}"
                                                     class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px; background-color:#e9ecef;" disabled>
+                                                    <option value="" disabled>Select Sprint</option> <!-- New line for default option -->
                                                     @foreach ($sprints as $sprint)
-                                                    <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
-                                                        sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                                    <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->sprint_id) == $sprint->id ? 'selected' : '' }}>
                                                         {{ $sprint->sprint_name }}
                                                     </option>
                                                     @endforeach
+                                                    <option value="" {{ is_null(optional($task)->sprint_id) ? 'selected' : '' }}>No Sprint Selected</option>
                                                 </select>
                                             </div>
                                         </div>
+                                        
 
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -700,16 +702,17 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="epic" style="font-size: 15px;">Epic</label>
-                                                <input type="text" name="epic" id="epic" value="{{$task->epic}}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                                <input type="text" name="epic" id="epic" value="{{ isset($task->epic) ? $task->epic : 'N/A' }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
-                            
+                                        
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="story" style="font-size: 15px;">Story</label>
-                                                <input type="text" name="story" id="story" value="{{$task->story}}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                                <input type="text" name="story" id="story" value="{{ isset($task->story) ? $task->story : 'N/A' }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
+                                        
 
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -728,9 +731,10 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="actual_hours_{{ $task->id }}" style="font-size: 15px;">Actual Hours</label>
-                                                <input type="number" name="actual_hours" id="actual_hours_{{ $task->id }}" value="{{ $task->actual_hours }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                                <input type="number" name="actual_hours" id="actual_hours_{{ $task->id }}" value="{{ isset($task->actual_hours) ? $task->actual_hours : 'N/A' }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
+                                        
 
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -852,7 +856,7 @@
                                                         <label for="sprint_id_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
                                                         <select name="sprint_id" id="sprint_id_{{ $task->id }}"
                                                             class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                                            <option value="" selected disabled>Select Sprint</option>
+                                                            <option value="">Select Sprint</option>
                                                             @foreach ($sprints as $sprint)
                                                             <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
                                                                 sprint_id) == $sprint->id ? 'selected' : '' }}>
@@ -1071,7 +1075,7 @@
                                     <div class="form-group">
                                         <label for="sprint_id" style="font-size: 15px;">Sprint</label>
                                         <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                            <option value="" selected disabled>Select Sprint</option>
+                                            <option value="">Select Sprint</option>
                                             @foreach ($sprints as $sprint)
                                             <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
                                             @endforeach
@@ -1097,7 +1101,7 @@
                                     <div class="form-group">
                                         <label for="sprint_id" style="font-size: 15px;">Sprint</label>
                                         <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                            <option value="" selected disabled>Select Sprint</option>
+                                            <option value="">Select Sprint</option>
                                             @foreach ($sprints as $sprint)
                                             <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
                                             @endforeach
