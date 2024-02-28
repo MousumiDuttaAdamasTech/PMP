@@ -884,6 +884,10 @@
                                             </div>
                                         </div>
 
+
+
+
+
                                         <div class="mt-3" id="uploadedFilesContainer_{{$task->id}}"></div>
 
                                         <div class="col-md-12">
@@ -893,6 +897,28 @@
                                                 <small class="text-muted">You can upload multiple files.</small>
                                             </div>
                                         </div>
+
+                                        <div class="row my-4 gap-2 justify-content-center">
+                                            @forEach($taskAttachments as $taskAttachment)
+                                                @if($task->id == $taskAttachment->task_id)
+                                                    <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                        <div class="d-flex justify-content-end w-100">
+                                                            <a href="/deleteTaskAttachments/{{$taskAttachment->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                        </div>
+                                                        <div class="w-100 text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                                            <a href="{{ asset($taskAttachment->file_path) }}" style="text-decoration: none; color: white;">
+                                                                {{ basename($taskAttachment->file_path) }}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+
+                                        
 
 
                                         <!-- Add other form fields with unique identifiers -->
