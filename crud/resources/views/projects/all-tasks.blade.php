@@ -558,7 +558,7 @@
             <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
         </div> --}}
 
-        <div class="form-check">
+        <div class="form-check mb-4">
             <input type="checkbox" class="form-check-input" id="showParentTasks">
             <label class="form-check-label" for="showParentTasks">Show Parent Tasks Only</label>
         </div>
