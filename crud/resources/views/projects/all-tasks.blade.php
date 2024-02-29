@@ -120,7 +120,7 @@
             const allotted_to = document.getElementById("allotted_to").value;
             const attachments = document.getElementById("attachments").value;
 
-            if(sprint && title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
+            if(title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
             {
                 const error_box = document.querySelector(".error_msg");
                 error_box.style.display = "none";
@@ -611,10 +611,12 @@
                                 data-target="#showModal_{{ $task->id }}" class="p-1">
                                 <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                             </a>
-                            <a href="#" data-toggle="modal" data-placement="top" title="Edit"
-                                data-target="#editModal_{{ $task->id }}" class="p-1">
-                                <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                            </a>
+                            @if(Auth::user()->getRole($project->id) == 4)
+                                <a href="#" data-toggle="modal" data-placement="top" title="Edit"
+                                    data-target="#editModal_{{ $task->id }}" class="p-1">
+                                    <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                </a>
+                            @endif
                             <a href="#" data-toggle="modal" data-target="#commentModal{{ $task->id }}">
                                 <i class="fas fa-comment text-info" style="margin-right: 10px"></i>
                             </a>
@@ -623,10 +625,12 @@
                             <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                                 @method('delete')
                                 @csrf
-                                <a href="#" class="delete-button p-1" data-toggle="modal"
-                                    data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
-                                    <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
-                                </a>
+                                @if(Auth::user()->getRole($project->id) == 4)
+                                    <a href="#" class="delete-button p-1" data-toggle="modal"
+                                        data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
+                                        <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
+                                    </a>
+                                @endif
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
@@ -813,21 +817,19 @@
                                         </div>
 
                                         @if($task->attachments && $task->attachments->count() > 0)
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="documents">Documents</label>
-                                                    <ul>
-                                                        @foreach ($task->attachments as $attachment)
-                                                            <li class="list-group-item">
-                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                                <a href="{{($attachment->file_path) }}"
-                                                                    target="_blank">
-                                                                    {{ $attachment->file_path }}
-                                                                </a>
-                                                            </li>
-                                                        @endforeach 
-                                                    </ul>
-                                                </div>
+                                            <div class="row mt-4 gap-2 justify-content-center">
+                                                <label for="documents">Documents</label>
+                                                @foreach ($task->attachments as $attachment)
+                                                    <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                        
+                                                        <div class="text-center">
+                                                            <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                        </div>
+                                                        <div class="w-100 text-center" style="overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                                            <a href="{{asset($attachment->file_path)}}" style="text-decoration: none;color:white;">{{ basename($attachment->file_path) }}</a>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         @endif
                                             
