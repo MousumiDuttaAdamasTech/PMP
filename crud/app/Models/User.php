@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -84,5 +85,14 @@ class User extends Authenticatable
     public function projectMembers()
     {
         return $this->hasMany(ProjectMember::class, 'project_members_id');
+    }
+
+    public function getRole($projectId)
+    {
+        $projectMember = $this->projectMembers()->where('project_id', $projectId)
+            ->where('project_members_id', Auth::user()->id)
+            ->first();
+
+        return $projectMember->project_role_id;
     }
 }

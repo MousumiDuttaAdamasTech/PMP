@@ -29,6 +29,8 @@
     <script>
         $(document).ready(function () {
 
+            
+
         });
     </script>
 
@@ -154,14 +156,19 @@
                     $latestSprintId = $sprints->isNotEmpty() ? $sprints->sortByDesc('created_at')->first()->id : null;
                     @endphp
                     <div class="form-group" style="position: sticky; position: -webkit-sticky; left: 0; margin-top: 1%;">
-                     
+                      
                         <label for="sprint-dropdown">Select Sprint:</label>
                         <select class="sprint" id="sprint-dropdown" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" data-url="{{ route('getSprints') }}">
+
+                            @if($sprints->isEmpty())
+                            <option value="" disabled selected>No Sprint Available</option>
+                            @else
                             @foreach($sprints->where('projects_id', $project->id)->reverse() as $sprint)
                                 <option value="{{ $sprint->id }}" data-project="{{ $sprint->projects_id }}" {{ $sprint->id == $latestSprintId ? 'selected' : '' }}>
                                     {{ $sprint->sprint_name }}
                                 </option>
                             @endforeach
+                            @endif
                         </select>
                     </div>
 
@@ -310,16 +317,18 @@
        
                                        @if(count($tasks) > 0)
                                        <div class="col-md-6">
-                                           <div class="form-group">
-                                               <label for="sprint_id" style="font-size: 15px;">Sprint</label>
-                                               <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                                   <option value="" selected disabled>Select Sprint</option>
-                                                   @foreach ($sprints as $sprint)
-                                                   <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
-                                                   @endforeach
-                                               </select>
-                                           </div>
-                                       </div>
+                                        <div class="form-group">
+                                            <label for="sprint_id" style="font-size: 15px;">Sprint</label>
+                                            <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                                                <option value="">Select Sprint</option>
+                                             
+                                                @foreach ($sprints as $sprint)
+                                                    <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
                                        <div class="col-md-6">
                                            <div class="form-group">
                                                <label for="parent_task" style="font-size: 15px;">Parent Task</label>
@@ -339,7 +348,7 @@
                                            <div class="form-group">
                                                <label for="sprint_id" style="font-size: 15px;">Sprint</label>
                                                <select name="sprint_id" id="sprint_id" class="sprint form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                                   <option value="" selected disabled>Select Sprint</option>
+                                                   <option value="">Select Sprint</option>
                                                    @foreach ($sprints as $sprint)
                                                    <option value="{{ $sprint->id }}">{{ $sprint->sprint_name }}</option>
                                                    @endforeach
@@ -472,11 +481,12 @@
                                        <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="attachments">Attachments</label>
-                                            <input type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                            <input onchange="displayUploadedFiles(this)" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
                                             <small class="text-muted">You can upload multiple files.</small>
                                         </div>
                                     </div>
-       
+    
+                                    <div class="my-3" id="uploadedFilesContainer"></div>
                                        <div class="form-actions">
                                            <button type="submit" class="btn btn-primary">Create</button>
                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</a>
@@ -509,15 +519,17 @@
                                                 <label for="parent_task_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
                                                 <select name="sprint_id" id="sprint_id_{{ $task->id }}"
                                                     class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px; background-color:#e9ecef;" disabled>
+                                                    <option value="" disabled>Select Sprint</option> <!-- New line for default option -->
                                                     @foreach ($sprints as $sprint)
-                                                    <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
-                                                        sprint_id) == $sprint->id ? 'selected' : '' }}>
+                                                    <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->sprint_id) == $sprint->id ? 'selected' : '' }}>
                                                         {{ $sprint->sprint_name }}
                                                     </option>
                                                     @endforeach
+                                                    <option value="" {{ is_null(optional($task)->sprint_id) ? 'selected' : '' }}>No Sprint Selected</option>
                                                 </select>
                                             </div>
                                         </div>
+                                        
     
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -536,6 +548,20 @@
                                                 <input type="text" name="title" id="title_{{ $task->id }}" class="form-control shadow-sm" value="{{ $task->title }}" required disabled style="background-color:#e9ecef;">
                                             </div>
                                         </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="epic" style="font-size: 15px;">Epic</label>
+                                                <input type="text" name="epic" id="epic" value="{{ isset($task->epic) ? $task->epic : 'N/A' }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="story" style="font-size: 15px;">Story</label>
+                                                <input type="text" name="story" id="story" value="{{ isset($task->story) ? $task->story : 'N/A' }}" class="form-control shadow-sm" required disabled style="background-color:#e9ecef;">
+                                            </div>
+                                        </div>
+                                        
     
                                         <div class="col-md-6">
                                             <div class="form-group">
@@ -636,6 +662,25 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        @if($task->attachments && $task->attachments->count() > 0)
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="documents">Documents</label>
+                                                    <ul>
+                                                        @foreach ($task->attachments as $attachment)
+                                                            <li class="list-group-item">
+                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
+                                                                <a href="{{($attachment->file_path) }}"
+                                                                    target="_blank">
+                                                                    {{ $attachment->file_path }}
+                                                                </a>
+                                                            </li>
+                                                        @endforeach 
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        @endif
     
                                                 <!-- Add other form fields with unique identifiers -->
     
@@ -678,7 +723,7 @@
                                                 <label for="sprint_id_{{ $task->id }}" style="font-size: 15px;">Sprint</label>
                                                 <select name="sprint_id" id="sprint_id_{{ $task->id }}"
                                                     class="form-controlcl shadow-sm" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
-                                                    <option value="" selected disabled>Select Sprint</option>
+                                                    <option value="">Select Sprint</option>
                                                     @foreach ($sprints as $sprint)
                                                     <option value="{{ $sprint->id }}" {{ old('sprint_id', optional($task)->
                                                         sprint_id) == $sprint->id ? 'selected' : '' }}>
@@ -844,6 +889,43 @@
                                             </div>
                                         </div>
 
+
+
+
+
+                                        <div class="mt-3" id="uploadedFilesContainer_{{$task->id}}"></div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label for="attachments">Attachments</label>
+                                                <input onchange="displayUploadedFiles2(this,{{$task->id}})" type="file" name="attachments[]" id="attachments" class="form-control" multiple>
+                                                <small class="text-muted">You can upload multiple files.</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="row my-4 gap-2 justify-content-center">
+                                            @forEach($taskAttachments as $taskAttachment)
+                                                @if($task->id == $taskAttachment->task_id)
+                                                    <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                        <div class="d-flex justify-content-end w-100">
+                                                            <a href="/deleteTaskAttachments/{{$taskAttachment->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                        </div>
+                                                        <div class="w-100 text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                                            <a href="{{ asset($taskAttachment->file_path) }}" style="text-decoration: none; color: white;">
+                                                                {{ basename($taskAttachment->file_path) }}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div>
+
+                                        
+
+
                                         <!-- Add other form fields with unique identifiers -->
 
                                         <div class="form-actions">
@@ -886,38 +968,46 @@
                     <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
                             <tr>
-                                <th style="width: 14.2%;">Task ID</th>
-                                <th style="width: 14.2%;">Epic</th>
-                                <th style="width: 14.2%;">Story</th>
-                                <th style="width: 14.2%;">Task Title</th>
-                                <th style="width: 14.2%;">Priority</th>
-                                <th style="width: 14.2%;">Estd. Time</th>
-                                <th style="width: 14.2%;">Actions</th>
+                                <th style="width: 12.5%;">Task ID</th>
+                                <th style="width: 12.5%;">Epic</th>
+                                <th style="width: 12.5%;">Story</th>
+                                <th style="width: 12.5%;">Task Title</th>
+                                <th style="width: 12.5%;">Priority</th>
+                                <th style="width: 12.5%;">Estd. Hours</th>
+                                <th style="width: 12.5%;">Parent Task</th>
+                                <th style="width: 12.5%;">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($sortedTasks as $task)
                             @if($task->sprint_id === null)
                                 <tr id="taskRow_{{ $task->id }}" class="shadow" style="border-radius:15px;">
-                                    <td style="font-size: 15px; width:14.2%;">{{ $task->uuid }}</td>
-                                    <td style="width: 14.2%;">
+                                    <td style="font-size: 15px; width:12.5%;">{{ $task->uuid }}</td>
+                                    <td style="width: 12.5%;">
                                         @if($task->epic)
                                             {{ \Illuminate\Support\Str::limit(strip_tags($task->epic), 20, $end='...') }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
-                                    <td style="width: 14.2%;">
+                                    <td style="width: 12.5%;">
                                         @if($task->story)
                                             {{ \Illuminate\Support\Str::limit(strip_tags($task->story), 20, $end='...') }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
-                                    <td style="font-size: 15px; width:14.2%;">{{ $task->title }}</td>
-                                    <td style="font-size: 14px; width:14.2%;">{{ $task->priority }}</td>
-                                    <td style="width: 14.2%;">{{ $task->estimated_time }}</td>
-                                    <td class="d-flex align-items-center" style="font-size: 15px;width:14.2%;">
+                                    <td style="font-size: 15px; width:12.5%;">{{ $task->title }}</td>
+                                    <td style="font-size: 14px; width:12.5%;">{{ $task->priority }}</td>
+                                    <td style="width:12.5%;">{{ $task->estimated_time }}</td>
+                                    <td style="width: 12.5%">
+                                        @if($task->parentTask)
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($task->parentTask->title), 20, $end='...') }}
+                                        @else
+                                            N/A
+                                        @endif
+                                    </td>
+                                    <td class="d-flex align-items-center" style="font-size: 15px;width:12.5%;">
                                         <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showTaskModal_{{ $task->id }}">
                                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                         </a>
@@ -1773,7 +1863,81 @@
             </div> 
         </div>
 
-
+        <script>
+            function displayUploadedFiles(input) {
+                const filesContainer = document.getElementById('uploadedFilesContainer');
+                filesContainer.innerHTML = ''; 
+        
+                const mainDiv = document.createElement('div');
+                mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+        
+                Array.from(input.files).forEach(file => {
+        
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                    fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+        
+                    const deleteLink = document.createElement('div');
+                    deleteLink.className = 'd-flex justify-content-end w-100';
+                    deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+        
+                    const icon = document.createElement('div');
+                    icon.className = 'text-center';
+                    icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+        
+                    const fileName = document.createElement('div');
+                    fileName.className = 'w-100 text-center';
+                    fileName.innerHTML = file.name;
+                    fileName.style.color = "white";
+                    fileName.style.overflow = "hidden";
+                    fileName.style.textOverflow = "ellipsis";
+                    fileName.style.whiteSpace = "nowrap";
+        
+                    //fileElement.appendChild(deleteLink);
+                    fileElement.appendChild(icon);
+                    fileElement.appendChild(fileName);
+                    mainDiv.appendChild(fileElement);
+                    filesContainer.appendChild(mainDiv);
+                });
+            }
+        
+            function displayUploadedFiles2(input,taskId){
+                const filesContainer = document.getElementById(`uploadedFilesContainer_${taskId}`);
+                filesContainer.innerHTML = ''; 
+        
+                const mainDiv = document.createElement('div');
+                mainDiv.className = 'row mt-4 gap-2 justify-content-center';
+        
+                Array.from(input.files).forEach(file => {
+        
+                    const fileElement = document.createElement('div');
+                    fileElement.className = 'col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                    fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+        
+                    const deleteLink = document.createElement('div');
+                    deleteLink.className = 'd-flex justify-content-end w-100';
+                    deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+        
+                    const icon = document.createElement('div');
+                    icon.className = 'text-center';
+                    icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+        
+                    const fileName = document.createElement('div');
+                    fileName.className = 'w-100 text-center';
+                    fileName.innerHTML = file.name;
+                    fileName.style.color = "white";
+                    fileName.style.overflow = "hidden";
+                    fileName.style.textOverflow = "ellipsis";
+                    fileName.style.whiteSpace = "nowrap";
+        
+                    //fileElement.appendChild(deleteLink);
+                    fileElement.appendChild(icon);
+                    fileElement.appendChild(fileName);
+                    mainDiv.appendChild(fileElement);
+                    filesContainer.appendChild(mainDiv);
+                });
+            }
+        </script>
 
         <script>
             $(document).ready(function () {
@@ -1909,15 +2073,15 @@
                         // Append new tasks to the custom card container
                         tasks.forEach(task => {
                             // Create HTML for the card with the status and its associated tasks
-                            var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
-                                '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
+                            var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 115px; position: relative;" id="task' + task.id + '">' +
+                                '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;margin-top:-5px;">' +
                                 '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
                                 '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                                 '</a>' +
                                 '</div>' +
                                 '<div class="card__text__details" style=" color: var(--colorName);width:100px; margin-left:7px;margin-top:10px;">' +
                                     '<div class="card_text" style="margin-top:15px; font-weight: bold; ">' + task.title + '</div>' +
-                                    '<div class="card_details">' + task.details + '</div>' +
+                                    '<div class="card_details"  style="margin-bottom:-13px"  >' +  (task.details.length > 25 ? task.details.substring(0, 25) + '...' : task.details) + '</div>' +
                                 '</div>' +
 
                                 // Include dynamic counts for comments, attachments, and taskUsers
