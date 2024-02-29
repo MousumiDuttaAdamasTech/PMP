@@ -216,7 +216,7 @@ class TaskController extends Controller
     }
 
     $taskAttachments = TaskAttachment::where('task_id', $request->task_id)->get();
-    session()->flash('success', 'Task created successfully.');
+    session()->flash('success', 'Updated successfully.');
     session()->flash('flag', 2);
 
     return back()->with('success', 'Updated successfully.');
@@ -224,7 +224,7 @@ class TaskController extends Controller
     public function destroy(Task $task)
     {
         $task->delete();
-        session()->flash('success', 'Task created successfully.');
+        session()->flash('success', 'Deleted successfully.');
         session()->flash('flag', 2);
         return back()->with('success', 'Deleted successfully.');
     }
