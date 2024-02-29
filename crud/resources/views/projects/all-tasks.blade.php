@@ -120,7 +120,7 @@
             const allotted_to = document.getElementById("allotted_to").value;
             const attachments = document.getElementById("attachments").value;
 
-            if(sprint && title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
+            if(title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
             {
                 const error_box = document.querySelector(".error_msg");
                 error_box.style.display = "none";
