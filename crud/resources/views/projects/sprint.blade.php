@@ -2081,7 +2081,7 @@
                                 '</div>' +
                                 '<div class="card__text__details" style=" color: var(--colorName);width:100px; margin-left:7px;margin-top:10px;">' +
                                     '<div class="card_text" style="margin-top:15px; font-weight: bold; ">' + task.title + '</div>' +
-                                    '<div class="card_details">' + task.details + '</div>' +
+                                    '<div class="card_details">' +  (task.details.split(/\s+/).slice(0, 20).join(' ') + (task.details.split(/\s+/).length > 20 ? '...' : '')) + '</div>' +
                                 '</div>' +
 
                                 // Include dynamic counts for comments, attachments, and taskUsers
