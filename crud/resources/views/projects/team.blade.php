@@ -160,11 +160,7 @@
 
 <div class="form-container">
     <div class="row">
-        @if (session('error'))
-            {{-- <div class=" col-md-6 mx-auto alert alert-danger">
-                {{ session('error') }}
-            </div> --}}
-        @endif
+        
         <div class="col-md-12 mb-3">
             <div class="titlebar d-flex flex-column flex-md-row justify-content-md-between align-items-center gap-3"
                 style="margin-top: 18px; margin-bottom: 30px; padding: 2px 30px;">
@@ -174,10 +170,12 @@
                             placeholder="Search Members">
                     </form>
                 </div>
-                <button type="button" id="addmember" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
-                    style="margin-right: 10px;">
-                    Add Member
-                </button>
+                @if(Auth::user()->getRole($project->id) == 4)
+                    <button type="button" id="addmember" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
+                        style="margin-right: 10px;">
+                        Add Member
+                    </button>
+                @endif
             </div>
 
             <div id="memberCardContainer" class="row">
@@ -208,15 +206,18 @@
                                 $projectMember->profile_name }}</p>
                             <p class="card-text role"
                                 style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
-                                {{ $roleName }}</p>
-                            <div class="d-flex justify-content-center gap-4 my-2">
-                                <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
-                                    <i class="fas fa-edit text-primary"></i>
-                                </a> 
-                                <a href="/deleteProjectMember/?memberId={{$projectMember->id}}&projectId={{$projectMember->pivot->project_id}}" data-placement="top" title="Delete">
-                                    <i class="fas fa-trash-alt text-danger"></i>
-                                </a>
-                            </div>    
+                                {{ $roleName }}
+                            </p>
+                            @if(Auth::user()->getRole($project->id) == 4)
+                                <div class="d-flex justify-content-center gap-4 my-2">
+                                    <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
+                                        <i class="fas fa-edit text-primary"></i>
+                                    </a> 
+                                    <a href="/deleteProjectMember/?memberId={{$projectMember->id}}&projectId={{$projectMember->pivot->project_id}}" data-placement="top" title="Delete">
+                                        <i class="fas fa-trash-alt text-danger"></i>
+                                    </a>
+                                </div>  
+                            @endif
                         </div>
                     </div>
                     <!--Edit Modal -->
