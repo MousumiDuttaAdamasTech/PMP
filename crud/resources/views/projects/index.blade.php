@@ -93,7 +93,7 @@
                             <a href="{{ route('projects.cost', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Cost">
                                 <i class="bi bi-exclamation-octagon" style="margin-right: 10px; color:red;"></i>
                             </a>
-                            <a href="{{ route('projects.overview', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Project Details">
+                            <a href="{{ route('projects.sprint', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Project Details">
                                 <i class="fa-solid fa-book-open" style="margin-right: 10px; color:blue;"></i> 
                             </a>
                             <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">

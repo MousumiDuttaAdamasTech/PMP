@@ -809,21 +809,21 @@
                                         </div>
 
                                         @if($task->attachments && $task->attachments->count() > 0)
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="documents">Documents</label>
-                                                    <ul>
-                                                        @foreach ($task->attachments as $attachment)
-                                                            <li class="list-group-item">
-                                                                <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                                <a href="{{($attachment->file_path) }}"
-                                                                    target="_blank">
-                                                                    {{ $attachment->file_path }}
-                                                                </a>
-                                                            </li>
-                                                        @endforeach 
-                                                    </ul>
-                                                </div>
+                                            <div class="row mt-4 gap-2 justify-content-center">
+                                                <label for="documents">Documents</label>
+                                                @foreach ($task->attachments as $attachment)
+                                                    <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                        <div class="d-flex justify-content-end w-100">
+                                                            <a href="/deleteTaskAttachments/{{$attachment->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                        </div>
+                                                        <div class="w-100 text-center" style="overflow: hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                                            <a href="{{asset($attachment->file_path)}}" style="text-decoration: none;color:white;">{{ basename($attachment->file_path) }}</a>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
                                         @endif
                                             
