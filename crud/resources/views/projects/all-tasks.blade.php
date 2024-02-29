@@ -821,9 +821,7 @@
                                                 <label for="documents">Documents</label>
                                                 @foreach ($task->attachments as $attachment)
                                                     <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
-                                                        <div class="d-flex justify-content-end w-100">
-                                                            <a href="/deleteTaskAttachments/{{$attachment->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
-                                                        </div>
+                                                        
                                                         <div class="text-center">
                                                             <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
                                                         </div>
