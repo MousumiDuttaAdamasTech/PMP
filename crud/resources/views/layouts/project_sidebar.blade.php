@@ -22,7 +22,8 @@
         width: 200px;
         /* Adjust the width of each card as needed */
         margin-right: 10px;
-        max-height: 450px;
+        height: 330px;
+        max-height: 330px;
         
     }
 </style>

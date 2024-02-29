@@ -2073,15 +2073,15 @@
                         // Append new tasks to the custom card container
                         tasks.forEach(task => {
                             // Create HTML for the card with the status and its associated tasks
-                            var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '" draggable="true" ondragstart="drag(event)">' +
-                                '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;">' +
+                            var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 115px; position: relative;" id="task' + task.id + '">' +
+                                '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;margin-top:-5px;">' +
                                 '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
                                 '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
                                 '</a>' +
                                 '</div>' +
                                 '<div class="card__text__details" style=" color: var(--colorName);width:100px; margin-left:7px;margin-top:10px;">' +
                                     '<div class="card_text" style="margin-top:15px; font-weight: bold; ">' + task.title + '</div>' +
-                                    '<div class="card_details">' +  (task.details.split(/\s+/).slice(0, 20).join(' ') + (task.details.split(/\s+/).length > 20 ? '...' : '')) + '</div>' +
+                                    '<div class="card_details"  style="margin-bottom:-13px"  >' +  (task.details.length > 25 ? task.details.substring(0, 25) + '...' : task.details) + '</div>' +
                                 '</div>' +
 
                                 // Include dynamic counts for comments, attachments, and taskUsers
