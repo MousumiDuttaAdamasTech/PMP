@@ -238,7 +238,7 @@
                 <div class="d-flex flex-column">
                     <div class="d-flex justify-content-between mt-4 gap-4">
                         <div style="width: 25%" class="d-flex align-items-center">
-                            <select id="statusSelect" name="task_id" class="shadow-sm"
+                            <select id="statusSelect"  name="task_id" class="shadow-sm sprintSelect"
                                 style="padding-top:5px; padding-bottom:5px; height:39px;outline:none;" required>
                                 <option value="">Select Sprint</option>
                                 @foreach($sprints as $sprint)
@@ -247,16 +247,16 @@
                             </select>
                         </div>
                         <div style="width: 25%" class="d-flex align-items-center">
-                            <select id="statusSelect" name="task_id" class="shadow-sm"
-                                style="padding-top:5px; padding-bottom:5px; height:39px;outline:none;" required>
+                            <select id="statusSelect" name="task_id" class="shadow-sm roundselect" style="padding-top:5px; padding-bottom:5px; height:39px;outline:none;" required>
                                 <option value="">Select Round</option>
                                 @foreach($qarounds as $qaround)
                                     <option value="{{$qaround->id}}">{{$qaround->round}}</option>
                                 @endforeach
                             </select>
                         </div>
+                        
                         <div style="width: 25%" class="d-flex align-items-center">
-                            <select id="statusSelect" name="task_id" class="shadow-sm"
+                            <select id="statusSelect" name="task_id" class="shadow-sm testerSelect"
                                 style="padding-top:5px; padding-bottom:5px; height:39px;outline:none;" required>
                                 <option value="">Select Tester</option>
                                 @foreach($project->projectMembers as $projectMember)
@@ -287,15 +287,15 @@
                             </thead>
                         <tbody>
                             @foreach($bugs as $bug)
-                                <tr>
-                                    <td><input type="checkbox" style="width: 19px;height:19px;" class="ml-3 mt-2" value="{{$bug->id}}"></td>
-                                    <td>{{$bug->bid}}</td>
-                                    <td>{{$bug->bugtype->type}}</td>
-                                    <td>{{$bug->qaid->module}}</td>
-                                    <td>{{$bug->priority}}</td> 
-                                    <td>{{$bug->severity}}</td>
-                                    <td>{{$bug->bugStatus}}</td>
-                                    <td>
+                                <tr data-bug-id="{{$bug->id}}" data-sprint-id="{{$bug->qaid->sprint_id}}" data-tester-id="{{$qaround->tester_id}}">
+                                    <td class="roundselect"><input type="checkbox" style="width: 19px;height:19px;" class="ml-3 mt-2" value="{{$bug->id}}"></td>
+                                    <td class="roundselect">{{$bug->bid}}</td>
+                                    <td class="roundselect">{{$bug->bugtype->type}}</td>
+                                    <td class="roundselect">{{$bug->qaid->module}}</td>
+                                    <td class="roundselect">{{$bug->priority}}</td> 
+                                    <td class="roundselect">{{$bug->severity}}</td>
+                                    <td class="roundselect">{{$bug->bugStatus}}</td>
+                                    <td class="roundselect">
                                         <div class="btn-group" role="group">
                                             <a href="#" class="p-2" data-toggle="modal" data-target="#editBugsModal_{{$bug->id}}" data-placement="top" title="Edit">
                                                 <i class="fas fa-edit text-primary"></i>
@@ -921,4 +921,137 @@
             </div>
         </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+       
+        var roundSelect = document.querySelector('.roundselect');
+
+        
+        var bugs = @json($bugs->map(function($bug) {
+            return [
+                'id' => $bug->id,
+                'round' => $bug->qa_id,
+            ];
+        }));
+
+        
+        roundSelect.addEventListener('input', function () {
+           
+            var selectedRound = roundSelect.value;
+            toggleRowsVisibility(selectedRound);
+        });
+
+       
+        toggleRowsVisibility('');
+        function toggleRowsVisibility(selectedRound) {
+            var rows = document.querySelectorAll('#bugsTable tbody tr');
+
+            rows.forEach(function (row) {
+                
+                var bugId = row.dataset.bugId;
+                var bugRound = bugs.find(bug => bug.id == bugId).round;
+
+                console.log('Bug ID:', bugId);
+                console.log('Bug Round:', bugRound);
+
+               
+                if (!selectedRound || bugRound == selectedRound) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the tester select element
+        var testerSelect = document.querySelector('.testerSelect');
+
+        // Access the bugs data directly
+        var bugs = @json($bugs->map(function($bug) {
+            return [
+                'id' => $bug->id,
+                'tester_id' => $bug->tester_id,
+            ];
+        }));
+
+        // Add event listener to the tester select dropdown
+        testerSelect.addEventListener('input', function () {
+            // Get the selected tester value
+            var selectedTester = testerSelect.value;
+
+            // Toggle visibility based on the selected tester
+            toggleRowsVisibility(selectedTester);
+        });
+
+        // Initial table build with all bugs
+        toggleRowsVisibility('');
+
+        // Function to toggle row visibility based on the selected tester
+        function toggleRowsVisibility(selectedTester) {
+            var rows = document.querySelectorAll('#bugsTable tbody tr');
+
+            rows.forEach(function (row) {
+                // Access the tester ID directly from the dataset
+                var bugId = row.dataset.bugId;
+                var bugTesterId = bugs.find(bug => bug.id == bugId).tester_id;
+                console.log('Bug ID:', bugId);
+                console.log('Bug Tester ID:', bugTesterId);
+
+                // If no tester is selected or matches the selected tester, show the row; otherwise, hide it
+                if (!selectedTester || bugTesterId == selectedTester) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the Sprint select element
+        var sprintSelect = document.querySelector('.sprintSelect');
+
+        
+        sprintSelect.addEventListener('input', function () {
+            
+            var selectedSprint = sprintSelect.value;
+
+         
+            toggleRowsVisibility(selectedSprint);
+        });
+
+       
+        toggleRowsVisibility('');
+
+       
+        function toggleRowsVisibility(selectedSprint) {
+            var rows = document.querySelectorAll('#bugsTable tbody tr');
+
+            rows.forEach(function (row) {
+                // Access the Sprint ID directly from the dataset
+                var sprintId = row.dataset.sprintId;
+
+               
+                if (!selectedSprint || sprintId == selectedSprint) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+
+
+
+
+
+
+
 @endsection
