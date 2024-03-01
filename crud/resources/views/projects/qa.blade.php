@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/project.css') }}"> 
     <link rel="stylesheet" href="{{ asset('css/form.css') }}"> 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     
 @endsection  
 
@@ -20,11 +21,27 @@
     <script src="https://cdn.ckeditor.com/4.14.0/standard/ckeditor.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script src="{{ asset('js/side_highlight.js') }}"></script>
     <script src="{{ asset('js/project.js') }}"></script>    
 @endsection
 
 @section('main_content')
+
+@if(Session::has('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ Session::get('success') }}',
+                showConfirmButton: false,
+                timer: 3000
+            });
+        });
+    </script>
+    @endif
+
 
 <script>
     $(document).ready(function () {
@@ -752,7 +769,7 @@
             <div id="manage" class="tab-pane fade p-4">
                 <div class="d-flex justify-content-end my-4 gap-2">
                     <div style="width: 25%" class="d-flex align-items-center">
-                        <select id="statusSelect" name="sprint" class="shadow-sm"
+                        <select id="statusSelect" name="sprint" class="shadow-sm selectSprint2"
                             style="padding-top:5px; padding-bottom:5px; height:39px;outline:none;" required>
                             <option value="">Select Sprint</option>
                             @foreach($sprints as $sprint)
@@ -776,7 +793,7 @@
                     </thead>
                     <tbody>
                         @foreach($qarounds as $qaround)
-                            <tr>
+                            <tr data-sprint2-id="{{$qaround->sprint_id}}">
                                 <td>{{$qaround->id}}</td>
                                 <td>{{$qaround->round}}</td>
                                 <td>{{$bugs->where('qa_id', $qaround->id)->count()}}</td>
@@ -921,6 +938,7 @@
             </div>
         </div>
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
        
@@ -1048,8 +1066,33 @@
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var sprintSelect = document.querySelector('.selectSprint2');
 
+        sprintSelect.addEventListener('input', function () {
+            console.log("Changed");
+            var selectedSprint = sprintSelect.value;
+            toggleRowsVisibility(selectedSprint);
+        });
 
+        toggleRowsVisibility('');
+
+        function toggleRowsVisibility(selectedSprint) {
+            var rows = document.querySelectorAll('#manageTable tbody tr');
+
+            rows.forEach(function (row) {
+                var rowSprintId = row.dataset.sprint2Id;
+
+                if (!selectedSprint || rowSprintId == selectedSprint) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
 
 
 

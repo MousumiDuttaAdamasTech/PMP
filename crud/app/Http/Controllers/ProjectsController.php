@@ -529,43 +529,51 @@ class ProjectsController extends Controller
     }
 
     public function qa(Project $project)
-    {
-        $projectId = $project->id;
-        $tasks = Task::where('project_id', $project->id)->get();
-        $taskStatuses = TaskStatus::all();
-        $users = User::all();
-        $sprints = Sprint::where('projects_id', $project->id)->get();
-        $projects = Project::all(['id', 'project_name']);
-        $project = Project::with('members.user')->find($projectId);
-        $profiles = Profile::all();
-        $projectMembers = ProjectMember::with('user')->get();
-        $qastatuses = QAStatus::all();
-        $qarounds = QA::all();
-        $bugtypess = BugType::all();
-        $bugs = Bugs::all();
-        $bugDocuments = BugDocument::all();
+{
+    $projectId = $project->id;
 
-        // Fetch task statuses for the current project
-        $taskStatusesWithIds = DB::table('project_task_status')
-            ->join('task_status', 'project_task_status.task_status_id', '=', 'task_status.id')
-            ->join('project', 'project_task_status.project_id', '=', 'project.id')
-            ->select('project_task_status.id as project_task_status_id', 'task_status.status')
-            ->where('project.id', $projectId) // Use $project->id instead of $projectId
-            ->distinct()
-            ->get();
+ 
+    $qarounds = QA::with('qaStatus', 'sprint')
+        ->whereHas('sprint', function ($query) use ($projectId) {
+            $query->where('projects_id', $projectId);
+        })
+        ->get();
 
-        // Fetch project types for the current project
-        $projectTypes = DB::table('project_task_types')
-            ->join('task_types', 'project_task_types.task_type_id', '=', 'task_types.id')
-            ->join('project', 'project_task_types.project_id', '=', 'project.id')
-            ->select('task_types.type_name')
-            ->where('project.id', $projectId)
-            ->distinct()
-            ->pluck('type_name')
-            ->toArray();
+    $tasks = Task::where('project_id', $projectId)->get();
+    $taskStatuses = TaskStatus::all();
+    $users = User::all();
+    $sprints = Sprint::where('projects_id', $projectId)->get();
+    $projects = Project::all(['id', 'project_name']);
+    $project = Project::with('members.user')->find($projectId);
+    $profiles = Profile::all();
+    $projectMembers = ProjectMember::with('user')->get();
+    $qastatuses = QAStatus::all();
+    $bugtypess = BugType::all();
+    $bugs = Bugs::whereIn('qa_id', $qarounds->pluck('id'))->get();
+    $bugDocuments = BugDocument::all();
 
-        return view('projects.qa', compact('bugDocuments', 'bugs', 'bugtypess', 'qarounds', 'qastatuses', 'project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
-    }
+    
+    $taskStatusesWithIds = DB::table('project_task_status')
+        ->join('task_status', 'project_task_status.task_status_id', '=', 'task_status.id')
+        ->join('project', 'project_task_status.project_id', '=', 'project.id')
+        ->select('project_task_status.id as project_task_status_id', 'task_status.status')
+        ->where('project.id', $projectId)
+        ->distinct()
+        ->get();
+
+   
+    $projectTypes = DB::table('project_task_types')
+        ->join('task_types', 'project_task_types.task_type_id', '=', 'task_types.id')
+        ->join('project', 'project_task_types.project_id', '=', 'project.id')
+        ->select('task_types.type_name')
+        ->where('project.id', $projectId)
+        ->distinct()
+        ->pluck('type_name')
+        ->toArray();
+
+    return view('projects.qa', compact('bugDocuments', 'bugs', 'bugtypess', 'qarounds', 'qastatuses', 'project', 'projects', 'users', 'sprints', 'tasks', 'profiles', 'taskStatusesWithIds', 'projectTypes', 'taskStatuses', 'projectMembers'));
+}
+
 
     public function meetings(Project $project)
     {
