@@ -93,6 +93,8 @@ class User extends Authenticatable
             ->where('project_members_id', Auth::user()->id)
             ->first();
 
-        return $projectMember->project_role_id;
+        if ($projectMember) {
+            return $projectMember->project_role_id;
+        }
     }
 }
