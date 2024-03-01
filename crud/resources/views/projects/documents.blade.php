@@ -22,9 +22,13 @@
 
 @section('main_content')
 <div class="form-container">
-    <!-- <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
-        <a href="{{ route('documents.create') }}" class="btn btn-primary">Add New</a>
-    </div> -->
+    @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+        <div class="d-flex row justify-content-end mb-3">
+            <div class="col-md-2 d-flex justify-content-end">
+                <a href="{{ route('documents.create') }}" class="btn btn-primary">Add New</a>
+            </div>
+        </div>
+    @endif
 
     <table id="documentTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
     <thead>
@@ -56,9 +60,11 @@
                         @else
                             <i class="fas fa-eye text-info" style="margin-right: 10px;  margin-top: 5px; opacity: 0.5; cursor: not-allowed;"></i>
                         @endif
-                        <a href="#" class="edit-sprint-link" data-toggle="modal" data-placement="top" title="Update" data-target="#editModal_{{ $document->id }}">
-                            <i class="fa-regular fa-pen-to-square text-primary" style="margin-right: 10px"></i>
-                        </a>
+                        @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                            <a href="#" class="edit-sprint-link" data-toggle="modal" data-placement="top" title="Update" data-target="#editModal_{{ $document->id }}">
+                                <i class="fa-regular fa-pen-to-square text-primary" style="margin-right: 10px"></i>
+                            </a>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -207,7 +213,7 @@
                                         </div>
                                     @endif --}}
 
-                                    <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;" required>
+                                    <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
                                 </div>
 
                                 <div class="col-md-6">
@@ -216,9 +222,11 @@
                                         <select name="approved_by" id="editApprovedBy" class="form-control shadow-sm" required>
                                             <!-- Populate options based on project members -->
                                             @foreach($projectMembers as $projectMember)
-                                                <option value="{{ $projectMember->project_members_id }}" {{ old('approved_by', $document->approved_by) == $projectMember->project_members_id  ? 'selected' : '' }}>
-                                                    {{ $projectMember->user->name }}
-                                                </option>
+                                                @if($projectMember->project_id == $document->project_id)
+                                                    <option value="{{ $projectMember->project_members_id }}" {{ old('approved_by', $document->approved_by) == $projectMember->project_members_id  ? 'selected' : '' }}>
+                                                        {{ $projectMember->user->name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>

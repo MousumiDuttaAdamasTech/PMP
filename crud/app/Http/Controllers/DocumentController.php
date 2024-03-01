@@ -36,7 +36,7 @@ class DocumentController extends Controller
             'doc_name' => 'required|string',
             'version' => 'nullable|string',
             'comments' => 'nullable|string',
-            'approved_by' => 'nullable|exists:project_members,id',
+            'approved_by' => 'nullable|exists:project_members,project_members_id',
             'approved_on' => 'nullable|date', 
             'project_id' => 'required|exists:project,id',
             'attachments' => 'nullable|file',
@@ -80,7 +80,7 @@ class DocumentController extends Controller
                 'doc_type_id' => 'required|exists:doctypes,id',
                 'doc_name' => 'required|string',
                 'comments' => 'nullable|string',
-                'approved_by' => 'nullable|exists:project_members,id',
+                'approved_by' => 'nullable|exists:project_members,project_members_id',
                 'attachments' => 'nullable|file', // Allow null or file input
                 'approved_on' => 'required',
             ]);
@@ -102,6 +102,8 @@ class DocumentController extends Controller
 
             // Increment the version before updating
             $validatedData['version'] = $document->version + 1;
+
+           // dd($document->approved_by ?? $validatedData['approved_by']);
 
             // Create a new document version
             DocumentVersion::create([

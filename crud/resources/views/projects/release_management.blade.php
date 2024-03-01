@@ -121,9 +121,11 @@
                             <form action="${deleteActionUrl}" method="post" style="display:inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete this stakeholder?')" class="btn btn-link p-0 delete-button" style="padding-right : 10px;">
-                                    <i class="fas fa-trash-alt text-danger mb-2" style="margin-right: 5px;"></i>
-                                </button>
+                                @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this stakeholder?')" class="btn btn-link p-0 delete-button" style="padding-right : 10px;">
+                                        <i class="fas fa-trash-alt text-danger mb-2" style="margin-right: 5px;"></i>
+                                    </button>
+                                @endif
                             </form>
                         </div>
                     </div>
@@ -214,10 +216,12 @@
             <div class="col-md-12 mb-3">
                 <div class="titlebar"
                     style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -30px;">
-                    <button type="button" id="addReleaseManagementModalBtn" class="btn btn-primary" data-toggle="modal"
-                        data-target="#releaseManagementModal" style="margin-right: 10px;">
-                        Add
-                    </button>
+                    @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                        <button type="button" id="addReleaseManagementModalBtn" class="btn btn-primary" data-toggle="modal"
+                            data-target="#releaseManagementModal" style="margin-right: 10px;">
+                            Add
+                        </button>
+                    @endif
                 </div>
             </div>
             <table id="release_managementTable" class="table table-hover responsive"
@@ -246,16 +250,18 @@
                                     style="">
                                     <i class="fas fa-eye text-info"></i>
                                 </a>
-                                <a href="#" data-toggle="modal" data-placement="top" title="Edit"
-                                    data-target="#editModal{{ $releaseManagement->id }}" style="margin-left: 10px" 
-                                    data-release-id="{{ $releaseManagement->id }}"
-                                    data-release-name="{{ $releaseManagement->name }}"
-                                    data-release-details="{{ $releaseManagement->details }}"
-                                    data-release-date="{{ $releaseManagement->release_date }}"
-                                    data-approved-by="{{ $releaseManagement->approved_by }}"
-                                    data-rmid="{{ $releaseManagement->rmid }}">
-                                    <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                                </a>
+                                @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                                    <a href="#" data-toggle="modal" data-placement="top" title="Edit"
+                                        data-target="#editModal{{ $releaseManagement->id }}" style="margin-left: 10px" 
+                                        data-release-id="{{ $releaseManagement->id }}"
+                                        data-release-name="{{ $releaseManagement->name }}"
+                                        data-release-details="{{ $releaseManagement->details }}"
+                                        data-release-date="{{ $releaseManagement->release_date }}"
+                                        data-approved-by="{{ $releaseManagement->approved_by }}"
+                                        data-rmid="{{ $releaseManagement->rmid }}">
+                                        <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                    </a>
+                                @endif
                                 
                                 <a href="#" data-placement="top" data-toggle="modal" id="release_management_id{{ $releaseManagement->id }}"
                                     onclick="modal_opener(this)"
@@ -264,9 +270,11 @@
                                     data-images-url="{{ route('projects.getImages') }}"> <!-- Update the URL accordingly -->
                                     <i class="fa-solid fa-people-roof text-warning" style=""></i>
                                 </a>
-                                <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $releaseManagement->id }}" style="margin-left: 10px">
-                                    <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                                </button>  
+                                @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                                    <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $releaseManagement->id }}" style="margin-left: 10px">
+                                        <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                                    </button> 
+                                @endif 
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal{{ $releaseManagement->id }}" data-backdrop="static" tabindex="-1"
                                     role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -481,42 +489,44 @@
                                     </div>
                                     <div class="modal-body">
                                         <!-- Stakeholder addition form goes here -->
-                                        <div>
-                                            <form action="{{ route('stakeholders.store') }}" method="post">
-                                                @csrf
-                                                <div class="form-group stakeform">
-                                                    <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
-                                                    <div class="d-flex justify-content-between">
-                                                        <div class="col-md-6">
-                                                            <label for="member_id">Select Project Member:</label>
-                                                            <select name="member_id" id="member_id" class="form-control"
-                                                                style="width: 100%;">
-                                                                <option value="">Select Member</option>
-                                                                @foreach ($members as $projectMember)
-                                                                <option value="{{ $projectMember->project_members_id }}">{{
-                                                                    $projectMember->user->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label for="stakeholder_role_id">Select Member Role:</label>
-                                                            <select name="stakeholder_role_id" id="stakeholder_role_id"
-                                                                class="form-control" style="width: 100%;">
-                                                                <option value="">Select Member Role</option>
-                                                                @foreach ($stakeholderRoles as $stakeholderRole)
-                                                                <option value="{{ $stakeholderRole->id }}">{{
-                                                                    $stakeholderRole->stakeholder_role_name }}</option>
-                                                                @endforeach
-                                                            </select>
+                                        @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                                            <div>
+                                                <form action="{{ route('stakeholders.store') }}" method="post">
+                                                    @csrf
+                                                    <div class="form-group stakeform">
+                                                        <input type="hidden" name="release_management_id" value="{{ $releaseManagement->id }}">
+                                                        <div class="d-flex justify-content-between">
+                                                            <div class="col-md-6">
+                                                                <label for="member_id">Select Project Member:</label>
+                                                                <select name="member_id" id="member_id" class="form-control"
+                                                                    style="width: 100%;">
+                                                                    <option value="">Select Member</option>
+                                                                    @foreach ($members as $projectMember)
+                                                                    <option value="{{ $projectMember->project_members_id }}">{{
+                                                                        $projectMember->user->name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <label for="stakeholder_role_id">Select Member Role:</label>
+                                                                <select name="stakeholder_role_id" id="stakeholder_role_id"
+                                                                    class="form-control" style="width: 100%;">
+                                                                    <option value="">Select Member Role</option>
+                                                                    @foreach ($stakeholderRoles as $stakeholderRole)
+                                                                    <option value="{{ $stakeholderRole->id }}">{{
+                                                                        $stakeholderRole->stakeholder_role_name }}</option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <!-- Additional form fields go here -->
-                                                <div class="d-flex w-100 justify-content-center my-2">
-                                                    <button type="submit" class="btn btn-primary col-md-2">Add</button>
-                                                </div>
-                                            </form>
-                                        </div>
+                                                    <!-- Additional form fields go here -->
+                                                    <div class="d-flex w-100 justify-content-center my-2">
+                                                        <button type="submit" class="btn btn-primary col-md-2">Add</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        @endif
                                         
                                         <!-- Display existing stakeholders -->
                                         <div class="row mt-3" id="modalImageContainer{{ $releaseManagement->id }}">
