@@ -236,12 +236,13 @@
     @endif
 
     <div class="form-container">
-        <div class="titlebar"
-            style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px;">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal"
-                style="margin-right: 10px;">
-                <i class="fa-solid fa-plus"></i> Add New
-            </button>
+        <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px;">
+            @if(Auth::user()->getRole($project->id) == 4)
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal"
+                    style="margin-right: 10px;">
+                    <i class="fa-solid fa-plus"></i> Add New
+                </button>
+            @endif
         </div>
         @php
         // Sort the tasks collection based on the 'id' attribute
@@ -552,11 +553,6 @@
                 </div>
             </div>
         @endforeach
-
-        {{-- <div>
-            <input type="checkbox" id="parentTasksCheckbox">
-            <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
-        </div> --}}
 
         <div class="form-check mb-4">
             <input type="checkbox" class="form-check-input" id="showParentTasks">
