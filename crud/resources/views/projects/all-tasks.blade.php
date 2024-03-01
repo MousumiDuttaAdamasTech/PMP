@@ -120,7 +120,7 @@
             const allotted_to = document.getElementById("allotted_to").value;
             const attachments = document.getElementById("attachments").value;
 
-            if(sprint && title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
+            if(title && priority && estimated_time && task_type && project_task_status_id && details && assigned_to && allotted_to)
             {
                 const error_box = document.querySelector(".error_msg");
                 error_box.style.display = "none";
@@ -558,7 +558,7 @@
             <label for="parentTasksCheckbox">Show Parent Tasks Only</label>
         </div> --}}
 
-        <div class="form-check">
+        <div class="form-check mb-4">
             <input type="checkbox" class="form-check-input" id="showParentTasks">
             <label class="form-check-label" for="showParentTasks">Show Parent Tasks Only</label>
         </div>
@@ -611,10 +611,12 @@
                                 data-target="#showModal_{{ $task->id }}" class="p-1">
                                 <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                             </a>
-                            <a href="#" data-toggle="modal" data-placement="top" title="Edit"
-                                data-target="#editModal_{{ $task->id }}" class="p-1">
-                                <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                            </a>
+                            @if(Auth::user()->getRole($project->id) == 4)
+                                <a href="#" data-toggle="modal" data-placement="top" title="Edit"
+                                    data-target="#editModal_{{ $task->id }}" class="p-1">
+                                    <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                </a>
+                            @endif
                             <a href="#" data-toggle="modal" data-target="#commentModal{{ $task->id }}">
                                 <i class="fas fa-comment text-info" style="margin-right: 10px"></i>
                             </a>
@@ -623,10 +625,12 @@
                             <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                                 @method('delete')
                                 @csrf
-                                <a href="#" class="delete-button p-1" data-toggle="modal"
-                                    data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
-                                    <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
-                                </a>
+                                @if(Auth::user()->getRole($project->id) == 4)
+                                    <a href="#" class="delete-button p-1" data-toggle="modal"
+                                        data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
+                                        <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
+                                    </a>
+                                @endif
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
@@ -817,9 +821,7 @@
                                                 <label for="documents">Documents</label>
                                                 @foreach ($task->attachments as $attachment)
                                                     <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
-                                                        <div class="d-flex justify-content-end w-100">
-                                                            <a href="/deleteTaskAttachments/{{$attachment->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
-                                                        </div>
+                                                        
                                                         <div class="text-center">
                                                             <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
                                                         </div>

@@ -2073,7 +2073,7 @@
                         // Append new tasks to the custom card container
                         tasks.forEach(task => {
                             // Create HTML for the card with the status and its associated tasks
-                            var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 115px; position: relative;" id="task' + task.id + '">' +
+                            var taskHtml = '<div class="card shadow" style="margin-bottom: 15px; height: 110px; max-height: 120px; overflow-x: auto; width: 120px; position: relative;" id="task' + task.id + '">' +
                                 '<div class="edit-ico" style="position: absolute; top: 5px; right: 5px;margin-top:-5px;">' +
                                 '<a href="#" data-toggle="modal" data-placement="top" title="Edit" data-target="#editTaskModal_' + task.id + '">' +
                                 '<i class="fas fa-edit" style="color: rgba(0, 0, 0, 0.5);"></i>' +
