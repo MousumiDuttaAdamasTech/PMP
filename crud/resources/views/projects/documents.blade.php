@@ -196,24 +196,11 @@
                                     </div>
                                 </div>
 
+                                <div class="mt-3" id="uploadedFilesContainer_{{$document->id}}"></div>
+
                                 <div class="form-group">
                                     <label for="attachments" style="font-size: 15px;">Attachments</label><br>
-
-                                    @if(isset($document) && !empty($document->attachments))
-                                        <i class="fas fa-paperclip text-primary mr-2"></i>
-                                        <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
-                                    @endif
-
-                                    {{-- @if(isset($document) && !empty($document->attachments))
-                                        <div id="attachmentContainer">
-                                            <i class="fas fa-paperclip text-primary mr-2"></i>
-                                            <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
-                                            <i class="fas fa-trash-alt text-danger delete-document"></i>
-                                            <input type="hidden" name="deletedAttachment" id="deletedAttachment" value="">
-                                        </div>
-                                    @endif --}}
-
-                                    <input type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
+                                    <input onchange="displayUploadedFiles2(this,{{$document->id}})" type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
                                 </div>
 
                                 <div class="col-md-6">
@@ -237,6 +224,24 @@
                                         <label for="editApprovedOn" style="font-size: 15px;">Approved On</label>
                                         <input type="date" name="approved_on" id="editApprovedOn" class="form-control shadow-sm" required value="{{ old('approved_on', $document->approved_on) }}">
                                     </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @if(isset($document) && !empty($document->attachments))
+                                        <div class="col-md-2 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                            <div class="d-flex justify-content-end w-100">
+                                                <a href="/deleteDocuments/{{$document->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                            </div>
+                                            <div class="text-center">
+                                                <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                            </div>
+                                            <div class="w-100 text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                                <a href="{{ asset('storage/attachments/' . $document->attachments) }}" style="text-decoration: none; color: white;">
+                                                     {{ basename($document->attachments) }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="form-actions">
@@ -282,6 +287,45 @@
                 // Optionally, you can perform additional validation here before submitting the form
             });
         });
+    </script>
+
+    <script>
+        function displayUploadedFiles2(input,taskId){
+            const filesContainer = document.getElementById(`uploadedFilesContainer_${taskId}`);
+            filesContainer.innerHTML = ''; 
+    
+            const mainDiv = document.createElement('div');
+            mainDiv.className = 'col-md-12 my-2 gap-2 justify-content-start';
+    
+            Array.from(input.files).forEach(file => {
+    
+                const fileElement = document.createElement('div');
+                fileElement.className = 'col-md-2 d-flex flex-column justify-content-between align-items-center p-2 gap-2';
+                fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
+    
+                const deleteLink = document.createElement('div');
+                deleteLink.className = 'd-flex justify-content-end w-100';
+                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+    
+                const icon = document.createElement('div');
+                icon.className = 'text-center';
+                icon.innerHTML = '<i class="fa-solid fa-paperclip" style="font-size:50px;"></i>';
+    
+                const fileName = document.createElement('div');
+                fileName.className = 'w-100 text-center';
+                fileName.innerHTML = file.name;
+                fileName.style.color = "white";
+                fileName.style.overflow = "hidden";
+                fileName.style.textOverflow = "ellipsis";
+                fileName.style.whiteSpace = "nowrap";
+    
+                //fileElement.appendChild(deleteLink);
+                fileElement.appendChild(icon);
+                fileElement.appendChild(fileName);
+                mainDiv.appendChild(fileElement);
+                filesContainer.appendChild(mainDiv);
+            });
+        }
     </script>
 
 @endsection

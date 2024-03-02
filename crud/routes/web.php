@@ -216,3 +216,5 @@ Route::get('/deleteProjectMember', [ProjectMemberController::class, 'destroy'])-
 Route::post('/editTeamMember', [ProjectMemberController::class, 'update'])->name('editTeamMember');
 
 Route::get('/deleteRMDoc/{projectId}/{rmdocid}', [ReleaseManagementController::class, 'destroy'])->name('deleteRMDoc');
+
+Route::get('/deleteDocuments/{documentId}', [DocumentController::class, 'deleteDocument'])->name('deleteDocument');

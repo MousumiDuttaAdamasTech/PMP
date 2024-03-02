@@ -25,10 +25,10 @@ class DocumentController extends Controller
         $approvers = ProjectMember::all();
         $projectMembers = ProjectMember::with('user')->get();
         $projects = Project::all(); // Assuming you have a Project model
-    
+
         return view('documents.create', compact('doctypes', 'approvers', 'projectMembers', 'projects'));
     }
-    
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -37,7 +37,7 @@ class DocumentController extends Controller
             'version' => 'nullable|string',
             'comments' => 'nullable|string',
             'approved_by' => 'nullable|exists:project_members,project_members_id',
-            'approved_on' => 'nullable|date', 
+            'approved_on' => 'nullable|date',
             'project_id' => 'required|exists:project,id',
             'attachments' => 'nullable|file',
         ]);
@@ -52,7 +52,7 @@ class DocumentController extends Controller
 
         // Set default value for 'version'
         $validatedData['version'] = $validatedData['version'] ?? '0';
-        
+
         // Add the UUID generation
         $validatedData['doc_uuid'] = substr(Str::uuid()->toString(), 0, 8);
 
@@ -70,9 +70,9 @@ class DocumentController extends Controller
         // Retrieve the latest version of the document for editing
         $latestVersion = $document->versions()->latest('created_at')->first();
 
-        return view('documents.edit', compact('latestVersion','document', 'doctypes', 'approvers'));
+        return view('documents.edit', compact('latestVersion', 'document', 'doctypes', 'approvers'));
     }
-        
+
     public function update(Request $request, Document $document)
     {
         try {
@@ -103,7 +103,7 @@ class DocumentController extends Controller
             // Increment the version before updating
             $validatedData['version'] = $document->version + 1;
 
-           // dd($document->approved_by ?? $validatedData['approved_by']);
+            // dd($document->approved_by ?? $validatedData['approved_by']);
 
             // Create a new document version
             DocumentVersion::create([
@@ -157,13 +157,22 @@ class DocumentController extends Controller
         // Check if it's the latest version before deleting
         if ($version->version == $document->latestVersion()->version) {
             $version->delete();
-            
+
             // Update the version number
             $document->update(['version' => $document->latestVersion()->version]);
-            
+
             return back()->with('success', 'Document version deleted successfully!');
         }
 
         return back()->with('error', 'Cannot delete non-latest version!');
+    }
+
+    public function deleteDocument(Request $request)
+    {
+        $document = Document::find($request->documentId);
+        dd($document);
+        $document->attachments = NULL;
+        $document->version = $document->version + 1;
+        return redirect()->route('documents.index')->with('success', 'Document deleted successfully!');
     }
 }
