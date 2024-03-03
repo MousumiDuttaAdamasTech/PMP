@@ -170,9 +170,9 @@ class DocumentController extends Controller
     public function deleteDocument(Request $request)
     {
         $document = Document::find($request->documentId);
-        dd($document);
+        //dd($document);
         $document->attachments = NULL;
-        $document->version = $document->version + 1;
-        return redirect()->route('documents.index')->with('success', 'Document deleted successfully!');
+        $document->version = $document->version - 1;
+        return back()->with('success', 'Document deleted successfully!');
     }
 }

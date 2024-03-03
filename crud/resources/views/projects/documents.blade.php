@@ -230,7 +230,7 @@
                                     @if(isset($document) && !empty($document->attachments))
                                         <div class="col-md-2 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
                                             <div class="d-flex justify-content-end w-100">
-                                                <a href="/deleteDocuments/{{$document->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                {{-- <a href="/deleteDocuments/{{$document->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a> --}}
                                             </div>
                                             <div class="text-center">
                                                 <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
@@ -304,8 +304,8 @@
                 fileElement.style.backgroundColor = 'rgb(211, 202, 202)';
     
                 const deleteLink = document.createElement('div');
-                deleteLink.className = 'd-flex justify-content-end w-100';
-                deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
+                //deleteLink.className = 'd-flex justify-content-end w-100';
+                //deleteLink.innerHTML = '<a href="#"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>';
     
                 const icon = document.createElement('div');
                 icon.className = 'text-center';
