@@ -136,12 +136,12 @@
                 <a class="nav-link mainLinks" href="{{ route('projects.all-tasks', ['project' => $project->id]) }}"
                     id="all_tasks" data-tab="projects.all-tasks">All Tasks</a>
             </li>
-            @if(Auth::user()->getRole($project->id) != 5 && Auth::user()->getRole($project->id) != 3)
+            {{-- @if(Auth::user()->getRole($project->id) != 5 && Auth::user()->getRole($project->id) != 3) --}}
                 <li class="nav-item">
                     <a class="nav-link mainLinks" href="{{ route('projects.daily_entry', ['project' => $project->id]) }}"
                         id="daily_entry" data-tab="projects.daily_entry">Daily Entry</a>
                 </li>
-            @endif
+            {{-- @endif --}}
             <li class="nav-item">
                 <a class="nav-link mainLinks" href="{{ route('projects.qa', ['project' => $project->id]) }}" id="qa"
                     data-tab="projects.qa">QA</a>

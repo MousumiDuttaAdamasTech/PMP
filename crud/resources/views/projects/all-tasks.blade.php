@@ -237,12 +237,12 @@
 
     <div class="form-container">
         <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px;">
-            @if(Auth::user()->getRole($project->id) == 4)
+            {{-- @if(Auth::user()->getRole($project->id) == 4) --}}
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTaskModal"
                     style="margin-right: 10px;">
                     <i class="fa-solid fa-plus"></i> Add New
                 </button>
-            @endif
+            {{-- @endif --}}
         </div>
         @php
         // Sort the tasks collection based on the 'id' attribute
@@ -607,12 +607,12 @@
                                 data-target="#showModal_{{ $task->id }}" class="p-1">
                                 <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                             </a>
-                            @if(Auth::user()->getRole($project->id) == 4)
+                            {{-- @if(Auth::user()->getRole($project->id) == 4) --}}
                                 <a href="#" data-toggle="modal" data-placement="top" title="Edit"
                                     data-target="#editModal_{{ $task->id }}" class="p-1">
                                     <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                 </a>
-                            @endif
+                            {{-- @endif --}}
                             <a href="#" data-toggle="modal" data-target="#commentModal{{ $task->id }}">
                                 <i class="fas fa-comment text-info" style="margin-right: 10px"></i>
                             </a>
@@ -621,12 +621,12 @@
                             <form method="post" action="{{ route('tasks.destroy', ['task' => $task->id]) }}">
                                 @method('delete')
                                 @csrf
-                                @if(Auth::user()->getRole($project->id) == 4)
+                                {{-- @if(Auth::user()->getRole($project->id) == 4) --}}
                                     <a href="#" class="delete-button p-1" data-toggle="modal"
                                         data-placement="top" title="Delete" data-target="#deleteModal{{ $task->id }}">
                                         <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
                                     </a>
-                                @endif
+                                {{-- @endif --}}
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal{{ $task->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">

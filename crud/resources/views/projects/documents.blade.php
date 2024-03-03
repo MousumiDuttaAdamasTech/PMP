@@ -22,13 +22,13 @@
 
 @section('main_content')
 <div class="form-container">
-    @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+    {{-- @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4) --}}
         <div class="d-flex row justify-content-end mb-3">
             <div class="col-md-2 d-flex justify-content-end">
                 <a href="{{ route('documents.create') }}" class="btn btn-primary">Add New</a>
             </div>
         </div>
-    @endif
+    {{-- @endif --}}
 
     <table id="documentTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
     <thead>
@@ -60,11 +60,11 @@
                         @else
                             <i class="fas fa-eye text-info" style="margin-right: 10px;  margin-top: 5px; opacity: 0.5; cursor: not-allowed;"></i>
                         @endif
-                        @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4)
+                        {{-- @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4) --}}
                             <a href="#" class="edit-sprint-link" data-toggle="modal" data-placement="top" title="Update" data-target="#editModal_{{ $document->id }}">
                                 <i class="fa-regular fa-pen-to-square text-primary" style="margin-right: 10px"></i>
                             </a>
-                        @endif
+                        {{-- @endif --}}
                     </div>
                 </td>
             </tr>

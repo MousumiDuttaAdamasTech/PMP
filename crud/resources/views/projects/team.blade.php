@@ -170,12 +170,12 @@
                             placeholder="Search Members">
                     </form>
                 </div>
-                @if(Auth::user()->getRole($project->id) == 4)
+                {{-- @if(Auth::user()->getRole($project->id) == 4) --}}
                     <button type="button" id="addmember" class="btn btn-primary" data-toggle="modal" data-target="#myModal"
                         style="margin-right: 10px;">
                         Add Member
                     </button>
-                @endif
+                {{-- @endif --}}
             </div>
 
             <div id="memberCardContainer" class="row">
@@ -208,7 +208,7 @@
                                 style="margin-bottom: 0rem; font-size: 15px !important; font-weight: 400; margin-top: -10px">
                                 {{ $roleName }}
                             </p>
-                            @if(Auth::user()->getRole($project->id) == 4)
+                            {{-- @if(Auth::user()->getRole($project->id) == 4) --}}
                                 <div class="d-flex justify-content-center gap-4 my-2">
                                     <a href="#" data-toggle="modal" data-target="#editDetailsModal_{{$projectMember->id}}" data-placement="top" title="Edit">
                                         <i class="fas fa-edit text-primary"></i>
@@ -217,7 +217,7 @@
                                         <i class="fas fa-trash-alt text-danger"></i>
                                     </a>
                                 </div>  
-                            @endif
+                            {{-- @endif --}}
                         </div>
                     </div>
                     <!--Edit Modal -->
