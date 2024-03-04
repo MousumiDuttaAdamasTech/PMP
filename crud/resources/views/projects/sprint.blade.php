@@ -968,46 +968,46 @@
                     <table id="taskTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
                             <tr>
-                                <th style="width: 12.5%;">Task ID</th>
-                                <th style="width: 12.5%;">Epic</th>
-                                <th style="width: 12.5%;">Story</th>
-                                <th style="width: 12.5%;">Task Title</th>
-                                <th style="width: 12.5%;">Priority</th>
-                                <th style="width: 12.5%;">Estd. Hours</th>
-                                <th style="width: 12.5%;">Parent Task</th>
-                                <th style="width: 12.5%;">Actions</th>
+                                <th>Task ID</th>
+                                <th>Epic</th>
+                                <th>Story</th>
+                                <th>Task Title</th>
+                                <th>Priority</th>
+                                <th>Estd. Hours</th>
+                                <th>Parent Task</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($sortedTasks as $task)
                             @if($task->sprint_id === null)
                                 <tr id="taskRow_{{ $task->id }}" class="shadow" style="border-radius:15px;">
-                                    <td style="font-size: 15px; width:12.5%;">{{ $task->uuid }}</td>
-                                    <td style="width: 12.5%;">
+                                    <td style="font-size: 15px; ">{{ $task->uuid }}</td>
+                                    <td >
                                         @if($task->epic)
                                             {{ \Illuminate\Support\Str::limit(strip_tags($task->epic), 20, $end='...') }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
-                                    <td style="width: 12.5%;">
+                                    <td>
                                         @if($task->story)
                                             {{ \Illuminate\Support\Str::limit(strip_tags($task->story), 20, $end='...') }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
-                                    <td style="font-size: 15px; width:12.5%;">{{ $task->title }}</td>
-                                    <td style="font-size: 14px; width:12.5%;">{{ $task->priority }}</td>
-                                    <td style="width:12.5%;">{{ $task->estimated_time }}</td>
-                                    <td style="width: 12.5%">
+                                    <td style="font-size: 15px; ">{{ \Illuminate\Support\Str::limit(strip_tags($task->title), 20, $end='...') }}</td>
+                                    <td style="font-size: 14px; ">{{ $task->priority }}</td>
+                                    <td>{{ $task->estimated_time }}</td>
+                                    <td>
                                         @if($task->parentTask)
                                             {{ \Illuminate\Support\Str::limit(strip_tags($task->parentTask->title), 20, $end='...') }}
                                         @else
                                             N/A
                                         @endif
                                     </td>
-                                    <td class="d-flex align-items-center" style="font-size: 15px;width:12.5%;">
+                                    <td class="d-flex align-items-center" style="font-size: 15px;">
                                         <a href="#" data-toggle="modal" data-placement="top" title="Show" data-target="#showTaskModal_{{ $task->id }}">
                                             <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                         </a>
