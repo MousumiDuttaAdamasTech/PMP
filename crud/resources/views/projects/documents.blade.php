@@ -176,7 +176,7 @@
                         <h5 class="modal-title" id="editModalLabel">Edit Document</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ route('documents.update', $document->id) }}" method="POST" enctype="multipart/form-data">                      
+                        <form id="editForm_{{ $document->id }}" onsubmit="editForm(event,'{{ $document->id }}')" action="{{ route('documents.update', $document->id) }}" method="POST" enctype="multipart/form-data">                      
                             @csrf
                             @method('PUT')
                             <div class="row">
@@ -192,7 +192,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="editDocType" style="font-size: 15px;">Document Type</label>
-                                        <select name="doc_type_id" id="editDocType" class="form-control shadow-sm" required readonly>
+                                        <select name="doc_type_id" id="editDocType_{{ $document->id }}" class="form-control shadow-sm" required readonly>
                                             @foreach($docTypes as $docType)
                                                 <option value="{{ $docType->id }}" {{ old('doc_type_id', $document->doc_type_id) == $docType->id ? 'selected' : '' }}>
                                                     {{ $docType->doc_type }}
@@ -213,7 +213,7 @@
 
                                 <div class="form-group">
                                     <label for="attachments" style="font-size: 15px;">Attachments</label><br>
-                                    <input onchange="displayUploadedFiles2(this,{{$document->id}})" type="file" name="attachments" id="attachments" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
+                                    <input onchange="displayUploadedFiles2(this,{{$document->id}})" type="file" name="attachments" id="attachments_{{ $document->id }}" class="form-control form-control-file shadow-sm" style="font-size: 14px;">
                                 </div>
 
                                 <div class="col-md-6">
@@ -338,6 +338,21 @@
                 mainDiv.appendChild(fileElement);
                 filesContainer.appendChild(mainDiv);
             });
+        }
+    </script>
+
+    <script>
+        function editForm(e,did){
+            e.preventDefault();
+            form = document.querySelector(`#editForm_${did}`);
+            oldType = document.querySelector(`#editDocType_${did}`).options[0].innerHTML.trim();
+            file = document.querySelector(`#attachments_${did}`).files[0].type.split('/')[1];
+            if(oldType == file){
+                form.submit();
+            }
+            else{
+                alert("Please upload similar type of file");
+            }
         }
     </script>
 
