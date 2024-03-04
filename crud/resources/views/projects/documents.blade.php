@@ -104,18 +104,31 @@
                                             <i class="fas fa-paperclip text-primary mr-2"></i>
                                             <a href="{{ asset('storage/attachments/' . $document->attachments) }}" target="_blank">{{ $document->attachments }}</a>
                                         @endif -->
-                                        @if($document->versions && $document->versions->isNotEmpty())
-                                            @foreach($document->versions as $version)
-                                                @if(!empty($version->attachments))
-                                                    <div>
-                                                        <i class="fas fa-paperclip text-primary mr-2"></i>
-                                                        <a href="{{ asset('storage/attachments/' . $version->attachments) }}" target="_blank">{{ $version->attachments }}</a>
-                                                    </div>
-                                                @endif
-                                            @endforeach
-                                        @else
-                                            <span>No attachments available</span>
-                                        @endif
+                                        <div class="col-md-12">
+                                            @if($document->versions && $document->versions->isNotEmpty())
+                                                <div class="row">
+                                                    @foreach($document->versions as $version)
+                                                        @if(!empty($version->attachments))
+                                                            <div class="mr-2 col-md-2 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                                <div class="d-flex justify-content-end w-100">
+                                                                    {{-- <a href="/deleteDocuments/{{$document->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a> --}}
+                                                                </div>
+                                                                <div class="text-center">
+                                                                    <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                                </div>
+                                                                <div class="w-100 text-center" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                                                    <a href="{{ asset('storage/attachments/' . $version->attachments) }}" style="text-decoration: none; color: white;">
+                                                                         {{ basename($version->attachments) }}
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <span>No attachments available</span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
 
