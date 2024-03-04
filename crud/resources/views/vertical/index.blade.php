@@ -31,7 +31,9 @@
 <main class="container">
     <section class="body">
         <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
-            <a href="{{ route('verticals.create') }}" class="btn btn-primary">Add New</a>
+            @if(auth()->user()->is_admin == 1)
+                <a href="{{ route('verticals.create') }}" class="btn btn-primary">Add New</a>
+            @endif
         </div>
             <table id="verticalTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
                 <thead>
@@ -56,16 +58,20 @@
                                 <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                             </a>
 
-                            <a href="{{ route('verticals.edit', ['vertical' => $vertical->id]) }}" data-toggle="tooltip" data-placement="top" title="Edit">
-                                <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                            </a>
+                            @if(auth()->user()->is_admin == 1)
+                                <a href="{{ route('verticals.edit', ['vertical' => $vertical->id]) }}" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                </a>
+                            @endif
 
                             <form method="post" action="{{ route('verticals.destroy', ['vertical' => $vertical->id]) }}">
                                 @method('delete')
                                 @csrf
-                                <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $vertical->id }}">
-                                    <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                                </button>          
+                                @if(auth()->user()->is_admin == 1)
+                                    <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $vertical->id }}">
+                                        <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                                    </button>    
+                                @endif      
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal{{ $vertical->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">

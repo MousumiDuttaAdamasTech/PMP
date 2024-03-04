@@ -232,6 +232,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-6 pt-4" style="padding-right: 50px padding-left: 50px">
+                        <div class="form-group">
+                            <label for="yearly_ctc" class="mb-1" style="font-size: 15px;">Yearly CTC:</label>
+                            <input type="text" name="yearly_ctc" id="yearly_ctc" class="form-control shadow-sm" required style="color: #858585; font-size: 14px;">
+                        </div>
+                    </div>
                 </div>
                 <div style="text-align: right;">
                     <button type="button" class="btn btn-primary mt-4" onclick="showSection(2)">Previous</button>

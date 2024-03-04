@@ -14,6 +14,4 @@
             <td>{{ $highestEducationValue->highest_education_value }}</td>
         </tr>
     </table>
-
-    <a href="{{ route('highest-education-values.edit', $highestEducationValue->id) }}" class="btn btn-primary">Edit</a>
 @endsection

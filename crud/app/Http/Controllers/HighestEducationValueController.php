@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HighestEducationValue;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class HighestEducationValueController extends Controller
@@ -15,6 +16,10 @@ class HighestEducationValueController extends Controller
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         return view('highest_education_value.create');
     }
 
@@ -37,12 +42,20 @@ class HighestEducationValueController extends Controller
 
     public function edit($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $highestEducationValue = HighestEducationValue::findOrFail($id);
         return view('highest_education_value.edit', compact('highestEducationValue'));
     }
 
     public function update(Request $request, $id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $request->validate([
             'highest_education_value' => 'required',
         ]);
@@ -55,6 +68,10 @@ class HighestEducationValueController extends Controller
 
     public function destroy($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $highestEducationValue = HighestEducationValue::findOrFail($id);
         $highestEducationValue->delete();
 

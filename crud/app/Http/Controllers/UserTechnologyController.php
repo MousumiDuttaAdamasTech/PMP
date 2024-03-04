@@ -6,6 +6,7 @@ use App\Models\UserTechnology;
 use App\Models\ProjectRole;
 use App\Models\User;
 use App\Models\Technology;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Profile;
 
 use Illuminate\Http\Request;
@@ -14,6 +15,11 @@ class UserTechnologyController extends Controller
 {
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+        
         $user_technologies = UserTechnology::all();
         $technologies = Technology::all();
         $project_roles = ProjectRole::all();
@@ -23,6 +29,11 @@ class UserTechnologyController extends Controller
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $technologies = Technology::all();
         $project_roles = ProjectRole::all();
         $users = User::all();
@@ -71,6 +82,11 @@ class UserTechnologyController extends Controller
 
     public function edit($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $user_technology = UserTechnology::findOrFail($id);
         $technologies = Technology::all();
         $project_roles = ProjectRole::all();
@@ -80,6 +96,11 @@ class UserTechnologyController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $request->validate([
             'project_role_id' => 'required',
             'technology_id' => 'required',
@@ -106,6 +127,11 @@ class UserTechnologyController extends Controller
 
     public function destroy($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $user_technology = UserTechnology::findOrFail($id);
         $user_technology->delete();
         $technologies = Technology::all();

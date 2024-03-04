@@ -33,7 +33,9 @@
     <main class="container">
         <section>
             <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
-                <a href="{{route('designations.create')}}" class = "btn btn-primary">Add Designation</a>
+                @if(auth()->user()->is_admin == 1)
+                    <a href="{{route('designations.create')}}" class = "btn btn-primary">Add Designation</a>
+                @endif
             </div>
             
             <div class="table">
@@ -54,15 +56,19 @@
                                                     <a href="#" data-toggle="modal" data-target="#showModal_{{ $designation->id }}" data-toggle="tooltip" data-placement="top" title="Show">
                                                         <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                                     </a>
-                                                    <a href="{{ route('designations.edit', ['designation' => $designation->id]) }}" data-toggle="tooltip" data-placement="top" title="Edit">
-                                                        <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                                                    </a>
+                                                    @if(auth()->user()->is_admin == 1)
+                                                        <a href="{{ route('designations.edit', ['designation' => $designation->id]) }}" data-toggle="tooltip" data-placement="top" title="Edit">
+                                                            <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                                        </a>
+                                                    @endif
                                                     <form method="post" action="{{ route('designations.destroy', ['designation' => $designation->id]) }}">
                                                         @method('delete')
                                                         @csrf
-                                                        <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $designation->id }}">
-                                                            <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                                                        </button>          
+                                                        @if(auth()->user()->is_admin == 1)
+                                                            <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $designation->id }}">
+                                                                <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                                                            </button> 
+                                                        @endif         
                                                         <!-- Delete Modal start -->
                                                         <div class="modal fade" id="deleteModal{{ $designation->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                                             <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
