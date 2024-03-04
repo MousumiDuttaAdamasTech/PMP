@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             HighestEducationValueSeeder::class,
             VerticalSeeder::class,
+            DoctypeSeeder::class,
             DesignationSeeder::class,
             ProfilesTableSeeder::class,
             OpportunityStatusSeeder::class,

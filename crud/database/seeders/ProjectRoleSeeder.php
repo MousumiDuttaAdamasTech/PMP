@@ -11,13 +11,16 @@ class ProjectRoleSeeder extends Seeder
     {
         $data = [
             [
+                'member_role_type' => 'Project Manager',
+            ],
+            [
+                'member_role_type' => 'Product Manager',
+            ],
+            [
                 'member_role_type' => 'Developer',
             ],
             [
-                'member_role_type' => 'Designer',
-            ],
-            [
-                'member_role_type' => 'Manager',
+                'member_role_type' => 'QA Tester',
             ],
         ];
         ProjectRole::insert($data);
