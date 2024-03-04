@@ -109,7 +109,7 @@
               $('#' + formId + ' button[type="submit"]').toggle(editable);
           }
         });     
-  </script>
+    </script>
 @endsection
 
 @section('content')
@@ -128,40 +128,44 @@
               </div>
           @endif 
           <div class="pt-2">
-            <div class="btn-group" role="group">
-              <button type="button" data-toggle="modal" data-target="#updatePfpModal{{$profile->id}}" class="btn btn-primary btn-lg" title="Upload new profile image" id="updatePfpButton"><i class="bi bi-upload" ></i></button>
-            </div>
-            <div class="btn-group" role="group">
-              <!-- Add the delete image button here -->
-              <form action="{{ route('profiles.deleteImage', $profile->id) }}" method="post">
-                @csrf
-                @method('delete')
-                <button type="button" class="btn btn-danger btn-lg" title="Remove my profile image" data-toggle="modal" data-target="#delete" style="margin-top:15px">
-                  <i class="bi bi-trash"></i>
-                </button>
-                <!-- Delete Modal start -->
-                <div class="modal fade" id="delete" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header flex-column">
-                                <div class="icon-box">
-                                    <i class="material-icons">&#xE5CD;</i>
+            @auth
+              @if(auth()->user()->id === $profile->user_id)
+                <div class="btn-group" role="group">
+                  <button type="button" data-toggle="modal" data-target="#updatePfpModal{{$profile->id}}" class="btn btn-primary btn-lg" title="Upload new profile image" id="updatePfpButton"><i class="bi bi-upload" ></i></button>
+                </div>
+                <div class="btn-group" role="group">
+                  <!-- Add the delete image button here -->
+                  <form action="{{ route('profiles.deleteImage', $profile->id) }}" method="post">
+                    @csrf
+                    @method('delete')
+                    <button type="button" class="btn btn-danger btn-lg" title="Remove my profile image" data-toggle="modal" data-target="#delete" style="margin-top:15px">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                    <!-- Delete Modal start -->
+                    <div class="modal fade" id="delete" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header flex-column">
+                                    <div class="icon-box">
+                                        <i class="material-icons">&#xE5CD;</i>
+                                    </div>
+                                    <h3 class="modal-title w-100">Are you sure?</h3>
                                 </div>
-                                <h3 class="modal-title w-100">Are you sure?</h3>
-                            </div>
-                            <div class="modal-body">
-                                <p>Do you really want to delete this profile picture?</p>
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <div class="modal-body">
+                                    <p>Do you really want to delete this profile picture?</p>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </div>
-                 <!-- Delete Modal end-->
-              </form>
-            </div>          
+                    <!-- Delete Modal end-->
+                  </form>
+                </div>  
+              @endif
+            @endauth        
           </div>
           <h2>{{$profile->profile_name}}</h2>
           <h3>{{ $profile->designation->level }}</h3>
@@ -195,7 +199,11 @@
             <div class="tab-pane fade show active profile-overview" id="profile-overview">
               <h5 style="display: flex; justify-content: space-between; align-items: center;">
                 <span class="card-title">Personal Details</span>
-                <button class="btn btn-primary btn-sm edit-field justify-content-end" id="editProfileButton"><i class="ri-edit-2-fill"></i></button>
+                @auth
+                  @if(auth()->user()->id === $profile->user_id)
+                    <button class="btn btn-primary btn-sm edit-field justify-content-end" id="editProfileButton"><i class="ri-edit-2-fill"></i></button>
+                  @endif
+                @endauth
               </h5>
                 <div class="col-md-6 mb-2">
                   <div class="label" style="width: 200px;">Full Name</div>
@@ -267,8 +275,12 @@
 
             <div class="tab-pane fade show skill-set" id="skill-set">
               <h5 style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="card-title">Skill Set</span>
-                <a href="#" data-toggle="modal" data-target="#addModal" class="btn btn-primary" id="addSkillButton">Add Skill</a>
+                <span class="card-title">Skill Set</span>
+                @auth
+                  @if(auth()->user()->id === $profile->user_id)
+                    <a href="#" data-toggle="modal" data-target="#addModal" class="btn btn-primary" id="addSkillButton">Add Skill</a>
+                  @endif
+                @endauth
               </h5>
               <main class="container">
               <section>
@@ -302,15 +314,23 @@
                                     <a href="#" data-toggle="modal" data-target="#showModal_{{ $user_technology->id }}">
                                         <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                                     </a>
-                                    <a href="#" data-toggle="modal" data-target="#editModal_{{ $user_technology->id }}">
-                                        <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                                    </a>
+                                    @auth
+                                      @if(auth()->user()->id === $profile->user_id)
+                                        <a href="#" data-toggle="modal" data-target="#editModal_{{ $user_technology->id }}">
+                                            <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                        </a>
+                                      @endif 
+                                    @endauth
                                     <form method="post" action="{{ route('user_technologies.destroy', $user_technology->id) }}">
                                         @method('delete')
                                         @csrf
-                                        <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#deleteskill{{$user_technology->id}}">
-                                            <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
-                                        </button>
+                                        @auth
+                                          @if(auth()->user()->id === $profile->user_id)
+                                            <button type="button" class="btn btn-link p-0" data-toggle="modal" data-target="#deleteskill{{$user_technology->id}}">
+                                                <i class="fas fa-trash-alt text-danger" style="border: none;"></i>
+                                            </button>
+                                          @endif
+                                        @endauth
                                         <!-- Delete Skill Modal start -->
                                         <div class="modal fade" id="deleteskill{{$user_technology->id}}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteskillLabel" aria-hidden="true">
                                             <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">

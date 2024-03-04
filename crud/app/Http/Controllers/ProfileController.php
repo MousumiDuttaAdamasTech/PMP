@@ -12,6 +12,7 @@ use App\Models\HighestEducationValue;
 use App\Models\UserTechnology;
 use App\Models\ProjectRole;
 use App\Models\Technology;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
@@ -40,6 +41,11 @@ class ProfileController extends Controller
 
     public function create()
     {
+
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $users = User::all();
         $verticals = Vertical::all();
         $designations = Designation::all();
@@ -141,6 +147,11 @@ class ProfileController extends Controller
 
     public function edit(Profile $profile)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $users = User::all();
         $verticals = Vertical::all();
         $designations = Designation::all();
@@ -152,6 +163,11 @@ class ProfileController extends Controller
 
     public function update(Request $request, Profile $profile)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $request->validate([
             'contact_number' => 'required',
             'line_manager_id' => 'required',
@@ -222,6 +238,10 @@ class ProfileController extends Controller
 
     public function destroy(Profile $profile)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $user = $profile->user;
         $profile->delete();
         $user->delete();

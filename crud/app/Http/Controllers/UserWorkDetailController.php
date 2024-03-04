@@ -16,12 +16,20 @@ class UserWorkDetailController extends Controller
 {
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $userWorkDetails = UserWorkDetail::with('project', 'projectManager')->currentUser()->get();
         return view('user_work_details.index', compact('userWorkDetails'));
     }
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $distinctProjectIds = ProjectTaskStatus::with('project')->distinct('project_id')->pluck('project_id');
 
         $projectTaskStatusIds = ProjectTaskStatus::whereIn('project_id', $distinctProjectIds)->pluck('id');
@@ -77,6 +85,10 @@ class UserWorkDetailController extends Controller
 
     public function edit(UserWorkDetail $userWorkDetail)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
         $projectManagers = Project::pluck('project_manager_id')->unique();
         $workTypes = WorkType::all();
         return view('user_work_details.edit', compact('userWorkDetail', 'projectManagers', 'workTypes',));
@@ -84,6 +96,11 @@ class UserWorkDetailController extends Controller
 
     public function update(Request $request, UserWorkDetail $userWorkDetail)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $data = $request->validate([
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
@@ -97,6 +114,11 @@ class UserWorkDetailController extends Controller
 
     public function destroy(UserWorkDetail $userWorkDetail)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+        
         $userWorkDetail->delete();
         return redirect()->route('user_work_details.index');
     }

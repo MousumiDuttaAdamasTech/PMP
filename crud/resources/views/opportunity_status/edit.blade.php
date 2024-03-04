@@ -1,11 +1,11 @@
 @extends('layouts.side_nav') 
 
-@section('pageTitle', 'Opportunity_status') 
+@section('pageTitle', 'Opportunity Status') 
 
 
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{ route('opportunity_status.index') }}">Home</a></li>
-<li class="breadcrumb-item" aria-current="page"><a href="{{ route('opportunity_status.index') }}">Opportunity_status</a></li>
+<li class="breadcrumb-item" aria-current="page"><a href="{{ route('opportunity_status.index') }}">Opportunity Status</a></li>
 <li class="breadcrumb-item">{{ $opportunityStatus->project_goal }}</li>
 <li class="breadcrumb-item active" aria-current="page">Edit</li>
 @endsection 

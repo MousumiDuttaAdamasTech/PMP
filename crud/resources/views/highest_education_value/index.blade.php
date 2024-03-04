@@ -4,7 +4,7 @@
 
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('highest-education-values.index') }}">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Highest-Education-Values</li>
+    <li class="breadcrumb-item active" aria-current="page">Highest Education Values</li>
 @endsection
 
 @section('custom_css')
@@ -31,14 +31,16 @@
 <main class="container">
     <section class="body">
         <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
-            <a href="{{ route('highest-education-values.create') }}" class="btn btn-primary">Add New</a>
+            @if(auth()->user()->is_admin == 1)
+                <a href="{{ route('highest-education-values.create') }}" class="btn btn-primary">Add New</a>
+            @endif
         </div>
         <table id="highEducationTable" class="table table-hover responsive" style="width:100%; border-spacing: 0 10px;">
             <thead>
                 <tr>
                     {{-- <th>#</th> --}}
                     <th style="padding-left:120px;">Highest Education Value</th>
-                    <th>Action</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,15 +53,19 @@
                             <a href="{{ route('highest-education-values.show', ['highest_education_value' => $highestEducationValue->id]) }}" data-toggle="tooltip" data-placement="top" title="Show">
                                 <i class="fas fa-eye text-info" style="margin-right: 10px"></i>
                             </a>
-                            <a href="{{ route('highest-education-values.edit', ['highest_education_value' => $highestEducationValue->id]) }}" data-toggle="tooltip" data-placement="top" title="Edit">
-                                <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
-                            </a>
+                            @if(auth()->user()->is_admin == 1)
+                                <a href="{{ route('highest-education-values.edit', ['highest_education_value' => $highestEducationValue->id]) }}" data-toggle="tooltip" data-placement="top" title="Edit">
+                                    <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
+                                </a>
+                            @endif
                             <form method="post" action="{{ route('highest-education-values.destroy', ['highest_education_value' => $highestEducationValue->id]) }}">
                                 @method('delete')
                                 @csrf
-                                <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal">
-                                    <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                                </button>          
+                                @if(auth()->user()->is_admin == 1)
+                                    <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal">
+                                        <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                                    </button> 
+                                @endif         
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">

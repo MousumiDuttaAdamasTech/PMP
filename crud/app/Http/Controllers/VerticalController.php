@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vertical;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VerticalController extends Controller
 {
@@ -15,6 +16,11 @@ class VerticalController extends Controller
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         return view('vertical.create');
     }
 
@@ -45,12 +51,22 @@ class VerticalController extends Controller
 
     public function edit($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $vertical = Vertical::findOrFail($id);
         return view('vertical.edit', compact('vertical'));
     }
 
     public function update(Request $request, $id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $request->validate([
             'vertical_name' => 'required',
             'vertical_head_name' => 'required',
@@ -71,6 +87,11 @@ class VerticalController extends Controller
 
     public function destroy($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $vertical = Vertical::findOrFail($id);
         $vertical->delete();
 

@@ -47,7 +47,9 @@
 <main class="container">
     <section>
         <div class="titlebar" style="display: flex; justify-content: flex-end; margin-top: -67px; margin-bottom: 50px; padding: 2px 30px; margin-right: -30px;">
-            <a href="{{ route('projects.create') }}" class="btn btn-primary">Add New</a>
+            @if(auth()->user()->is_admin == 1)
+                <a href="{{ route('projects.create') }}" class="btn btn-primary">Add New</a>
+            @endif
         </div>
 
             <table id="projectTable" class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
@@ -96,16 +98,19 @@
                             <a href="{{ route('projects.sprint', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Project Details">
                                 <i class="fa-solid fa-book-open" style="margin-right: 10px; color:blue;"></i> 
                             </a>
-                            <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">
-                                <i class="fa-solid fa-gear text-secondary" style="margin-right: 10px"></i>
-                            </a>
-
+                            {{-- @if(auth()->user()->is_admin == 1)
+                                <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">
+                                    <i class="fa-solid fa-gear text-secondary" style="margin-right: 10px"></i>
+                                </a>
+                            @endif --}}
                                 <form action="{{ route('projects.destroy', $project->id) }}" method="post">
                                     @method('delete')
                                     @csrf 
-                                    <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $project->id }}">
-                                        <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
-                                    </button>         
+                                    @if(auth()->user()->is_admin == 1)
+                                        <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $project->id }}">
+                                            <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
+                                        </button>     
+                                    @endif    
                                     <!-- Delete Modal start -->
                                     <div class="modal fade" id="deleteModal{{ $project->id }}" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-confirm modal-dialog-centered" role="document">

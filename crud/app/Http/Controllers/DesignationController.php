@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Designation;
+use Illuminate\Support\Facades\Auth;
+
 class DesignationController extends Controller
 {
     public function index(Request $request){
@@ -22,6 +24,11 @@ class DesignationController extends Controller
     }
 
     public function create(){
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         return view('designations.create');
     }
 
@@ -42,11 +49,21 @@ class DesignationController extends Controller
     }
 
     public function edit($id){
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $designation = Designation::findOrFail($id);
         return view('designations.edit',['designation'=>$designation]);
     }
 
     public function update(Request $request, Designation $designation){
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $request -> validate([
             'level' => 'required'
         ]);
@@ -58,6 +75,11 @@ class DesignationController extends Controller
     }
 
     public function destroy($id){
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $profile = Designation::findOrFail($id);
         $profile ->delete();
         return redirect('designations')->with('success','Deleted!');

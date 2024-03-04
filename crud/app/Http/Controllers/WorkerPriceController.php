@@ -5,11 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\WorkerPrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WorkerPriceController extends Controller
 {
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $users = User::all();
         $workerPrices = WorkerPrice::all();
         return view('worker-price.index', compact('workerPrices', 'users'));
@@ -17,6 +23,11 @@ class WorkerPriceController extends Controller
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $users = User::all();
         return view('worker-price.create',compact('users'));
     }
@@ -39,11 +50,21 @@ class WorkerPriceController extends Controller
 
     public function edit(WorkerPrice $workerPrice)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         return view('worker-price.edit', compact('workerPrice'));
     }
 
     public function update(Request $request, WorkerPrice $workerPrice)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $request->validate([
             'daily_price' => 'required|numeric',
             'monthly_price' => 'required|numeric',
@@ -59,6 +80,11 @@ class WorkerPriceController extends Controller
 
     public function destroy(WorkerPrice $workerPrice)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+        
         $workerPrice->delete();
 
         return redirect()->route('worker-prices.index')

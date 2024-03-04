@@ -31,6 +31,7 @@ use App\Models\Document;
 use App\Models\Doctype;
 use App\Models\StakeholderRole;
 use App\Models\Stakeholder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -45,6 +46,11 @@ class ProjectsController extends Controller
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         $users = User::all();
         $verticals = Vertical::all();
         $clients = Client::all();
@@ -156,6 +162,11 @@ class ProjectsController extends Controller
 
     public function destroy(Project $project)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+
         // Detach project members and roles before deleting the project
         $project->projectMembers()->detach();
         $project->delete();
@@ -170,6 +181,11 @@ class ProjectsController extends Controller
 
     public function edit(Project $project)
     {
+        // Check if the authenticated user is an admin
+        // if (!Auth::user()->is_admin) {
+        //     return back()->with('error', 'Unauthorized access.');
+        // }
+
         $projectManagers = User::all();
         $users = User::all();
         $technologies = Technology::all();
@@ -195,6 +211,11 @@ class ProjectsController extends Controller
 
     public function update(Request $request, Project $project)
     {
+        // Check if the authenticated user is an admin
+        // if (!Auth::user()->is_admin) {
+        //     return back()->with('error', 'Unauthorized access.');
+        // }
+
         $request->validate([
             'project_name' => 'required',
             'project_type' => 'required',
