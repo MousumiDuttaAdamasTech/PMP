@@ -53,14 +53,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="project_name" class="mb-1" style="font-size: 15px;">Project Name</label>
-                        <input type="text" class="shadow-sm" name="project_name" id="project_name" value="{{ $project->project_name }}" required="required" style="color: #858585; font-size: 14px;">
+                        <input type="text" class="shadow-sm" name="project_name" id="project_name" value="{{ $project->project_name }}" required="required" style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="typeSelect" class="mb-1" style="font-size: 15px;">Project Type</label>
-                        <select id="typeSelect" class="shadow-sm" name="project_type" required="required" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                        <select id="typeSelect" class="shadow-sm" name="project_type" required="required" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                             <option value="Internal" {{ $project->project_type === 'Internal' ? 'selected' : '' }}>Internal</option>
                             <option value="External" {{ $project->project_type === 'External' ? 'selected' : '' }}>External</option>
                         </select>
@@ -69,23 +69,23 @@
 
                 <div class="mb-3">
                     <label for="projectDescriptionInput" class="mb-1" class="form-label" style="font-size: 15px;">Project Description</label>
-                    <textarea class="ckeditor form-control" name="project_description" id="project_description" required="required" placeholder="Describe the project" style="color: #858585; font-size: 14px;">{{ $project->project_description }}</textarea>
+                    <textarea class="ckeditor form-control" name="project_description" id="project_description" required="required" placeholder="Describe the project" style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>{{ $project->project_description }}</textarea>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="project_startDate" class="mb-1" class="form-label" style="font-size: 15px;">Project Start Date</label>
-                    <input type="date" id="project_startDate" class="shadow-sm" name="project_startDate" value="{{ $project->project_startDate }}"  style="color: #858585; font-size: 14px;">
+                    <input type="date" id="project_startDate" class="shadow-sm" name="project_startDate" value="{{ $project->project_startDate }}"  style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>
                 </div>
 
                 <div class="col-md-6 mb-3">
                     <label for="project_endtDate" class="mb-1" class="form-label" style="font-size: 15px;">Project End Date</label>
-                    <input type="date" id="project_endDate" class="shadow-sm" name="project_endDate" value="{{ $project->project_endDate }}" style="color: #858585; font-size: 14px;">
+                    <input type="date" id="project_endDate" class="shadow-sm" name="project_endDate" value="{{ $project->project_endDate }}" style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="status" class="form-label mb-1" style="margin-bottom: 0.3rem; font-size: 15px;">Status</label>
-                        <select id="status" name="project_status" class="shadow-sm" required="required" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;">
+                        <select id="status" name="project_status" class="shadow-sm" required="required" style="padding-top:5px; padding-bottom:5px; height:39px; color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                         <option value="Not Started" {{ $project->project_status === 'Not Started' ? 'selected' : '' }}>Not Started</option>
                         <option value="Pending" {{ $project->project_status === 'Pending' ? 'selected' : '' }}>Pending</option>
                         <option value="Delay" {{ $project->project_status === 'Delay' ? 'selected' : '' }}>Delay</option>
@@ -99,7 +99,7 @@
                     <div class="form-group">
                         <label for="technology_id" class="mb-1" style="font-size: 15px;">Technologies</label>
                         <div id="technology-wrapper" class="shadow-sm" style="font-size: 14px;">
-                            <select id="technology_id" name="technology_id[]" class="technology" required style="width: 100%;" multiple>
+                            <select id="technology_id" name="technology_id[]" class="technology" required style="width: 100%;" multiple {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                                 <option value="">Select technologies</option>
                                 @foreach($technologies as $technology)
                                 <option value="{{ $technology->id }}" {{ in_array($technology->id, $selectedTechnologies) ? 'selected' : '' }}>
@@ -140,7 +140,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="vertical_id" class="mb-1" style="font-size: 15px;">Vertical</label>
-                        <select name="vertical_id" id="vertical_id" class="shadow-sm" required style="color: #858585; font-size: 14px;">
+                        <select name="vertical_id" id="vertical_id" class="shadow-sm" required style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                             @foreach ($verticals as $vertical)
                                 <option value="{{ $vertical->id }}" {{ $project->vertical_id == $vertical->id ? 'selected' : '' }}>
                                     {{ $vertical->vertical_name }}
@@ -155,7 +155,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="client_id" class="mb-1" style="font-size: 15px;">Client</label>
-                        <select name="client_id" class="shadow-sm" id="client_id" class="form-control" required style="padding-bottom: 6px; height: 39.1px; color: #858585; font-size: 14px;">
+                        <select name="client_id" class="shadow-sm" id="client_id" class="form-control" required style="padding-bottom: 6px; height: 39.1px; color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                             @foreach($clients as $client)
                                 <option value="{{ $client->id }}" {{ $project->client_id == $client->id ? 'selected' : '' }}>
                                     {{ $client->client_name }}
@@ -168,21 +168,21 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="client_spoc_name" class="mb-1" style="font-size: 15px;">Client Name [SPOC]</label>
-                        <input type="text" class="shadow-sm" name="client_spoc_name" id="client_spoc_name" value="{{ $project->client_spoc_name }}" required="required" style="color: #858585; font-size: 14px;">
+                        <input type="text" class="shadow-sm" name="client_spoc_name" id="client_spoc_name" value="{{ $project->client_spoc_name }}" required="required" style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="client_spoc_email" class="mb-1" style="font-size: 15px;">Client Email [SPOC]</label>
-                        <input type="email" class="shadow-sm" name="client_spoc_email" id="client_spoc_email" value="{{ $project->client_spoc_email }}" required="required" style="color: #858585; font-size: 14px;">
+                        <input type="email" class="shadow-sm" name="client_spoc_email" id="client_spoc_email" value="{{ $project->client_spoc_email }}" required="required" style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="client_spoc_contact" class="mb-1" style="font-size: 15px;">Client Contact [SPOC]</label>
-                        <input type="text" class="form-control shadow-sm" name="client_spoc_contact" id="client_spoc_contact" value="{{ $project->client_spoc_contact }}" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" style="color: #858585; font-size: 14px;">
+                        <input type="text" class="form-control shadow-sm" name="client_spoc_contact" id="client_spoc_contact" value="{{ $project->client_spoc_contact }}" required maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)" style="color: #858585; font-size: 14px;" {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'readonly' : '' }}>
                     </div>
                 </div>
 
@@ -191,7 +191,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="task_type_id" class="mb-1" style="font-size: 15px;">Choose Project Task Type</label>
-                            <select id="task_type_id" name="task_type_id[]" class="task_type shadow-sm" required style="width: 100%;" multiple>
+                            <select id="task_type_id" name="task_type_id[]" class="task_type shadow-sm" required style="width: 100%;" multiple {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                                 @foreach($task_types as $task_type)
                                     <option value="{{ $task_type->id }}" {{ in_array($task_type->id, $selectedTaskTypes) ? 'selected' : '' }}>
                                         {{ $task_type->type_name }}</option>
@@ -203,7 +203,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="task_status_id" class="mb-1" style="font-size: 15px;">Choose Project Task Status</label>
-                            <select id="task_status_id" name="task_status_id[]" class="task_status shadow-sm" required style="width: 100%;" multiple>
+                            <select id="task_status_id" name="task_status_id[]" class="task_status shadow-sm" required style="width: 100%;" multiple {{ !(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1) ? 'disabled' : '' }}>
                                 @foreach($task_statuses as $task_status)
                                     <option value="{{ $task_status->id }}" {{ in_array($task_status->id, $selectedTaskStatus) ? 'selected' : '' }}>
                                         {{ $task_status->status }}</option>

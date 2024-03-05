@@ -282,12 +282,18 @@
                             </select>
                         </div>
                         <div style="width: 25%" class="d-flex justify-content-end align-items-center">
-                            <button class="btn btn-lg" data-toggle="modal" data-target="#createBugsModal"><i class="fa-solid fa-plus" style="color: green; font-size:35px;"></i></button>
+                            @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 4)
+                                <button class="btn btn-lg" data-toggle="modal" data-target="#createBugsModal"><i class="fa-solid fa-plus" style="color: green; font-size:35px;"></i></button>
+                            @endif
                         </div>
                     </div>
                     <div class="d-flex justify-content-start gap-3 my-5">
-                        <button class="btn btn-primary btn-delete-selected">Delete Selected</button>
-                        <button class="btn btn-primary btn-convert-selected" data-toggle="modal" data-target="#createTasksFromMultipleBugsModal">Convert Selected</button>
+                        @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 4)
+                            <button class="btn btn-primary btn-delete-selected">Delete Selected</button>
+                        @endif
+                        @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1)
+                            <button class="btn btn-primary btn-convert-selected" data-toggle="modal" data-target="#createTasksFromMultipleBugsModal">Convert Selected</button>
+                        @endif
                     </div>
                     <table id="bugsTable"  class="table table-hover responsive" style="width: 100%; border-spacing: 0 10px;">
                         <thead>
@@ -317,12 +323,16 @@
                                             <a href="#" class="p-2" data-toggle="modal" data-target="#editBugsModal_{{$bug->id}}" data-placement="top" title="Edit">
                                                 <i class="fas fa-edit text-primary"></i>
                                             </a> 
-                                            <a href="#" class="p-2" data-placement="top" title="Convert" data-toggle="modal" data-target="#createTasksFromBugsModal_{{$bug->id}}">
-                                                <i class="fa-solid fa-share"></i>
-                                            </a> 
-                                            <a href="/deleteBug/{{$bug->id}}" class="p-2" data-placement="top" title="Delete">
-                                                <i class="fas fa-trash-alt text-danger"></i>
-                                            </a> 
+                                            @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1)
+                                                <a href="#" class="p-2" data-placement="top" title="Convert" data-toggle="modal" data-target="#createTasksFromBugsModal_{{$bug->id}}">
+                                                    <i class="fa-solid fa-share"></i>
+                                                </a> 
+                                            @endif
+                                            @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 4)
+                                                <a href="/deleteBug/{{$bug->id}}" class="p-2" data-placement="top" title="Delete">
+                                                    <i class="fas fa-trash-alt text-danger"></i>
+                                                </a> 
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -425,344 +435,346 @@
                         </div>
                     </div>
                     @foreach($bugs as $bug)
-                    {{-- EDIT BUGS --}}
-                    <div id="editBugsModal_{{$bug->id}}" class="modal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
+                        {{-- EDIT BUGS --}}
+                        <div id="editBugsModal_{{$bug->id}}" class="modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
 
-                                <!-- Modal Header -->
-                                <div class="modal-header" style=" background-color:#061148;">
-                                    <h4 class="modal-title" style="color: white;font-weight: bolder;">Edit Bug</h4>
-                                </div>
-                            
-                                <form method="post" action="{{route('editBug')}}" enctype=multipart/form-data>
-                                    {{csrf_field()}}
-                                    <!-- Modal Body -->
-                                    <input type="hidden" value="{{$bug->id}}" name="bug_id"/>
-                                    <div class="modal-body"> 
-                                        <div class="d-flex justify-content-between gap-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Round</label>
-                                                <select class="form-control" required style="font-size:14px;" name="round">
-                                                    @foreach($qarounds as $qaround)
-                                                        @if($bug->qa_id == $qaround->id)
-                                                            <option value="{{$qaround->id}}" selected>{{$qaround->round}}</option>
-                                                        @else
-                                                            <option value="{{$qaround->id}}">{{$qaround->round}}</option>
+                                    <!-- Modal Header -->
+                                    <div class="modal-header" style=" background-color:#061148;">
+                                        <h4 class="modal-title" style="color: white;font-weight: bolder;">Edit Bug</h4>
+                                    </div>
+                                
+                                    <form method="post" action="{{route('editBug')}}" enctype=multipart/form-data>
+                                        {{csrf_field()}}
+                                        <!-- Modal Body -->
+                                        <input type="hidden" value="{{$bug->id}}" name="bug_id"/>
+                                        <div class="modal-body"> 
+                                            <div class="d-flex justify-content-between gap-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Round</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="round">
+                                                        @foreach($qarounds as $qaround)
+                                                            @if($bug->qa_id == $qaround->id)
+                                                                <option value="{{$qaround->id}}" selected>{{$qaround->round}}</option>
+                                                            @else
+                                                                <option value="{{$qaround->id}}">{{$qaround->round}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Tester</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="tester">
+                                                        @foreach($project->projectMembers as $projectMember)
+                                                            @if($bug->tester_id == $projectMember->id)
+                                                                <option value="{{$projectMember->id}}" selected>{{$projectMember->profile_name}}</option>
+                                                            @else
+                                                                <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Bug Type</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="type">
+                                                        @foreach($bugtypess as $bugtype)
+                                                            @if($bug->bugType == $bugtype->id)
+                                                                <option value="{{$bugtype->id}}" selected>{{$bugtype->type}}</option>
+                                                            @else    
+                                                                <option value="{{$bugtype->id}}">{{$bugtype->type}}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Bug Status</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="status">
+                                                        @if($bug->bugStatus == "status 1")
+                                                            <option value="status 1" selected>status 1</option>
                                                         @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Tester</label>
-                                                <select class="form-control" required style="font-size:14px;" name="tester">
-                                                    @foreach($project->projectMembers as $projectMember)
-                                                        @if($bug->tester_id == $projectMember->id)
-                                                            <option value="{{$projectMember->id}}" selected>{{$projectMember->profile_name}}</option>
-                                                        @else
-                                                            <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                        @if($bug->bugStatus == "status 2")
+                                                            <option value="status 2" selected>status 2</option>
                                                         @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Bug Type</label>
-                                                <select class="form-control" required style="font-size:14px;" name="type">
-                                                    @foreach($bugtypess as $bugtype)
-                                                        @if($bug->bugType == $bugtype->id)
-                                                            <option value="{{$bugtype->id}}" selected>{{$bugtype->type}}</option>
-                                                        @else    
-                                                            <option value="{{$bugtype->id}}">{{$bugtype->type}}</option>
+                                                        @if($bug->bugStatus == "status 3")
+                                                            <option value="status 3" selected>status 3</option>
                                                         @endif
-                                                    @endforeach
-                                                </select>
+                                                        <option value="status 1">status 1</option>
+                                                        <option value="status 2">status 2</option>
+                                                        <option value="status 3">status 3</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Bug Status</label>
-                                                <select class="form-control" required style="font-size:14px;" name="status">
-                                                    @if($bug->bugStatus == "status 1")
-                                                        <option value="status 1" selected>status 1</option>
-                                                    @endif
-                                                    @if($bug->bugStatus == "status 2")
-                                                        <option value="status 2" selected>status 2</option>
-                                                    @endif
-                                                    @if($bug->bugStatus == "status 3")
-                                                        <option value="status 3" selected>status 3</option>
-                                                    @endif
-                                                    <option value="status 1">status 1</option>
-                                                    <option value="status 2">status 2</option>
-                                                    <option value="status 3">status 3</option>
-                                                </select>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Priority</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="priority">
+                                                        @if($bug->priority == "1")
+                                                            <option value="1" selected>1</option>
+                                                        @endif
+                                                        @if($bug->priority == "2")
+                                                            <option value="2" selected>2</option>
+                                                        @endif
+                                                        @if($bug->priority == "3")
+                                                            <option value="3" selected>3</option>
+                                                        @endif
+                                                        @if($bug->priority == "4")
+                                                            <option value="4" selected>4</option>
+                                                        @endif
+                                                        @if($bug->priority == "5")
+                                                            <option value="5" selected>5</option>
+                                                        @endif
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Severity</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="severity">
+                                                        @if($bug->severity == "low")
+                                                            <option value="low" selected>Low</option>
+                                                        @endif
+                                                        @if($bug->severity == "medium")
+                                                            <option value="medium" selected>Medium</option>
+                                                        @endif
+                                                        @if($bug->severity == "high")
+                                                            <option value="high" selected>High</option>
+                                                        @endif
+                                                        <option value="low">Low</option>
+                                                        <option value="medium">Medium</option>
+                                                        <option value="high">High</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Priority</label>
-                                                <select class="form-control" required style="font-size:14px;" name="priority">
-                                                    @if($bug->priority == "1")
-                                                        <option value="1" selected>1</option>
-                                                    @endif
-                                                    @if($bug->priority == "2")
-                                                        <option value="2" selected>2</option>
-                                                    @endif
-                                                    @if($bug->priority == "3")
-                                                        <option value="3" selected>3</option>
-                                                    @endif
-                                                    @if($bug->priority == "4")
-                                                        <option value="4" selected>4</option>
-                                                    @endif
-                                                    @if($bug->priority == "5")
-                                                        <option value="5" selected>5</option>
-                                                    @endif
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                </select>
+                                            <div class="mt-3" id="uploadedFilesContainer_{{$bug->id}}"></div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Attach Files</label>
+                                                <input onchange="displayUploadedFiles2(this,{{$bug->id}})" type="file" class="form-control" name="bug_files[]" multiple></input>
                                             </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Severity</label>
-                                                <select class="form-control" required style="font-size:14px;" name="severity">
-                                                    @if($bug->severity == "low")
-                                                        <option value="low" selected>Low</option>
-                                                    @endif
-                                                    @if($bug->severity == "medium")
-                                                        <option value="medium" selected>Medium</option>
-                                                    @endif
-                                                    @if($bug->severity == "high")
-                                                        <option value="high" selected>High</option>
-                                                    @endif
-                                                    <option value="low">Low</option>
-                                                    <option value="medium">Medium</option>
-                                                    <option value="high">High</option>
-                                                </select>
+                                            <div class="mt-3">
+                                                <label class="form-label">Description</label>
+                                                <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
                                             </div>
-                                        </div>
-                                        <div class="mt-3" id="uploadedFilesContainer_{{$bug->id}}"></div>
-                                        <div class="mt-3">
-                                            <label class="form-label">Attach Files</label>
-                                            <input onchange="displayUploadedFiles2(this,{{$bug->id}})" type="file" class="form-control" name="bug_files[]" multiple></input>
-                                        </div>
-                                        <div class="mt-3">
-                                            <label class="form-label">Description</label>
-                                            <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-4 gap-3">
-                                            <button type="submit" class="btn btn-primary">Save</button>
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
-                                        {{-- BUG DOCS --}}
-                                        <div class="row mt-4 gap-2 justify-content-center">
-                                            @forEach($bugDocuments as $bugDocument)
-                                                @if($bug->id == $bugDocument->bug_id)
-                                                    <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
-                                                        <div class="d-flex justify-content-end w-100">
-                                                            <a href="/deleteBugDocuments/{{$bugDocument->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
-                                                        </div>
-                                                        <div class="text-center">
-                                                            <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
-                                                        </div>
-                                                        <div class="w-100 text-center">
-                                                            <a href="{{asset($bugDocument->document_path)}}" style="text-decoration: none;color:white;">{{$bugDocument->document_name}}</a>
-                                                        </div>
-                                                    </div>
+                                            <div class="d-flex justify-content-end mt-4 gap-3">
+                                                @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 4)
+                                                    <button type="submit" class="btn btn-primary">Save</button>
                                                 @endif
-                                            @endforeach
-                                        </div>
-                                    </div>       
-                                </form>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                            {{-- BUG DOCS --}}
+                                            <div class="row mt-4 gap-2 justify-content-center">
+                                                @forEach($bugDocuments as $bugDocument)
+                                                    @if($bug->id == $bugDocument->bug_id)
+                                                        <div class="col-md-3 d-flex flex-column justify-content-between align-items-center p-2 gap-2" style="background-color:rgb(211, 202, 202);">
+                                                            <div class="d-flex justify-content-end w-100">
+                                                                <a href="/deleteBugDocuments/{{$bugDocument->id}}"><i class="fa-regular fa-trash-can" style="color:red;"></i></a>
+                                                            </div>
+                                                            <div class="text-center">
+                                                                <i class="fa-solid fa-paperclip" style="font-size:50px;"></i>
+                                                            </div>
+                                                            <div class="w-100 text-center">
+                                                                <a href="{{asset($bugDocument->document_path)}}" style="text-decoration: none;color:white;">{{$bugDocument->document_name}}</a>
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>       
+                                    </form>
 
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- CREATE TASKS FROM BUGS --}}
-                    <div id="createTasksFromBugsModal_{{$bug->id}}" class="modal allot_{{$bug->id}}">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-
-                                <!-- Modal Header -->
-                                <div class="modal-header" style=" background-color:#061148;">
-                                    <h4 class="modal-title" style="color: white;font-weight: bolder;">Create Task</h4>
                                 </div>
-                            
-                                <form method="post" action="{{route('createTaskFromBug')}}">
-                                    {{csrf_field()}}
-                                    <!-- Modal Body -->
-                                    <input type="hidden" value="{{$bug->id}}" name="bug_id"/>
-                                    <input type="hidden" value="{{$project->id}}" name="project_id"/>
-                                    <input type="hidden" value="" class="assigned_to" name="assigned_to"/>
-                                    <div class="modal-body"> 
-                                        <div>
-                                            <label class="form-label">Task Title</label>
-                                            <input type="text" class="form-control" name="task_title" value="Bug repair - Bug ID ({{$bug->bid}})"/>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Sprint</label>
-                                                <select class="form-control sprint_dropdown" required style="font-size:14px;" name="sprint_id">
-                                                    <option value="" selected disabled>Select Sprint</option>
-                                                    @foreach($sprints as $sprint)
-                                                        <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Estimated Hours</label>
-                                                <input type="number" class="form-control" required style="font-size:14px;" name="estimated_hours">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Priority</label>
-                                                <select class="form-control" required style="font-size:14px;" name="priority">
-                                                    <option value="" selected disabled>Select Priority</option>
-                                                    @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
-                                                        <option value="{{ $value }}">{{ $label }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Task Status</label>
-                                                <select class="form-control" required style="font-size:14px;" name="status">
-                                                    <option value="" selected disabled>Select Task Status</option>
-                                                    @foreach($taskStatusesWithIds as $statusObject)
-                                                        @php
-                                                            $status = $statusObject->status;
-                                                            $statusId = $statusObject->project_task_status_id;
-                                                        @endphp
-                                                        <option value="{{  $statusId  }}">{{ $status }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Assigned To</label>
-                                                <input type="text" class="form-control assigned_too" style="font-size:14px;" disabled>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Alloted To</label>
-                                                <select class="form-control allot_user_{{$bug->id}}" required style="font-size:14px;width:100%;" name="alloted_to[]" multiple>
-                                                    @foreach($project->projectMembers as $projectMember)
-                                                        <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <label class="form-label">Description</label>
-                                            <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-4 gap-3">
-                                            <button type="submit" class="btn btn-primary">Create</button>
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>       
-                                </form>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- CREATE TASKS FROM MULTIPLE BUGS --}}
-                    <div id="createTasksFromMultipleBugsModal" class="modal allot_{{$bug->id}}">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
+                        {{-- CREATE TASKS FROM BUGS --}}
+                        <div id="createTasksFromBugsModal_{{$bug->id}}" class="modal allot_{{$bug->id}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
 
-                                <!-- Modal Header -->
-                                <div class="modal-header" style=" background-color:#061148;">
-                                    <h4 class="modal-title" style="color: white;font-weight: bolder;">Create Task</h4>
+                                    <!-- Modal Header -->
+                                    <div class="modal-header" style=" background-color:#061148;">
+                                        <h4 class="modal-title" style="color: white;font-weight: bolder;">Create Task</h4>
+                                    </div>
+                                
+                                    <form method="post" action="{{route('createTaskFromBug')}}">
+                                        {{csrf_field()}}
+                                        <!-- Modal Body -->
+                                        <input type="hidden" value="{{$bug->id}}" name="bug_id"/>
+                                        <input type="hidden" value="{{$project->id}}" name="project_id"/>
+                                        <input type="hidden" value="" class="assigned_to" name="assigned_to"/>
+                                        <div class="modal-body"> 
+                                            <div>
+                                                <label class="form-label">Task Title</label>
+                                                <input type="text" class="form-control" name="task_title" value="Bug repair - Bug ID ({{$bug->bid}})"/>
+                                            </div>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Sprint</label>
+                                                    <select class="form-control sprint_dropdown" required style="font-size:14px;" name="sprint_id">
+                                                        <option value="" selected disabled>Select Sprint</option>
+                                                        @foreach($sprints as $sprint)
+                                                            <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Estimated Hours</label>
+                                                    <input type="number" class="form-control" required style="font-size:14px;" name="estimated_hours">
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Priority</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="priority">
+                                                        <option value="" selected disabled>Select Priority</option>
+                                                        @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
+                                                            <option value="{{ $value }}">{{ $label }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Task Status</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="status">
+                                                        <option value="" selected disabled>Select Task Status</option>
+                                                        @foreach($taskStatusesWithIds as $statusObject)
+                                                            @php
+                                                                $status = $statusObject->status;
+                                                                $statusId = $statusObject->project_task_status_id;
+                                                            @endphp
+                                                            <option value="{{  $statusId  }}">{{ $status }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Assigned To</label>
+                                                    <input type="text" class="form-control assigned_too" style="font-size:14px;" disabled>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Alloted To</label>
+                                                    <select class="form-control allot_user_{{$bug->id}}" required style="font-size:14px;width:100%;" name="alloted_to[]" multiple>
+                                                        @foreach($project->projectMembers as $projectMember)
+                                                            <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Description</label>
+                                                <textarea class="ckeditor form-control" name="desc">{{$bug->bugDescription}}</textarea>
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-4 gap-3">
+                                                <button type="submit" class="btn btn-primary">Create</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>       
+                                    </form>
                                 </div>
-                            
-                                <form method="post" action="{{route('createTaskFromMultipleBug')}}">
-                                    {{csrf_field()}}
-                                    <!-- Modal Body -->
-                                    <input type="hidden" value="" name="bug_ids[]" id="multipleBugs"/>
-                                    <input type="hidden" value="{{$project->id}}" name="project_id"/>
-                                    <input type="hidden" value="" class="assigned_to2" name="assigned_to"/>
-                                    <div class="modal-body"> 
-                                        <div style="width: 100%">
-                                            <label class="form-label">Task Title</label>
-                                            <input id="multiTask" type="text" class="form-control" name="task_title" value=""/>
-                                        </div>
-                                        {{-- <div style="width: 50%">
-                                                <label class="form-label">Parent Task</label>
-                                                <select class="form-control sprint_dropdown select2" required style="font-size:14px;width:100%;" name="parent_task">
-                                                    <option value="" selected disabled>Select Parent Task</option>
-                                                    @foreach($tasks as $task)
-                                                        <option value="{{$task->id}}">{{$task->title}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div> --}}
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Sprint</label>
-                                                <select class="form-control sprint_dropdown2" required style="font-size:14px;" name="sprint_id">
-                                                    <option value="" selected disabled>Select Sprint</option>
-                                                    @foreach($sprints as $sprint)
-                                                        <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Estimated Hours</label>
-                                                <input type="number" class="form-control" required style="font-size:14px;" name="estimated_hours">
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Priority</label>
-                                                <select class="form-control" required style="font-size:14px;" name="priority">
-                                                    <option value="" selected disabled>Select Priority</option>
-                                                    @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
-                                                        <option value="{{ $value }}">{{ $label }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Task Status</label>
-                                                <select class="form-control" required style="font-size:14px;" name="status">
-                                                    <option value="" selected disabled>Select Task Status</option>
-                                                    @foreach($taskStatusesWithIds as $statusObject)
-                                                        @php
-                                                            $status = $statusObject->status;
-                                                            $statusId = $statusObject->project_task_status_id;
-                                                        @endphp
-                                                        <option value="{{  $statusId  }}">{{ $status }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex justify-content-between gap-3 mt-3">
-                                            <div style="width: 50%">
-                                                <label class="form-label">Assigned To</label>
-                                                <input type="text" class="form-control assigned_too2" style="font-size:14px;" disabled>
-                                            </div>
-                                            <div style="width: 50%">
-                                                <label class="form-label">Alloted To</label>
-                                                <select class="form-control allot_user_{{$bug->id}}" required style="font-size:14px;width:100%;" name="alloted_to[]" multiple>
-                                                    @foreach($project->projectMembers as $projectMember)
-                                                        <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3">
-                                            <label class="form-label">Description</label>
-                                            <textarea class="ckeditor form-control" name="desc"></textarea>
-                                        </div>
-                                        <div class="d-flex justify-content-end mt-4 gap-3">
-                                            <button type="submit" class="btn btn-primary">Create</button>
-                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                        </div>
-                                    </div>       
-                                </form>
                             </div>
                         </div>
-                    </div>
+
+                        {{-- CREATE TASKS FROM MULTIPLE BUGS --}}
+                        <div id="createTasksFromMultipleBugsModal" class="modal allot_{{$bug->id}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+
+                                    <!-- Modal Header -->
+                                    <div class="modal-header" style=" background-color:#061148;">
+                                        <h4 class="modal-title" style="color: white;font-weight: bolder;">Create Task</h4>
+                                    </div>
+                                
+                                    <form method="post" action="{{route('createTaskFromMultipleBug')}}">
+                                        {{csrf_field()}}
+                                        <!-- Modal Body -->
+                                        <input type="hidden" value="" name="bug_ids[]" id="multipleBugs"/>
+                                        <input type="hidden" value="{{$project->id}}" name="project_id"/>
+                                        <input type="hidden" value="" class="assigned_to2" name="assigned_to"/>
+                                        <div class="modal-body"> 
+                                            <div style="width: 100%">
+                                                <label class="form-label">Task Title</label>
+                                                <input id="multiTask" type="text" class="form-control" name="task_title" value=""/>
+                                            </div>
+                                            {{-- <div style="width: 50%">
+                                                    <label class="form-label">Parent Task</label>
+                                                    <select class="form-control sprint_dropdown select2" required style="font-size:14px;width:100%;" name="parent_task">
+                                                        <option value="" selected disabled>Select Parent Task</option>
+                                                        @foreach($tasks as $task)
+                                                            <option value="{{$task->id}}">{{$task->title}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div> --}}
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Sprint</label>
+                                                    <select class="form-control sprint_dropdown2" required style="font-size:14px;" name="sprint_id">
+                                                        <option value="" selected disabled>Select Sprint</option>
+                                                        @foreach($sprints as $sprint)
+                                                            <option value="{{$sprint->id}}">{{$sprint->sprint_name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Estimated Hours</label>
+                                                    <input type="number" class="form-control" required style="font-size:14px;" name="estimated_hours">
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Priority</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="priority">
+                                                        <option value="" selected disabled>Select Priority</option>
+                                                        @foreach(\App\Models\Task::getPriorityOptions() as $value => $label)
+                                                            <option value="{{ $value }}">{{ $label }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Task Status</label>
+                                                    <select class="form-control" required style="font-size:14px;" name="status">
+                                                        <option value="" selected disabled>Select Task Status</option>
+                                                        @foreach($taskStatusesWithIds as $statusObject)
+                                                            @php
+                                                                $status = $statusObject->status;
+                                                                $statusId = $statusObject->project_task_status_id;
+                                                            @endphp
+                                                            <option value="{{  $statusId  }}">{{ $status }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-between gap-3 mt-3">
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Assigned To</label>
+                                                    <input type="text" class="form-control assigned_too2" style="font-size:14px;" disabled>
+                                                </div>
+                                                <div style="width: 50%">
+                                                    <label class="form-label">Alloted To</label>
+                                                    <select class="form-control allot_user_{{$bug->id}}" required style="font-size:14px;width:100%;" name="alloted_to[]" multiple>
+                                                        @foreach($project->projectMembers as $projectMember)
+                                                            <option value="{{$projectMember->id}}">{{$projectMember->profile_name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3">
+                                                <label class="form-label">Description</label>
+                                                <textarea class="ckeditor form-control" name="desc"></textarea>
+                                            </div>
+                                            <div class="d-flex justify-content-end mt-4 gap-3">
+                                                <button type="submit" class="btn btn-primary">Create</button>
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>       
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
                 </div>
             </div>
@@ -778,7 +790,9 @@
                         </select>
                     </div>
                     <div class="d-flex justify-content-end align-items-center">
-                        <button class="btn" data-toggle="modal" data-target="#createRoundsModal"><i class="fa-solid fa-plus" style="color: green; font-size:35px;"></i></button>
+                        @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 4)
+                            <button class="btn" data-toggle="modal" data-target="#createRoundsModal"><i class="fa-solid fa-plus" style="color: green; font-size:35px;"></i></button>
+                        @endif
                     </div>
                 </div>
                 <table id="manageTable"  class="table table-hover responsive mt-2" style="width: 100%; border-spacing: 0 10px;">
@@ -800,9 +814,11 @@
                                 <td>{{$qaround->qaStatus->type}}</td> 
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="#" class="p-2" data-toggle="modal" data-target="#editRoundsModal_{{$qaround->id}}" data-placement="top" title="Edit">
-                                            <i class="fas fa-edit text-primary"></i>
-                                        </a> 
+                                        @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 2)
+                                            <a href="#" class="p-2" data-toggle="modal" data-target="#editRoundsModal_{{$qaround->id}}" data-placement="top" title="Edit">
+                                                <i class="fas fa-edit text-primary"></i>
+                                            </a> 
+                                        @endif
                                         <a href="#" class="p-2" data-toggle="modal" data-placement="top" title="File">
                                             <i class="fa-solid fa-file"></i>
                                         </a> 
