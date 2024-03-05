@@ -214,12 +214,12 @@
             <div class="col-md-12 mb-3">
                 <div class="titlebar"
                     style="display: flex; justify-content: flex-end; margin-top: 18px; margin-bottom: 30px; padding: 2px 30px; margin-right: -30px;">
-                    {{-- @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4) --}}
+                    @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 2)
                         <button type="button" id="addReleaseManagementModalBtn" class="btn btn-primary" data-toggle="modal"
                             data-target="#releaseManagementModal" style="margin-right: 10px;">
                             Add
                         </button>
-                    {{-- @endif --}}
+                    @endif
                 </div>
             </div>
             <table id="release_managementTable" class="table table-hover responsive"
@@ -248,7 +248,7 @@
                                     style="">
                                     <i class="fas fa-eye text-info"></i>
                                 </a>
-                                {{-- @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4) --}}
+                                @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 2)
                                     <a href="#" data-toggle="modal" data-placement="top" title="Edit"
                                         data-target="#editModal{{ $releaseManagement->id }}" style="margin-left: 10px" 
                                         data-release-id="{{ $releaseManagement->id }}"
@@ -259,7 +259,7 @@
                                         data-rmid="{{ $releaseManagement->rmid }}">
                                         <i class="fas fa-edit text-primary" style="margin-right: 10px"></i>
                                     </a>
-                                {{-- @endif --}}
+                                @endif
                                 
                                 <a href="#" data-placement="top" data-toggle="modal" id="release_management_id{{ $releaseManagement->id }}"
                                     onclick="modal_opener(this)"
@@ -268,11 +268,11 @@
                                     data-images-url="{{ route('projects.getImages') }}"> <!-- Update the URL accordingly -->
                                     <i class="fa-solid fa-people-roof text-warning" style=""></i>
                                 </a>
-                                {{-- @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4) --}}
+                                @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 2)
                                     <button type="button" class="btn btn-link p-0 delete-button" data-toggle="modal" data-placement="top" title="Delete" data-target="#deleteModal{{ $releaseManagement->id }}" style="margin-left: 10px">
                                         <i class="fas fa-trash-alt text-danger mb-2" style="border: none;"></i>
                                     </button> 
-                                {{-- @endif  --}}
+                                @endif 
                                 <!-- Delete Modal start -->
                                 <div class="modal fade" id="deleteModal{{ $releaseManagement->id }}" data-backdrop="static" tabindex="-1"
                                     role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -487,7 +487,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <!-- Stakeholder addition form goes here -->
-                                        {{-- @if(Auth::user()->getRole($project->id) == 3 || Auth::user()->getRole($project->id) == 4) --}}
+                                        @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1 || Auth::user()->getRole($project->id) == 2)
                                             <div>
                                                 <form action="{{ route('stakeholders.store') }}" method="post">
                                                     @csrf
@@ -524,7 +524,7 @@
                                                     </div>
                                                 </form>
                                             </div>
-                                        {{-- @endif --}}
+                                        @endif
                                         
                                         <!-- Display existing stakeholders -->
                                         <div class="row mt-3" id="modalImageContainer{{ $releaseManagement->id }}">

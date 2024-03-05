@@ -124,7 +124,7 @@
             </div>
 
             <div class="row">
-                <div class="col-md-6">
+                {{-- <div class="col-md-6">
                     <div class="form-group">
                         <label for="project_manager_id" class="mb-1" style="font-size: 15px;">Project Manager</label>
                         <select name="project_manager_id" class="shadow-sm" id="project_manager_id" class="form-control" required style="padding-bottom: 6px; height: 39.1px; color: #858585; font-size: 14px;">
@@ -135,7 +135,7 @@
                             @endforeach
                         </select>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="col-md-6">
                     <div class="form-group">
@@ -251,7 +251,9 @@
                                     </div>
 
                                     <div class="col-md-12 mt-3 text-end">
-                                        <button type="button" class="btn" id="addMemberBtn" style="background-color: #012970; color: white;">Add Member</button>
+                                        
+                                            <button type="button" class="btn" id="addMemberBtn" style="background-color: #012970; color: white;">Add Member</button>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -261,8 +263,10 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Save</button>
-                    <a href="{{ route('projects.index') }}" class="btn btn-danger">Cancel</a>
+                @if(Auth::user()->is_admin == 1 || Auth::user()->getRole($project->id) == 1)
+                    <button type="submit" class="btn btn-primary">Save</button>
+                @endif
+                <a href="{{ route('projects.edit', ['project' => $project->id]) }}" class="btn btn-danger">Cancel</a>
             </div>
         </div>
     </form>

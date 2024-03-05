@@ -60,7 +60,9 @@
                         <th style="width:20%">Status</th>
                         <th style="width:20%">Created At</th>
                         <th style="width:20%">Updated At</th>
-                        <th style="width:20%">Actions</th>
+                        {{-- @if(auth()->user()->is_admin == 1 || $project->projectMembers->contains('id', auth()->id())) --}}
+                            <th style="width:20%">Actions</th>
+                        {{-- @endif --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -83,26 +85,20 @@
                         </td>
                         <td style="width:20%">{{$project->created_at}}</td>
                         <td style="width:20%">{{$project->updated_at}}</td>
-                        
                         <td style="width:20%">
-                             <div class="btn-group" role="group">
-                            <!--<a href="{{ route('sprints.index', ['sprints' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Sprints">
-                                <i class="fa-solid fa-people-roof text-warning" style="margin-right: 10px"></i>
-                            </a>
-                            <a href="{{ route('kanban', ['projectId' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Tasks">
-                                <i class="bi bi-kanban" style="margin-right: 10px; color: blueviolet;"></i>
-                            </a> -->
-                            <a href="{{ route('projects.cost', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Cost">
-                                <i class="bi bi-exclamation-octagon" style="margin-right: 10px; color:red;"></i>
-                            </a>
-                            <a href="{{ route('projects.sprint', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Project Details">
-                                <i class="fa-solid fa-book-open" style="margin-right: 10px; color:blue;"></i> 
-                            </a>
-                            {{-- @if(auth()->user()->is_admin == 1)
-                                <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">
-                                    <i class="fa-solid fa-gear text-secondary" style="margin-right: 10px"></i>
+                            <div class="btn-group" role="group">
+                                <a href="{{ route('projects.cost', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="View Cost" @if(!(auth()->user()->is_admin == 1 || $project->members()->where('project_members_id', auth()->user()->id)->exists())) disabled style="pointer-events: none; color: gray;" @endif>
+                                    <i class="bi bi-exclamation-octagon" style="margin-right: 10px; color:red;"></i>
                                 </a>
-                            @endif --}}
+                                <a href="{{ route('projects.sprint', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Project Details" @if(!(auth()->user()->is_admin == 1 || $project->members()->where('project_members_id', auth()->user()->id)->exists())) disabled style="pointer-events: none; color: gray;" @endif>
+                                    <i class="fa-solid fa-book-open" style="margin-right: 10px; color:blue;"></i> 
+                                </a>
+                                
+                                {{-- @if(auth()->user()->is_admin == 1)
+                                    <a href="{{ route('projects.edit', ['project' => $project->id]) }}" data-toggle="tooltip" data-placement="top" title="Settings">
+                                        <i class="fa-solid fa-gear text-secondary" style="margin-right: 10px"></i>
+                                    </a>
+                                @endif --}}
                                 <form action="{{ route('projects.destroy', $project->id) }}" method="post">
                                     @method('delete')
                                     @csrf 
@@ -135,6 +131,7 @@
                                 </form>
                             </div>
                         </td>
+                       
                     </tr>
                     @endforeach
                 </tbody>

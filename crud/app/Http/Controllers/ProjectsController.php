@@ -288,7 +288,7 @@ class ProjectsController extends Controller
         $taskStatusIds = $request->task_status_id;
         $project->taskStatuses()->sync($taskStatusIds);
 
-        return redirect()->route('projects.index')->with('success', 'Project settings updated successfully.');
+        return back()->with('success', 'Project settings updated successfully.');
     }
 
     public function updateCost(Request $request, Project $project)
