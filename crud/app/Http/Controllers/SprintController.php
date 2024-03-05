@@ -8,25 +8,35 @@ use App\Models\Project;
 use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SprintExport;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class SprintController extends Controller
 {
 
     public function export()
-{
-    return Excel::download(new SprintExport, 'sprints.xlsx');
-}
-
+    {
+        return Excel::download(new SprintExport, 'sprints.xlsx');
+    }
 
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $sprints = Sprint::all();
         return view('sprints.index', compact('sprints'));
     }
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $users = User::all();
         $projects= Project::all();
 
@@ -84,6 +94,11 @@ class SprintController extends Controller
 
     public function edit($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $users = User::all();
         $projects = Project::all();
     

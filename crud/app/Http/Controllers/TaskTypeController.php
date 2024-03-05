@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\TaskType;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -12,6 +13,11 @@ class TaskTypeController extends Controller
      */
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $taskTypes = TaskType::all();
         return view('task_types.index', compact('taskTypes'));
     }
@@ -21,6 +27,11 @@ class TaskTypeController extends Controller
      */
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('task_types.create');
     }
 
@@ -28,22 +39,23 @@ class TaskTypeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'type_name' => 'required',
-        'level' => 'required',
-        'description' => 'required'
-    ]);
+    {
+        
+        $request->validate([
+            'type_name' => 'required',
+            'level' => 'required',
+            'description' => 'required'
+        ]);
 
-    $taskType = new TaskType;
-    $taskType->type_name = $request->type_name;
-    $taskType->level = $request->level;
-    $taskType->description = $request->description;
+        $taskType = new TaskType;
+        $taskType->type_name = $request->type_name;
+        $taskType->level = $request->level;
+        $taskType->description = $request->description;
 
-    $taskType->save();
+        $taskType->save();
 
-    return redirect()->route('task_types.index')->with('success', 'Task type created successfully.');
-}
+        return redirect()->route('task_types.index')->with('success', 'Task type created successfully.');
+    }
 
 
     /**
@@ -51,6 +63,11 @@ class TaskTypeController extends Controller
      */
     public function show(TaskType $taskType)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('task_types.show', compact('taskType'));
     }
 
@@ -59,6 +76,11 @@ class TaskTypeController extends Controller
      */
     public function edit(TaskType $taskType)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('task_types.edit', compact('taskType'));
     }
 

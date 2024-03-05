@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\ProjectItemStatus;
 use App\Models\Sprint;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectItemController extends Controller
 {
@@ -20,12 +21,22 @@ class ProjectItemController extends Controller
     // }
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $projectItems = ProjectItem::all();
         return view('project_items.index', compact('projectItems'));
     }
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $projects = Project::all();
         $statuses = ProjectItemStatus::all();
         $sprints = Sprint::all();
@@ -65,6 +76,11 @@ class ProjectItemController extends Controller
 
     public function edit($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $users = User::all();
         $projects = Project::all();
         $statuses = ProjectItemStatus::all();
@@ -78,6 +94,10 @@ class ProjectItemController extends Controller
 
     public function update(Request $request, $id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
 
         $request->validate([
             'item_name' => 'required',
@@ -114,6 +134,11 @@ class ProjectItemController extends Controller
 
     public function destroy($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $projectItem = ProjectItem::findOrFail($id);
         $projectItem->delete();
 

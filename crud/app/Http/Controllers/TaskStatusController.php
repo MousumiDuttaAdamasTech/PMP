@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\TaskStatus;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -12,6 +13,11 @@ class TaskStatusController extends Controller
      */
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $taskStatuses = TaskStatus::all();
         return view('task_status.index', compact('taskStatuses'));
     }
@@ -22,6 +28,11 @@ class TaskStatusController extends Controller
      */
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('task_status.create');
     }
 
@@ -50,6 +61,11 @@ class TaskStatusController extends Controller
      */
     public function show(TaskStatus $TaskStatus)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('task_status.show', compact('TaskStatus'));
     }
 
@@ -58,6 +74,11 @@ class TaskStatusController extends Controller
      */
     public function edit(TaskStatus $TaskStatus)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('task_status.edit', compact('TaskStatus'));
     }
 
@@ -83,6 +104,11 @@ class TaskStatusController extends Controller
      */
     public function destroy(TaskStatus $TaskStatus)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $TaskStatus->delete();
         return redirect()->route('task_status.index')->with('success', 'Task status deleted successfully.');
     }

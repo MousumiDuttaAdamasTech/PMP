@@ -4,17 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Models\Technology;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TechnologyController extends Controller
 {
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $technologies = Technology::all();
         return view('technologies.index', compact('technologies'));
     }
 
     public function create()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         return view('technologies.create');
     }
 
@@ -32,6 +43,11 @@ class TechnologyController extends Controller
 
     public function edit($id)
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         $technology = Technology::findOrFail($id);
         return view('technologies.edit', compact('technology'));
     }

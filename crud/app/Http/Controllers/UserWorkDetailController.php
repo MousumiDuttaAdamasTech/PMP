@@ -132,5 +132,4 @@ class UserWorkDetailController extends Controller
         return response()->json($tasks);
     }
     
-
 }

@@ -10,11 +10,17 @@ use App\Models\User;
 use App\Models\Project;
 use App\Models\ProjectRole;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectMemberController extends Controller
 {
     public function index()
     {
+        // Check if the authenticated user is an admin
+        if (!Auth::user()->is_admin) {
+            return back()->with('error', 'Unauthorized access.');
+        }
+ 
         // Retrieve all project members from the database
         $projectMembers = ProjectMember::all();
 
