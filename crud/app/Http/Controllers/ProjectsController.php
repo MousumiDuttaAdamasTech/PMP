@@ -54,14 +54,14 @@ class ProjectsController extends Controller
         $users = User::all();
         $verticals = Vertical::all();
         $clients = Client::all();
-        $projectManagers = User::all();
+        //$projectManagers = User::all();
         $technologies = Technology::all();
         $projectMembers = Profile::all();
         $projectRoles = ProjectRole::all();
         $task_types = taskType::all();
         $task_statuses = TaskStatus::all();
 
-        return view('projects.create', compact('users', 'verticals', 'clients', 'technologies', 'projectMembers', 'projectRoles', 'task_types', 'task_statuses', 'projectManagers'));
+        return view('projects.create', compact('users', 'verticals', 'clients', 'technologies', 'projectMembers', 'projectRoles', 'task_types', 'task_statuses'));
     }
 
     public function store(Request $request)
@@ -73,7 +73,7 @@ class ProjectsController extends Controller
             'project_name' => 'required',
             'project_type' => 'required',
             'project_description' => 'required',
-            'project_manager_id' => 'required',
+            //'project_manager_id' => 'required',
             'project_startDate' => 'date',
             'project_endDate' => 'date',
             'project_status' => 'required',
@@ -92,7 +92,7 @@ class ProjectsController extends Controller
         $project->project_name = $request->project_name;
         $project->project_type = $request->project_type;
         $project->project_description = $request->project_description;
-        $project->project_manager_id = $request->project_manager_id;
+        //$project->project_manager_id = $request->project_manager_id;
         $project->project_startDate = $request->project_startDate;
         $project->project_endDate = $request->project_endDate;
         $project->project_status = $request->project_status;
@@ -186,7 +186,7 @@ class ProjectsController extends Controller
         //     return back()->with('error', 'Unauthorized access.');
         // }
 
-        $projectManagers = User::all();
+       // $projectManagers = User::all();
         $users = User::all();
         $technologies = Technology::all();
         $verticals = Vertical::all();
@@ -205,7 +205,7 @@ class ProjectsController extends Controller
         // Retrieve the selected task_types for the project
         $selectedTaskStatus = explode(',', $project->task_status_id);
 
-        return view('projects.edit', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies', 'task_types', 'selectedTaskTypes', 'task_statuses', 'selectedTaskStatus'));
+        return view('projects.edit', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'selectedTechnologies', 'task_types', 'selectedTaskTypes', 'task_statuses', 'selectedTaskStatus'));
     }
 
 
@@ -220,7 +220,7 @@ class ProjectsController extends Controller
             'project_name' => 'required',
             'project_type' => 'required',
             'project_description' => 'required',
-            'project_manager_id' => 'required',
+            //'project_manager_id' => 'required',
             'project_startDate' => 'date',
             'project_endDate' => 'date',
             'project_status' => 'required',
@@ -240,7 +240,7 @@ class ProjectsController extends Controller
         $project->project_name = $request->project_name;
         $project->project_type = $request->project_type;
         $project->project_description = $request->project_description;
-        $project->project_manager_id = $request->project_manager_id;
+        //$project->project_manager_id = $request->project_manager_id;
         $project->project_startDate = $request->project_startDate;
         $project->project_endDate = $request->project_endDate;
         $project->project_status = $request->project_status;
@@ -480,7 +480,7 @@ class ProjectsController extends Controller
 
     public function team(Project $project)
     {
-        $projectManagers = User::all();
+        //$projectManagers = User::all();
         $users = User::all();
         $technologies = Technology::all();
         $verticals = Vertical::all();
@@ -499,7 +499,7 @@ class ProjectsController extends Controller
         // Retrieve the selected task_types for the project
         $selectedTaskStatus = explode(',', $project->task_status_id);
 
-        return view('projects.team', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'projectManagers', 'selectedTechnologies', 'task_types', 'selectedTaskTypes', 'task_statuses', 'selectedTaskStatus'));
+        return view('projects.team', compact('project', 'users', 'technologies', 'verticals', 'clients', 'projectRoles', 'projectMembers', 'selectedTechnologies', 'task_types', 'selectedTaskTypes', 'task_statuses', 'selectedTaskStatus'));
     }
 
     public function sidebar(Project $project)

@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    use HasFactory;
+
     protected $table = 'project';
 
     protected $fillable = [
         'project_name',
         'project_type',
         'project_description',
-        'project_manager_id',
+        //'project_manager_id',
         'project_startDate',
         'project_endDate',
         'project_status',
@@ -28,10 +31,10 @@ class Project extends Model
 
     // Relationships
 
-    public function projectManager()
-    {
-        return $this->belongsTo(User::class, 'Project_manager_id');
-    }
+    // public function projectManager()
+    // {
+    //     return $this->belongsTo(User::class, 'Project_manager_id');
+    // }
 
     public function vertical()
     {
@@ -40,7 +43,7 @@ class Project extends Model
 
     public function technologies()
     {
-        return $this->belongsTo(Technologies::class, 'technology_id');
+        return $this->belongsTo(Technology::class, 'technology_id');
     }
 
     public function client()
@@ -68,12 +71,12 @@ class Project extends Model
 
     public function task_type()
     {
-        return $this->belongsTo(Task_type::class, 'task_type_id');
+        return $this->belongsTo(taskType::class, 'task_type_id');
     }
 
     public function task_status()  
     {
-        return $this->belongsTo(Task_status::class, 'task_status_id');
+        return $this->belongsTo(TaskStatus::class, 'task_status_id');
     }
 
     public function projectTaskTypes()
